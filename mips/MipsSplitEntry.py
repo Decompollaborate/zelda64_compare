@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from .Utils import *
+from ..py_mips_disasm.mips.Utils import *
 
 
 class SplitEntry:

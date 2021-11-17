@@ -4,14 +4,15 @@ from __future__ import annotations
 
 import argparse
 
-from mips.Utils import *
-from mips.GlobalConfig import GlobalConfig
-from mips.MipsText import Text
-from mips.MipsData import Data
-from mips.MipsRodata import Rodata
+from py_mips_disasm.mips.Utils import *
+from py_mips_disasm.mips.GlobalConfig import GlobalConfig
+from py_mips_disasm.mips.MipsText import Text
+from py_mips_disasm.mips.MipsData import Data
+from py_mips_disasm.mips.MipsRodata import Rodata
+from py_mips_disasm.mips.MipsContext import Context
+
 from mips.MipsFileCode import FileCode
 from mips.ZeldaTables import DmaEntry, getDmaAddresses
-from mips.MipsContext import Context
 
 from mips.ZeldaOffsets import codeVramStart, codeDataStart, codeRodataStart
 

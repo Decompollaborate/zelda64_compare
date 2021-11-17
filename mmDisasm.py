@@ -4,14 +4,15 @@ from __future__ import annotations
 
 import argparse
 
-from mips.Utils import *
-from mips.GlobalConfig import GlobalConfig
-from mips.MipsText import Text
+from py_mips_disasm.mips.Utils import *
+from py_mips_disasm.mips.GlobalConfig import GlobalConfig
+from py_mips_disasm.mips.MipsText import Text
+from py_mips_disasm.mips.MipsContext import Context
+
 from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileCode import FileCode
 from mips.MipsFileBoot import FileBoot
-from mips.MipsContext import Context
 from mips.MipsSplitEntry import readSplitsFromCsv
 from mips.ZeldaTables import DmaEntry, getDmaAddresses, OverlayTableEntry
 from mips import ZeldaOffsets

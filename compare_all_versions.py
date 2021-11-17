@@ -8,14 +8,15 @@ from typing import List, Dict
 from multiprocessing import Pool, cpu_count
 from functools import partial
 
-from mips.Utils import *
-from mips.GlobalConfig import GlobalConfig
-from mips.MipsSection import Section
+from py_mips_disasm.mips.Utils import *
+from py_mips_disasm.mips.GlobalConfig import GlobalConfig
+from py_mips_disasm.mips.MipsSection import Section
+from py_mips_disasm.mips.MipsContext import Context
+
 from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileCode import FileCode
 from mips.MipsFileBoot import FileBoot
-from mips.MipsContext import Context
 from mips.MipsSplitEntry import readSplitsFromCsv
 from mips.ZeldaTables import OverlayTableEntry, getDmaAddresses, DmaEntry
 from mips import ZeldaOffsets

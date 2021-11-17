@@ -2,19 +2,20 @@
 
 from __future__ import annotations
 
-from .Utils import *
-from .GlobalConfig import GlobalConfig
+from ..py_mips_disasm.mips.Utils import *
+from ..py_mips_disasm.mips.GlobalConfig import GlobalConfig
 
-from .MipsFileBase import FileBase
-from .MipsText import Text
-from .MipsData import Data
-from .MipsRodata import Rodata
-from .MipsBss import Bss
+from ..py_mips_disasm.mips.MipsFileBase import FileBase
+from ..py_mips_disasm.mips.MipsText import Text
+from ..py_mips_disasm.mips.MipsData import Data
+from ..py_mips_disasm.mips.MipsRodata import Rodata
+from ..py_mips_disasm.mips.MipsBss import Bss
+from ..py_mips_disasm.mips.MipsContext import Context
+from ..py_mips_disasm.mips.Instructions import wordToInstruction
+
 from .MipsReloc import Reloc
 from .MipsFileGeneric import FileGeneric
-from .MipsContext import Context
 
-from .Instructions import wordToInstruction
 from .ZeldaTables import OverlayTableEntry
 
 

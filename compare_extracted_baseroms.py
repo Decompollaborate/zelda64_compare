@@ -5,13 +5,14 @@ from __future__ import annotations
 import argparse
 import os
 
-from mips.Utils import *
-from mips.GlobalConfig import GlobalConfig
-from mips.MipsSection import Section
+from py_mips_disasm.mips.Utils import *
+from py_mips_disasm.mips.GlobalConfig import GlobalConfig
+from py_mips_disasm.mips.MipsSection import Section
+from py_mips_disasm.mips.MipsContext import Context
+
 from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileCode import FileCode
 from mips.MipsFileBoot import FileBoot
-from mips.MipsContext import Context
 from mips.MipsSplitEntry import readSplitsFromCsv
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
