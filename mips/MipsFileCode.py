@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from ..py_mips_disasm.mips.Utils import *
-from ..py_mips_disasm.mips.GlobalConfig import GlobalConfig
+from py_mips_disasm.mips.Utils import *
+from py_mips_disasm.mips.GlobalConfig import GlobalConfig
 
-from ..py_mips_disasm.mips.MipsText import Text
-from ..py_mips_disasm.mips.MipsData import Data
-from ..py_mips_disasm.mips.MipsRodata import Rodata
-from ..py_mips_disasm.mips.MipsBss import Bss
-from ..py_mips_disasm.mips.MipsContext import Context
+from py_mips_disasm.mips.MipsText import Text
+from py_mips_disasm.mips.MipsData import Data
+from py_mips_disasm.mips.MipsRodata import Rodata
+from py_mips_disasm.mips.MipsBss import Bss
+from py_mips_disasm.mips.MipsContext import Context
 
 from .MipsFileGeneric import FileGeneric
 from .MipsSplitEntry import SplitEntry, getFileStartsFromEntries
@@ -140,10 +140,10 @@ class FileCode(FileGeneric):
             start, size, filename = bssStarts[i]
             end = start + size
 
-            bss = Bss(self.bytes[start:end], filename, version, context)
-            bss.parent = self
-            bss.offset = start
-            bss.vRamStart = self.vRamStart
+            # bss = Bss(self.bytes[start:end], filename, version, context)
+            # bss.parent = self
+            # bss.offset = start
+            # bss.vRamStart = self.vRamStart
 
-            self.bssList[filename] = bss
+            # self.bssList[filename] = bss
             i += 1

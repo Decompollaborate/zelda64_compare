@@ -2,16 +2,16 @@
 
 from __future__ import annotations
 
-from ..py_mips_disasm.mips.Utils import *
-from ..py_mips_disasm.mips.GlobalConfig import GlobalConfig
+from py_mips_disasm.mips.Utils import *
+from py_mips_disasm.mips.GlobalConfig import GlobalConfig
 
-from ..py_mips_disasm.mips.MipsFileBase import FileBase
-from ..py_mips_disasm.mips.MipsText import Text
-from ..py_mips_disasm.mips.MipsData import Data
-from ..py_mips_disasm.mips.MipsRodata import Rodata
-from ..py_mips_disasm.mips.MipsBss import Bss
-from ..py_mips_disasm.mips.MipsContext import Context
-from ..py_mips_disasm.mips.Instructions import wordToInstruction
+from py_mips_disasm.mips.MipsFileBase import FileBase
+from py_mips_disasm.mips.MipsText import Text
+from py_mips_disasm.mips.MipsData import Data
+from py_mips_disasm.mips.MipsRodata import Rodata
+from py_mips_disasm.mips.MipsBss import Bss
+from py_mips_disasm.mips.MipsContext import Context
+from py_mips_disasm.mips.Instructions import wordToInstruction
 
 from .MipsReloc import Reloc
 from .MipsFileGeneric import FileGeneric
@@ -72,11 +72,11 @@ class FileOverlay(FileGeneric):
         #end += bss_size
         #self.bss = Bss(self.bytes[start:end], filename, version)
         # TODO
-        bss = Bss(self.bytes[0:0], filename, version, context)
-        bss.parent = self
-        bss.offset = start
-        bss.vRamStart = self.vRamStart
-        self.bssList[self.filename] = bss
+        #bss = Bss(self.bytes[0:0], filename, version, context)
+        #bss.parent = self
+        #bss.offset = start
+        #bss.vRamStart = self.vRamStart
+        #self.bssList[self.filename] = bss
 
         start += rodata_size
         self.reloc = Reloc(self.bytes[start:], filename, version, context)

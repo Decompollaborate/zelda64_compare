@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from ..py_mips_disasm.mips.Utils import *
-from ..py_mips_disasm.mips.GlobalConfig import GlobalConfig
-from ..py_mips_disasm.mips.MipsFileBase import FileBase, createEmptyFile
-from ..py_mips_disasm.mips.MipsText import Text
-from ..py_mips_disasm.mips.MipsData import Data
-from ..py_mips_disasm.mips.MipsRodata import Rodata
-from ..py_mips_disasm.mips.MipsBss import Bss
-from ..py_mips_disasm.mips.MipsContext import Context
+from py_mips_disasm.mips.Utils import *
+from py_mips_disasm.mips.GlobalConfig import GlobalConfig
+from py_mips_disasm.mips.MipsFileBase import FileBase, createEmptyFile
+from py_mips_disasm.mips.MipsText import Text
+from py_mips_disasm.mips.MipsData import Data
+from py_mips_disasm.mips.MipsRodata import Rodata
+from py_mips_disasm.mips.MipsBss import Bss
+from py_mips_disasm.mips.MipsContext import Context
 
 # Not intended to be instanced
 class FileGeneric(FileBase):
