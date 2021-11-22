@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from .Utils import *
 from .GlobalConfig import GlobalConfig
-from .Instructions import InstructionBase
-from .MipsContext import Context, ContextVariable
+from .Instructions import InstructionBase, InstructionId
+from .MipsContext import Context, ContextSymbol
 
 class Function:
     def __init__(self, name: str, instructions: List[InstructionBase], context: Context, inFileOffset: int, vram: int = -1):
@@ -29,12 +29,23 @@ class Function:
 
         self.hasUnimplementedIntrs: bool = False
 
+        self.parent: Any = None
+
     @property
     def nInstr(self) -> int:
         return len(self.instructions)
 
     def analyze(self):
-        if self.hasUnimplementedIntrs:
+        if not GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS and self.hasUnimplementedIntrs:
+            if self.vram > -1 and self.context is not None:
+                offset = 0
+                for instr in self.instructions:
+                    currentVram = self.vram + offset
+                    contextSym = self.context.getSymbol(currentVram, False)
+                    if contextSym is not None:
+                        contextSym.isDefined = True
+
+                    offset += 4
             return
 
         trackedRegisters: Dict[int, int] = dict()
@@ -43,13 +54,10 @@ class Function:
         instructionOffset = 0
         for instr in self.instructions:
             isLui = False
-            opcode = instr.getOpcodeName()
 
-            if not instr.isImplemented():
+            if not GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS and not instr.isImplemented():
                 # Abort analysis
                 self.hasUnimplementedIntrs = True
-                if self.vram in self.context.funcAddresses:
-                    del self.context.funcAddresses[self.vram]
                 return
 
             if instr.isBranch():
@@ -72,7 +80,7 @@ class Function:
 
             elif instr.isJType():
                 target = 0x80000000 | instr.instr_index << 2
-                if instr.getOpcodeName() == "J":
+                if instr.uniqueId == InstructionId.J:
                     self.context.addFakeFunction(target, "fakefunc_" + toHex(target, 8)[2:])
                 else:
                     self.context.addFunction(None, target, "func_" + toHex(target, 8)[2:])
@@ -80,11 +88,12 @@ class Function:
 
             # symbol finder
             elif instr.isIType():
-                isLui = opcode == "LUI"
+                # TODO: Consider following branches
+                isLui = instr.uniqueId == InstructionId.LUI
                 if isLui:
                     if instr.immediate >= 0x4000: # filter out stuff that may not be a real symbol
                         trackedRegisters[instr.rt] = instructionOffset//4
-                elif instr.isIType() and opcode not in ("ANDI", "ORI", "XORI", "CACHE"):
+                elif instr.isIType() and instr.uniqueId not in (InstructionId.ANDI, InstructionId.ORI, InstructionId.XORI, InstructionId.CACHE):
                     rs = instr.rs
                     if rs in trackedRegisters:
                         luiInstr = self.instructions[trackedRegisters[rs]]
@@ -94,18 +103,21 @@ class Function:
                         self.referencedVRams.add(address)
                         if self.context.getGenericSymbol(address) is None:
                             if GlobalConfig.ADD_NEW_SYMBOLS:
-                                contextVar = ContextVariable(address, "D_" + toHex(address, 8)[2:])
+                                contextSym = ContextSymbol(address, "D_" + toHex(address, 8)[2:])
                                 if instr.isFloatInstruction():
                                     if instr.isDoubleFloatInstruction():
-                                        contextVar.type = "f64"
+                                        contextSym.type = "f64"
                                     else:
-                                        contextVar.type = "f32"
-                                self.context.symbols[address] = contextVar
+                                        contextSym.type = "f32"
+                                if self.parent.newStuffSuffix:
+                                    if address >= self.vram:
+                                        contextSym.name += f"_{self.parent.newStuffSuffix}"
+                                self.context.symbols[address] = contextSym
                         self.pointersPerInstruction[instructionOffset] = address
                         self.pointersPerInstruction[trackedRegisters[rs]*4] = address
                         registersValues[instr.rt] = address
 
-            elif opcode == "JR":
+            elif instr.uniqueId == InstructionId.JR:
                 rs = instr.rs
                 if instr.getRegisterName(rs) != "$ra":
                     if rs in registersValues:
@@ -120,7 +132,7 @@ class Function:
                         del trackedRegisters[rt]
 
                 if instr.modifiesRd():
-                    if opcode not in ("ADDU",):
+                    if instr.uniqueId not in (InstructionId.ADDU,):
                         rd = instr.rd
                         if rd in trackedRegisters:
                             del trackedRegisters[rd]
@@ -192,9 +204,8 @@ class Function:
 
         for i in range(self.nInstr-1, 0-1, -1):
             instr = self.instructions[i]
-            opcodeName = instr.getOpcodeName()
-            if opcodeName != "NOP":
-                if opcodeName == "JR" and instr.getRegisterName(instr.rs) == "$ra":
+            if instr.uniqueId != InstructionId.NOP:
+                if instr.uniqueId == InstructionId.JR and instr.getRegisterName(instr.rs) == "$ra":
                     first_nop += 1
                 break
             first_nop = i
@@ -207,8 +218,9 @@ class Function:
     def disassemble(self) -> str:
         output = ""
 
-        if self.hasUnimplementedIntrs:
-            return self.disassembleAsData()
+        if not GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS:
+            if self.hasUnimplementedIntrs:
+                return self.disassembleAsData()
 
         output += f"glabel {self.name}"
         if GlobalConfig.FUNCTION_ASM_COUNT:
@@ -244,7 +256,7 @@ class Function:
 
                     symbol = self.context.getGenericSymbol(address)
                     if symbol is not None:
-                        if instr.getOpcodeName() == "LUI":
+                        if instr.uniqueId == InstructionId.LUI:
                             immOverride = f"%hi({symbol})"
                         else:
                             immOverride= f"%lo({symbol})"
@@ -267,20 +279,24 @@ class Function:
 
             label = ""
             if not GlobalConfig.IGNORE_BRANCHES:
-                labelAux = self.context.getGenericLabel(self.vram + instructionOffset)
+                currentVram = self.vram + instructionOffset
+                labelAux = self.context.getGenericLabel(currentVram)
                 if self.vram >= 0 and labelAux is not None:
-                    if self.vram + instructionOffset in self.context.jumpTablesLabels:
+                    if self.context.getFunction(currentVram) is not None:
+                        # Skip over functions to avoid duplication
+                        pass
+                    elif currentVram in self.context.jumpTablesLabels:
                         label = "glabel " + labelAux + "\n"
                     else:
                         label = labelAux + ":\n"
                 elif auxOffset in self.localLabels:
                     label = self.localLabels[auxOffset] + ":\n"
-                elif self.vram + instructionOffset in self.context.fakeFunctions:
-                    label = self.context.fakeFunctions[self.vram + instructionOffset] + ":\n"
+                elif currentVram in self.context.fakeFunctions:
+                    label = self.context.fakeFunctions[currentVram] + ":\n"
 
             output += label + line + "\n"
 
-            wasLastInstABranch = instr.isBranch() or instr.isJType() or instr.getOpcodeName() in ("JR", "JALR")
+            wasLastInstABranch = instr.isBranch() or instr.isJType() or instr.uniqueId in (InstructionId.JR, InstructionId.JALR)
 
             instructionOffset += 4
             auxOffset += 4

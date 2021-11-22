@@ -18,9 +18,9 @@ class Rodata(Section):
 
 
     def analyze(self):
-        offset = 0
-        partOfJumpTable = False
         if self.vRamStart > -1:
+            offset = 0
+            partOfJumpTable = False
             for w in self.words:
                 currentVram = self.getVramOffset(offset)
                 if currentVram in self.context.jumpTables:
@@ -40,9 +40,14 @@ class Rodata(Section):
                     if w not in self.context.jumpTablesLabels:
                         self.context.jumpTablesLabels[w] = f"L{toHex(w, 8)[2:]}"
 
-                auxLabel = self.context.getGenericLabel(currentVram) or self.context.getGenericSymbol(currentVram, tryPlusOffset=False)
+                auxLabel = self.context.getGenericLabel(currentVram)
                 if auxLabel is not None:
                     self.symbolsVRams.add(currentVram)
+
+                contextSymbol = self.context.getSymbol(currentVram, tryPlusOffset=False)
+                if contextSymbol is not None:
+                    self.symbolsVRams.add(currentVram)
+                    contextSymbol.isDefined = True
 
                 offset += 4
 
@@ -107,6 +112,8 @@ class Rodata(Section):
                                 isDouble = True
                     elif type == "char":
                         isAsciz = True
+                        if contextVar.vram != currentVram:
+                            typeSize = 0x10000
 
                     if contextVar.vram == currentVram:
                         contextVar.isDefined = True
@@ -127,11 +134,14 @@ class Rodata(Section):
             while j < typeSize and self.bytes[4*i + j] != 0:
                 buf.append(self.bytes[4*i + j])
                 j += 1
+            if self.bytes[4*i + j] != 0:
+                dotType = ".ascii"
+                buf.append(self.bytes[4*i + j])
             decodedValue = buf.decode("EUC-JP").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t").replace("\t", "\\t")
             value = f'"{decodedValue}"'
             value += "\n" + (24 * " ") + ".balign 4"
             rodataHex = ""
-            skip = (typeSize - 1) // 4
+            skip = j // 4
         elif w in self.context.jumpTablesLabels:
             value = self.context.jumpTablesLabels[w]
 

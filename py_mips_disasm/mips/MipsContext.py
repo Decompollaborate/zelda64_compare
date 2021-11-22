@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import ast
+from sortedcontainers import SortedDict
+
 from mips.GlobalConfig import GlobalConfig
 
 from .Utils import *
-import ast
 
 class ContextFile:
     def __init__(self, name: str, vram: int):
@@ -20,7 +22,7 @@ class ContextSegment:
         self.type: str = segmentType
         self.subsections: list = subsections
 
-class ContextVariable:
+class ContextSymbol:
     def __init__(self, vram: int, name: str):
         self.vram: int = vram
         self.name: str = name
@@ -28,6 +30,7 @@ class ContextVariable:
         self.arrayInfo: str = ""
         self.size: int = 4
         self.isDefined = False
+        self.isUserDefined = False
 
 class Context:
     def __init__(self):
@@ -37,10 +40,11 @@ class Context:
         self.funcsInFiles: Dict[str, List[int]] = dict()
         self.symbolToFile: Dict[int, str] = dict()
 
-        self.funcAddresses: Dict[int, ContextVariable] = dict()
+        self.funcAddresses: Dict[int, ContextSymbol] = dict()
 
         self.labels: Dict[int, str] = dict()
-        self.symbols: Dict[int, ContextVariable] = dict()
+        # self.symbols: SortedDict[int, ContextSymbol]
+        self.symbols = SortedDict()
 
         # Where the jump table is
         self.jumpTables: Dict[int, str] = dict()
@@ -83,38 +87,44 @@ class Context:
             return self.symbols[vramAddress].name
 
         if GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET and tryPlusOffset:
-            # merges the dictionaries
-            vramSymbols = sorted({**self.funcAddresses, **self.jumpTables, **self.symbols}.items(), reverse=True)
-            for vram, symbol in vramSymbols:
-                symbolSize = 4
-                if isinstance(symbol, ContextVariable):
-                    symbolSize = symbol.size
+            rangeObj = self.symbols.irange(maximum=vramAddress, reverse=True)
+            for vram in rangeObj:
+                contextSym: ContextSymbol = self.symbols[vram]
+
+                symbolName = contextSym.name
+                symbolSize = contextSym.size
                 if vramAddress > vram and vramAddress < vram + symbolSize:
-                    symbolName = symbol
-                    if isinstance(symbol, ContextVariable):
-                        symbolName = symbol.name
                     return f"{symbolName} + {toHex(vramAddress - vram, 1)}"
+
+                # Only one iteration
+                break
 
         return None
 
-    def getSymbol(self, vramAddress: int, tryPlusOffset: bool = True, checkUpperLimit: bool = True) -> ContextVariable|None:
+    def getSymbol(self, vramAddress: int, tryPlusOffset: bool = True, checkUpperLimit: bool = True) -> ContextSymbol|None:
         if vramAddress in self.symbols:
             return self.symbols[vramAddress]
 
         if GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET and tryPlusOffset:
-            vramSymbols = sorted({**self.funcAddresses, **self.jumpTables, **self.symbols}.items(), reverse=True)
-            for vram, symbol in vramSymbols:
+            rangeObj = self.symbols.irange(maximum=vramAddress, reverse=True)
+            for vram in rangeObj:
+                contextSym: ContextSymbol = self.symbols[vram]
+
+                symbolSize = contextSym.size
                 if vramAddress > vram:
-                    if not isinstance(symbol, ContextVariable):
-                        break
                     if checkUpperLimit:
-                        symbolSize = symbol.size
                         if vramAddress >= vram + symbolSize:
-                            continue
-                    return symbol
+                            break
+                    return contextSym
+
+                # Only one iteration
+                break
         return None
 
     def getGenericLabel(self, vramAddress: int) -> str|None:
+        if vramAddress in self.funcAddresses:
+            return self.funcAddresses[vramAddress].name
+
         if vramAddress in self.jumpTablesLabels:
             return self.jumpTablesLabels[vramAddress]
 
@@ -123,7 +133,7 @@ class Context:
 
         return None
 
-    def getFunction(self, vramAddress: int) -> ContextVariable|None:
+    def getFunction(self, vramAddress: int) -> ContextSymbol|None:
         if vramAddress in self.funcAddresses:
             return self.funcAddresses[vramAddress]
 
@@ -135,13 +145,17 @@ class Context:
         #    if vramAddress not in self.files[filename].references:
         #        self.files[filename].references.append(vramAddress)
         if vramAddress not in self.funcAddresses:
-            contextSymbol = ContextVariable(vramAddress, name)
+            contextSymbol = ContextSymbol(vramAddress, name)
             contextSymbol.type = "@function"
             self.funcAddresses[vramAddress] = contextSymbol
         if vramAddress not in self.symbolToFile and filename is not None:
             self.symbolToFile[vramAddress] = filename
 
+        if vramAddress in self.fakeFunctions:
+            del self.fakeFunctions[vramAddress]
+
         if vramAddress in self.symbols:
+            # ??
             self.symbols[vramAddress].isDefined = True
 
     def addBranchLabel(self, vramAddress: int, name: str):
@@ -149,6 +163,7 @@ class Context:
             self.labels[vramAddress] = name
 
         if vramAddress in self.symbols:
+            # ??
             self.symbols[vramAddress].isDefined = True
 
     def addJumpTable(self, vramAddress: int, name: str):
@@ -156,6 +171,7 @@ class Context:
             self.jumpTables[vramAddress] = name
 
         if vramAddress in self.symbols:
+            # ??
             self.symbols[vramAddress].isDefined = True
 
     def addFakeFunction(self, vramAddress: int, name: str):
@@ -163,6 +179,7 @@ class Context:
             self.fakeFunctions[vramAddress] = name
 
         if vramAddress in self.symbols:
+            # ??
             self.symbols[vramAddress].isDefined = True
 
 
@@ -180,8 +197,9 @@ class Context:
             if filename not in self.funcsInFiles:
                 self.funcsInFiles[filename] = []
             self.funcsInFiles[filename].append(vram)
-            contextFuncSymbol = ContextVariable(vram, func_name)
+            contextFuncSymbol = ContextSymbol(vram, func_name)
             contextFuncSymbol.type = "@function"
+            contextFuncSymbol.isUserDefined = True
             self.funcAddresses[vram] = contextFuncSymbol
             self.symbolToFile[vram] = filename
 
@@ -202,16 +220,18 @@ class Context:
         for vram, funcData in functions_ast.items():
             funcName = funcData[0]
             self.addFunction(None, vram, funcName)
+            self.funcAddresses[vram].isUserDefined = True
 
         with open(variablesPath) as infile:
             variables_ast = ast.literal_eval(infile.read())
 
         for vram, varData in variables_ast.items():
             varName, varType, varArrayInfo, varSize = varData
-            contVar = ContextVariable(vram, varName)
+            contVar = ContextSymbol(vram, varName)
             contVar.type = varType
             contVar.arrayInfo = varArrayInfo
             contVar.size = varSize
+            contVar.isUserDefined = True
             self.symbols[vram] = contVar
 
     def readVariablesCsv(self, filepath: str):
@@ -227,9 +247,10 @@ class Context:
 
             vram = int(vram, 16)
             varSize = int(varSize, 0)
-            contVar = ContextVariable(vram, varName)
+            contVar = ContextSymbol(vram, varName)
             contVar.type = varType
             contVar.size = varSize
+            contVar.isUserDefined = True
             self.symbols[vram] = contVar
 
     def readFunctionsCsv(self, filepath: str):
@@ -245,6 +266,7 @@ class Context:
 
             vram = int(vram, 16)
             self.addFunction(None, vram, funcName)
+            self.funcAddresses[vram].isUserDefined = True
 
     def saveContextToFile(self, filepath: str):
         with open(filepath, "w") as f:

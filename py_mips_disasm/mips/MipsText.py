@@ -6,9 +6,9 @@ from .Utils import *
 from .GlobalConfig import GlobalConfig
 from .MipsFileBase import FileBase
 from .MipsSection import Section
-from .Instructions import InstructionBase, wordToInstruction, InstructionCoprocessor0
+from .Instructions import InstructionBase, wordToInstruction, InstructionId, InstructionCoprocessor0, InstructionCoprocessor2
 from .MipsFunction import Function
-from .MipsContext import Context
+from .MipsContext import Context, ContextSymbol
 
 
 class Text(Section):
@@ -52,15 +52,21 @@ class Text(Section):
                 functionEnded = False
                 isLikelyHandwritten = False
                 index += 1
+                instructionOffset += 4
                 isboundary = False
                 while index < nInstr:
                     instr = instructions[index]
-                    if instr.getOpcodeName() != "NOP":
+                    if instr.uniqueId != InstructionId.NOP:
                         if isboundary:
                             self.fileBoundaries.append(self.offset + index*4)
                         break
                     index += 1
+                    instructionOffset += 4
                     isboundary = True
+
+                trackedRegisters.clear()
+                registersValues.clear()
+
                 funcsStartsList.append(index)
                 unimplementedInstructionsFuncList.append(not isInstrImplemented)
                 if index >= len(instructions):
@@ -69,12 +75,10 @@ class Text(Section):
                 isInstrImplemented = instr.isImplemented()
 
             if not isLikelyHandwritten:
-                opcodeName = instr.getOpcodeName()
-                if opcodeName in ("COP2",):
+                if isinstance(instr, InstructionCoprocessor2):
                     isLikelyHandwritten = True
                     isInstrImplemented = False
                 elif isinstance(instr, InstructionCoprocessor0):
-                #if isinstance(instr, InstructionCoprocessor0):
                     isLikelyHandwritten = True
                 elif instr.getRegisterName(instr.rs) in ("$k0", "$k1"):
                     isLikelyHandwritten = True
@@ -91,22 +95,27 @@ class Text(Section):
                         # Whatever we are reading is not a valid instruction
                         break
                     # make sure to not branch outside of the current function
-                    j = len(funcsStartsList) - 1
-                    while j >= 0:
-                        if index + branch < funcsStartsList[j]:
-                            del funcsStartsList[j]
-                            del unimplementedInstructionsFuncList[j-1]
-                        else:
-                            break
-                        j -= 1
+                    if not isLikelyHandwritten:
+                        j = len(funcsStartsList) - 1
+                        while j >= 0:
+                            if index + branch < funcsStartsList[j]:
+                                if GlobalConfig.TRUST_USER_FUNCTIONS:
+                                    vram = self.getVramOffset(funcsStartsList[j]*4)
+                                    if self.context.getFunction(vram) is not None:
+                                        j -= 1
+                                        continue
+                                del funcsStartsList[j]
+                                del unimplementedInstructionsFuncList[j-1]
+                            else:
+                                break
+                            j -= 1
 
             elif instr.isIType():
-                opcodeName = instr.getOpcodeName()
-                isLui = opcodeName == "LUI"
+                isLui = instr.uniqueId == InstructionId.LUI
                 if isLui:
                     if instr.immediate >= 0x4000: # filter out stuff that may not be a real symbol
                         trackedRegisters[instr.rt] = instructionOffset//4
-                elif instr.isIType() and opcodeName not in ("ANDI", "ORI", "XORI", "CACHE"):
+                elif instr.isIType() and instr.uniqueId not in (InstructionId.ANDI, InstructionId.ORI, InstructionId.XORI, InstructionId.CACHE):
                     rs = instr.rs
                     if rs in trackedRegisters:
                         luiInstr = instructions[trackedRegisters[rs]]
@@ -115,21 +124,22 @@ class Text(Section):
                         registersValues[instr.rt] = upperHalf + lowerHalf
 
             if not (farthestBranch > 0):
-                opcodeName = instr.getOpcodeName()
-                if opcodeName == "JR":
+                if instr.uniqueId == InstructionId.JR:
                     if instr.getRegisterName(instr.rs) == "$ra":
                         functionEnded = True
-                        trackedRegisters.clear()
-                        registersValues.clear()
                     else:
                         if instr.rs in registersValues:
                             functionEnded = True
-                            trackedRegisters.clear()
-                            registersValues.clear()
-                elif opcodeName == "J" and isLikelyHandwritten:
+                elif instr.uniqueId == InstructionId.J and isLikelyHandwritten:
                     functionEnded = True
-                    trackedRegisters.clear()
-                    registersValues.clear()
+
+            if self.vRamStart > 0 and self.context is not None:
+                if GlobalConfig.TRUST_USER_FUNCTIONS:
+                    vram = self.getVramOffset(instructionOffset) + 8
+                    funcContext = self.context.getFunction(vram)
+                    if funcContext is not None:
+                        if funcContext.isUserDefined:
+                            functionEnded = True
 
             index += 1
             farthestBranch -= 1
@@ -151,24 +161,38 @@ class Text(Section):
 
             funcName = f"func_{i}"
             vram = -1
-            if self.vRamStart >= 0:
+            if self.vRamStart > 0:
                 vram = self.getVramOffset(start*4)
                 funcSymbol = self.context.getFunction(vram)
                 if funcSymbol is not None:
                     funcName = funcSymbol.name
                 else:
-                    funcName = "func_" + toHex(self.getVramOffset(start*4), 6)[2:]
+                    funcName = "func_" + toHex(vram, 6)[2:]
+                    if self.newStuffSuffix:
+                        if vram >= self.vRamStart:
+                            funcName += f"_{self.newStuffSuffix}"
 
-                if not hasUnimplementedIntrs:
+                if GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS or not hasUnimplementedIntrs:
                     self.context.addFunction(self.filename, vram, funcName)
                     funcSymbol = self.context.getFunction(vram)
                     if funcSymbol is not None:
                         funcSymbol.isDefined = True
+                else:
+                    if vram in self.context.symbols:
+                        self.context.symbols[vram].isDefined = True
+                    else:
+                        contextSym = ContextSymbol(vram, "D_" + toHex(vram, 6)[2:])
+                        contextSym.isDefined = True
+                        if self.newStuffSuffix:
+                            if vram >= self.vRamStart:
+                                contextSym.name += f"_{self.newStuffSuffix}"
+                        self.context.symbols[vram] = contextSym
 
             func = Function(funcName, instructions[start:end], self.context, self.offset + start*4, vram=vram)
             func.index = i
             func.pointersOffsets += self.pointersOffsets
             func.hasUnimplementedIntrs = hasUnimplementedIntrs
+            func.parent = self
             func.analyze()
             self.functions.append(func)
             i += 1
