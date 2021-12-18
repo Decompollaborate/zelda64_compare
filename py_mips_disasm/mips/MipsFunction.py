@@ -21,11 +21,13 @@ class Function:
         self.localLabels: Dict[int, str] = dict()
         # TODO: this needs a better name
         self.pointersPerInstruction: Dict[int, int] = dict()
+        self.constantsPerInstruction: Dict[int, int] = dict()
         self.branchInstructions: List[int] = list()
 
         self.pointersOffsets: List[int] = list()
 
         self.referencedVRams: Set[int] = set()
+        self.referencedConstants: Set[int] = set()
 
         self.hasUnimplementedIntrs: bool = False
 
@@ -35,9 +37,38 @@ class Function:
     def nInstr(self) -> int:
         return len(self.instructions)
 
+
+    def _processSymbol(self, luiInstr: InstructionBase, luiOffset: int, lowerInstr: InstructionBase, lowerOffset: int) -> int|None:
+        upperHalf = luiInstr.immediate << 16
+        lowerHalf = from2Complement(lowerInstr.immediate, 16)
+        address = upperHalf + lowerHalf
+        if address in self.context.bannedSymbols:
+            return None
+
+        self.referencedVRams.add(address)
+        if self.context.getGenericSymbol(address) is None:
+            if GlobalConfig.ADD_NEW_SYMBOLS:
+                contextSym = ContextSymbol(address, "D_" + toHex(address, 8)[2:])
+                if lowerInstr.isFloatInstruction():
+                    if lowerInstr.isDoubleFloatInstruction():
+                        contextSym.type = "f64"
+                    else:
+                        contextSym.type = "f32"
+                if self.parent.newStuffSuffix:
+                    if address >= self.vram:
+                        contextSym.name += f"_{self.parent.newStuffSuffix}"
+                self.context.symbols[address] = contextSym
+
+        if lowerOffset not in self.pointersPerInstruction:
+            self.pointersPerInstruction[lowerOffset] = address
+        if luiOffset not in self.pointersPerInstruction:
+            self.pointersPerInstruction[luiOffset] = address
+
+        return address
+
     def analyze(self):
         if not GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS and self.hasUnimplementedIntrs:
-            if self.vram > -1 and self.context is not None:
+            if self.vram > -1:
                 offset = 0
                 for instr in self.instructions:
                     currentVram = self.vram + offset
@@ -49,6 +80,7 @@ class Function:
             return
 
         trackedRegisters: Dict[int, int] = dict()
+        trackedRegistersAll: Dict[int, int] = dict()
         registersValues: Dict[int, int] = dict()
 
         instructionOffset = 0
@@ -90,32 +122,51 @@ class Function:
             elif instr.isIType():
                 # TODO: Consider following branches
                 isLui = instr.uniqueId == InstructionId.LUI
+                lastInstr = self.instructions[instructionOffset//4 - 1]
                 if isLui:
                     if instr.immediate >= 0x4000: # filter out stuff that may not be a real symbol
-                        trackedRegisters[instr.rt] = instructionOffset//4
-                elif instr.isIType() and instr.uniqueId not in (InstructionId.ANDI, InstructionId.ORI, InstructionId.XORI, InstructionId.CACHE):
-                    rs = instr.rs
-                    if rs in trackedRegisters:
-                        luiInstr = self.instructions[trackedRegisters[rs]]
-                        upperHalf = luiInstr.immediate << 16
-                        lowerHalf = from2Complement(instr.immediate, 16)
-                        address = upperHalf + lowerHalf
-                        self.referencedVRams.add(address)
-                        if self.context.getGenericSymbol(address) is None:
-                            if GlobalConfig.ADD_NEW_SYMBOLS:
-                                contextSym = ContextSymbol(address, "D_" + toHex(address, 8)[2:])
-                                if instr.isFloatInstruction():
-                                    if instr.isDoubleFloatInstruction():
-                                        contextSym.type = "f64"
-                                    else:
-                                        contextSym.type = "f32"
-                                if self.parent.newStuffSuffix:
-                                    if address >= self.vram:
-                                        contextSym.name += f"_{self.parent.newStuffSuffix}"
-                                self.context.symbols[address] = contextSym
-                        self.pointersPerInstruction[instructionOffset] = address
-                        self.pointersPerInstruction[trackedRegisters[rs]*4] = address
-                        registersValues[instr.rt] = address
+                        if lastInstr.isBranch():
+                            # If the previous instructions is a branch, do a
+                            # look-ahead and check the branch target for possible pointers
+                            diff = from2Complement(lastInstr.immediate, 16)
+                            branch = instructionOffset + diff*4
+                            if branch > 0:
+                                targetInstr = self.instructions[branch//4]
+                                if targetInstr.uniqueId == InstructionId.JR and targetInstr.getRegisterName(targetInstr.rs) == "$ra":
+                                    # If the target instruction is a JR $ra, then look up its delay slot instead
+                                    branch += 4
+                                    targetInstr = self.instructions[branch//4]
+                                if targetInstr.isIType() and targetInstr.rs == instr.rt:
+                                    if targetInstr.uniqueId not in (InstructionId.LUI, InstructionId.ANDI, InstructionId.ORI, InstructionId.XORI, InstructionId.CACHE):
+                                        self._processSymbol(instr, instructionOffset, targetInstr, branch)
+
+                                if not (lastInstr.isBranchLikely() or lastInstr.uniqueId == InstructionId.B):
+                                    # If the previous instructions is a branch likely, then nulify 
+                                    # the effects of this instruction for future analysis
+                                    trackedRegisters[instr.rt] = instructionOffset//4
+                        else:
+                            trackedRegisters[instr.rt] = instructionOffset//4
+                    trackedRegistersAll[instr.rt] = instructionOffset//4
+                else:
+                    if instr.uniqueId == InstructionId.ORI:
+                        # Constants
+                        rs = instr.rs
+                        if rs in trackedRegistersAll:
+                            luiInstr = self.instructions[trackedRegistersAll[rs]]
+                            upperHalf = luiInstr.immediate << 16
+                            lowerHalf = instr.immediate
+                            constant = upperHalf | lowerHalf
+                            self.referencedConstants.add(constant)
+                            self.constantsPerInstruction[instructionOffset] = constant
+                            self.constantsPerInstruction[trackedRegistersAll[rs]*4] = constant
+                            registersValues[instr.rt] = constant
+                    elif instr.uniqueId not in (InstructionId.ANDI, InstructionId.XORI, InstructionId.CACHE):
+                        rs = instr.rs
+                        if rs in trackedRegisters:
+                            luiInstr = self.instructions[trackedRegisters[rs]]
+                            address = self._processSymbol(luiInstr, trackedRegisters[rs]*4, instr, instructionOffset)
+                            if address is not None:
+                                registersValues[instr.rt] = address
 
             elif instr.uniqueId == InstructionId.JR:
                 rs = instr.rs
@@ -130,12 +181,49 @@ class Function:
                     rt = instr.rt
                     if rt in trackedRegisters:
                         del trackedRegisters[rt]
+                    if rt in trackedRegistersAll:
+                        del trackedRegistersAll[rt]
 
                 if instr.modifiesRd():
-                    if instr.uniqueId not in (InstructionId.ADDU,):
+                    # Usually array offsets use an ADDU to add the index of the array
+                    if instr.uniqueId == InstructionId.ADDU:
+                        if instr.rd != instr.rs and instr.rd != instr.rt:
+                            rd = instr.rd
+                            if rd in trackedRegisters:
+                                del trackedRegisters[rd]
+                            if rd in trackedRegistersAll:
+                                del trackedRegistersAll[rd]
+                    else:
                         rd = instr.rd
                         if rd in trackedRegisters:
                             del trackedRegisters[rd]
+                        if rd in trackedRegistersAll:
+                            del trackedRegistersAll[rd]
+
+            else:
+                if instr.uniqueId in (InstructionId.MTC1, InstructionId.DMTC1, InstructionId.CTC1):
+                    # IDO usually use a register as a temp when loading a constant value
+                    # into the float coprocessor, after that IDO never re-uses the value
+                    # in that register for anything else
+                    rt = instr.rt
+                    if rt in trackedRegisters:
+                        del trackedRegisters[rt]
+                    if rt in trackedRegistersAll:
+                        del trackedRegistersAll[rt]
+
+            # look-ahead symbol finder
+            lastInstr = self.instructions[instructionOffset//4 - 1]
+            if lastInstr.isBranch():
+                diff = from2Complement(lastInstr.immediate, 16)
+                branch = instructionOffset + diff*4
+                if branch > 0 and branch//4 < len(self.instructions):
+                    targetInstr = self.instructions[branch//4]
+                    if targetInstr.isIType():
+                        if targetInstr.uniqueId not in (InstructionId.LUI, InstructionId.ANDI, InstructionId.ORI, InstructionId.XORI, InstructionId.CACHE):
+                            rs = targetInstr.rs
+                            if rs in trackedRegisters:
+                                luiInstr = self.instructions[trackedRegisters[rs]]
+                                self._processSymbol(luiInstr, trackedRegisters[rs]*4, targetInstr, branch)
 
             instructionOffset += 4
 
@@ -260,6 +348,20 @@ class Function:
                             immOverride = f"%hi({symbol})"
                         else:
                             immOverride= f"%lo({symbol})"
+                elif instructionOffset in self.constantsPerInstruction:
+                    constant = self.constantsPerInstruction[instructionOffset]
+
+                    symbol = self.context.getConstant(constant)
+                    if symbol is not None:
+                        if instr.uniqueId == InstructionId.LUI:
+                            immOverride = f"%hi({symbol})"
+                        else:
+                            immOverride= f"%lo({symbol})"
+                    else:
+                        if instr.uniqueId == InstructionId.LUI:
+                            immOverride = f"(0x{constant:X} >> 16)"
+                        else:
+                            immOverride = f"(0x{constant:X} & 0xFFFF)"
 
             if wasLastInstABranch:
                 instr.ljustWidthOpcode -= 1
@@ -314,14 +416,13 @@ class Function:
             label = ""
             if self.vram >= 0:
                 vramHex = toHex(self.vram + instructionOffset, 8)[2:]
-                if self.context is not None:
-                    auxLabel = self.context.getGenericLabel(self.vram + instructionOffset) or self.context.getGenericSymbol(self.vram + instructionOffset, tryPlusOffset=False)
-                    if auxLabel is not None:
-                        label = f"\nglabel {auxLabel}\n"
+                auxLabel = self.context.getGenericLabel(self.vram + instructionOffset) or self.context.getGenericSymbol(self.vram + instructionOffset, tryPlusOffset=False)
+                if auxLabel is not None:
+                    label = f"\nglabel {auxLabel}\n"
 
-                    contextVar = self.context.getSymbol(self.vram + instructionOffset, False)
-                    if contextVar is not None:
-                        contextVar.isDefined = True
+                contextVar = self.context.getSymbol(self.vram + instructionOffset, False)
+                if contextVar is not None:
+                    contextVar.isDefined = True
 
             instrHex = toHex(instr.instr, 8)[2:]
 

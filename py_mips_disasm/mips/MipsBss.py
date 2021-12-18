@@ -42,9 +42,6 @@ class Bss(Section):
     def saveToFile(self, filepath: str):
         super().saveToFile(filepath + ".bss")
 
-        if self.context is None:
-            return
-
         with open(filepath + ".bss.s", "w") as f:
             f.write(".include \"macro.inc\"\n")
             f.write("\n")
@@ -58,7 +55,6 @@ class Bss(Section):
             f.write(".balign 16\n")
 
             offset = 0
-            inFileOffset = self.offset
             sortedSymbols = sorted(self.context.symbols.items())
             i = 0
             while i < len(sortedSymbols):
@@ -71,7 +67,7 @@ class Bss(Section):
 
                 self.context.symbols[symbolVram].isDefined = True
 
-                offsetHex = toHex(inFileOffset + self.commentOffset, 6)[2:]
+                offsetHex = toHex(self.offset + (symbolVram - self.bssVramStart) + self.commentOffset, 6)[2:]
                 vramHex = toHex(symbolVram, 8)[2:]
 
                 space = self.bssVramEnd - symbolVram
@@ -82,5 +78,4 @@ class Bss(Section):
                 label = f"\nglabel {symbol.name}\n"
                 f.write(f"{label}/* {offsetHex} {vramHex} */  .space  {toHex(space, 2)}\n")
                 offset += 4
-                inFileOffset += 4
                 i += 1

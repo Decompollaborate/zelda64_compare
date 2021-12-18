@@ -19,6 +19,10 @@ class Data(Section):
                 if contextSymbol is not None:
                     contextSymbol.isDefined = True
 
+                if w >= self.vRamStart and w < 0x84000000:
+                    if self.context.getAnySymbol(w) is None:
+                        self.context.newPointersInData.add(w)
+
                 offset += 4
 
 
@@ -68,23 +72,21 @@ class Data(Section):
                     currentVram = self.getVramOffset(offset)
                     vramHex = toHex(currentVram, 8)[2:]
 
-                    if self.context is not None:
-                        auxLabel = self.context.getGenericLabel(currentVram) or self.context.getGenericSymbol(currentVram, tryPlusOffset=False)
-                        if auxLabel is not None:
-                            label = "\nglabel " + auxLabel + "\n"
+                    auxLabel = self.context.getGenericLabel(currentVram) or self.context.getGenericSymbol(currentVram, tryPlusOffset=False)
+                    if auxLabel is not None:
+                        label = "\nglabel " + auxLabel + "\n"
 
-                        contVariable = self.context.getSymbol(currentVram, False)
-                        if contVariable is not None:
-                            contVariable.isDefined = True
+                    contVariable = self.context.getSymbol(currentVram, False)
+                    if contVariable is not None:
+                        contVariable.isDefined = True
 
                 dataHex = toHex(w, 8)[2:]
                 value = toHex(w, 8)
-                if self.context is not None:
-                    symbol = self.context.getAnySymbol(w)
-                    if symbol is not None:
-                        value = symbol
+                symbol = self.context.getAnySymbol(w)
+                if symbol is not None:
+                    value = symbol
 
-                #comment = " "
+                #comment = " "symbol
                 comment = ""
                 if GlobalConfig.ASM_COMMENT:
                     #comment = f"/* {offsetHex} {vramHex} {dataHex} */"

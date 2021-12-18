@@ -6,7 +6,7 @@ from .Utils import *
 from .GlobalConfig import GlobalConfig
 from .MipsFileBase import FileBase
 from .MipsSection import Section
-from .MipsContext import Context
+from .MipsContext import Context, ContextSymbol
 
 
 class Rodata(Section):
@@ -39,6 +39,18 @@ class Rodata(Section):
                 if partOfJumpTable:
                     if w not in self.context.jumpTablesLabels:
                         self.context.jumpTablesLabels[w] = f"L{toHex(w, 8)[2:]}"
+                elif currentVram in self.context.newPointersInData:
+                    if self.context.getAnySymbol(currentVram) is None:
+                        contextSym = ContextSymbol(currentVram, "D_" + toHex(currentVram, 8)[2:])
+                        try:
+                            decodeString(self.bytes, offset)
+                            if self.bytes[offset] != 0:
+                                # Filter out empty strings
+                                contextSym.type = "char"
+                        except UnicodeDecodeError:
+                            pass
+                        self.context.symbols[currentVram] = contextSym
+                        self.context.newPointersInData.remove(currentVram)
 
                 auxLabel = self.context.getGenericLabel(currentVram)
                 if auxLabel is not None:
@@ -76,12 +88,11 @@ class Rodata(Section):
         vramHex = ""
         label = ""
         rodataHex = toHex(w, 8)[2:]
-        value = toHex(w, 8)
+        value: Any = toHex(w, 8)
 
         isFloat = False
         isDouble = False
         isAsciz = False
-        typeSize = 0
         dotType = ".word"
         skip = 0
 
@@ -89,34 +100,30 @@ class Rodata(Section):
             currentVram = self.getVramOffset(offset)
             vramHex = toHex(currentVram, 8)[2:]
 
-            if self.context is not None:
-                auxLabel = self.context.getGenericLabel(currentVram)
-                if auxLabel is None:
-                    auxLabel = self.context.getGenericSymbol(currentVram, tryPlusOffset=False)
-                if auxLabel is not None:
-                    label = "\nglabel " + auxLabel + "\n"
+            auxLabel = self.context.getGenericLabel(currentVram)
+            if auxLabel is None:
+                auxLabel = self.context.getGenericSymbol(currentVram, tryPlusOffset=False)
+            if auxLabel is not None:
+                label = "\nglabel " + auxLabel + "\n"
 
-                contextVar = self.context.getSymbol(currentVram, True, False)
-                if contextVar is not None:
-                    type = contextVar.type
-                    typeSize = contextVar.size
-                    if type in ("f32", "Vec3f"):
-                        # Filter out NaN and infinity
-                        if (w & 0x7F800000) != 0x7F800000:
-                            isFloat = True
-                    elif type == "f64":
-                        # Filter out NaN and infinity
-                        if (((w << 32) | self.words[i+1]) & 0x7FF0000000000000) != 0x7FF0000000000000:
-                            # Prevent accidentally losing symbols
-                            if self.context.getGenericSymbol(currentVram+4, False) is None:
-                                isDouble = True
-                    elif type == "char":
-                        isAsciz = True
-                        if contextVar.vram != currentVram:
-                            typeSize = 0x10000
+            contextVar = self.context.getSymbol(currentVram, True, False)
+            if contextVar is not None:
+                type = contextVar.type
+                if type in ("f32", "Vec3f"):
+                    # Filter out NaN and infinity
+                    if (w & 0x7F800000) != 0x7F800000:
+                        isFloat = True
+                elif type == "f64":
+                    # Filter out NaN and infinity
+                    if (((w << 32) | self.words[i+1]) & 0x7FF0000000000000) != 0x7FF0000000000000:
+                        # Prevent accidentally losing symbols
+                        if self.context.getGenericSymbol(currentVram+4, False) is None:
+                            isDouble = True
+                elif type == "char":
+                    isAsciz = True
 
-                    if contextVar.vram == currentVram:
-                        contextVar.isDefined = True
+                if contextVar.vram == currentVram:
+                    contextVar.isDefined = True
 
         if isFloat:
             dotType = ".float"
@@ -128,20 +135,17 @@ class Rodata(Section):
             rodataHex += toHex(otherHalf, 8)[2:]
             skip = 1
         elif isAsciz:
-            dotType = ".asciz"
-            j = 0
-            buf = bytearray()
-            while j < typeSize and self.bytes[4*i + j] != 0:
-                buf.append(self.bytes[4*i + j])
-                j += 1
-            if self.bytes[4*i + j] != 0:
-                dotType = ".ascii"
-                buf.append(self.bytes[4*i + j])
-            decodedValue = buf.decode("EUC-JP").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t").replace("\t", "\\t")
-            value = f'"{decodedValue}"'
-            value += "\n" + (24 * " ") + ".balign 4"
-            rodataHex = ""
-            skip = j // 4
+            try:
+                decodedValue, rawStringSize = decodeString(self.bytes, 4*i)
+                dotType = ".asciz"
+                value = f'"{decodedValue}"'
+                value += "\n" + (24 * " ") + ".balign 4"
+                rodataHex = ""
+                skip = rawStringSize // 4
+            except UnicodeDecodeError:
+                # Not a string
+                isAsciz = False
+                pass
         elif w in self.context.jumpTablesLabels:
             value = self.context.jumpTablesLabels[w]
 

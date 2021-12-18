@@ -38,7 +38,7 @@ class Text(Section):
         registersValues: Dict[int, int] = dict()
         instructionOffset = 0
 
-        isLikelyHandwritten = False
+        isLikelyHandwritten = self.isHandwritten
 
         isInstrImplemented = True
         index = 0
@@ -50,7 +50,7 @@ class Text(Section):
 
             if functionEnded:
                 functionEnded = False
-                isLikelyHandwritten = False
+                isLikelyHandwritten = self.isHandwritten
                 index += 1
                 instructionOffset += 4
                 isboundary = False
@@ -133,7 +133,7 @@ class Text(Section):
                 elif instr.uniqueId == InstructionId.J and isLikelyHandwritten:
                     functionEnded = True
 
-            if self.vRamStart > 0 and self.context is not None:
+            if self.vRamStart > 0:
                 if GlobalConfig.TRUST_USER_FUNCTIONS:
                     vram = self.getVramOffset(instructionOffset) + 8
                     funcContext = self.context.getFunction(vram)
