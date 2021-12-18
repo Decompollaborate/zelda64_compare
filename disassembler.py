@@ -21,6 +21,10 @@ def disassembleFile(version: str, filename: str, outputfolder: str, context: Con
     is_overlay = filename.startswith("ovl_")
     is_code = filename == "code"
     is_boot = filename == "boot"
+    if version.startswith("mm_"):
+        # We are missing a few MM stuff to make this work properly
+        is_code = False
+        is_boot = False
 
     path = os.path.join(f"baserom_{version}", filename)
 

@@ -273,7 +273,7 @@ def main():
 
         if os.path.exists(codePath) and version in ZeldaOffsets.offset_ActorOverlayTable:
             tableOffset = ZeldaOffsets.offset_ActorOverlayTable[version]
-            if tableOffset != 0x0:
+            if tableOffset != 0x0 and tableOffset != 0xFFFFFF:
                 codeData = readFileAsBytearray(codePath)
                 i = 0
                 table = list()

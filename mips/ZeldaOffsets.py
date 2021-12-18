@@ -198,15 +198,15 @@ codeVramStart = {
     "ique_tw" : 0x80018A40,
 
     "mm_jp_1.0" : 0x800A76A0,
-    "mm_jp_1.1" : 0xFFFFFF, # TODO: FIX
+    "mm_jp_1.1" : 0x800A75E0,
     "mm_usa_demo" : 0xFFFFFF, # TODO: FIX
     "mm_usa" : 0x800A5AC0,
-    "mm_pal_1.0" : 0xFFFFFF, # TODO: FIX
+    "mm_pal_1.0" : 0x800A5D60,
     "mm_pal_dbg" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.1" : 0xFFFFFF, # TODO: FIX
-    "mm_usa_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_jp_gc" : 0xFFFFFF, # TODO: FIX
+    "mm_pal_1.1" : 0x800A5FE0,
+    "mm_usa_gc" : 0x800A6440,
+    "mm_pal_gc" : 0x800A65A0,
+    "mm_jp_gc" : 0x800A6420,
 }
 
 codeDataStart = {
@@ -230,15 +230,15 @@ codeDataStart = {
     "ique_tw" : 0x0D5C10,
 
     "mm_jp_1.0" : 0xFE2F0,
-    "mm_jp_1.1" : 0xFFFFFF, # TODO: FIX
+    "mm_jp_1.1" : 0xFE5F0,
     "mm_usa_demo" : 0xFFFFFF, # TODO: FIX
     "mm_usa" : 0x104FF0,
-    "mm_pal_1.0" : 0xFFFFFF, # TODO: FIX
+    "mm_pal_1.0" : 0x801AB5D0 - 0x800A5D60,
     "mm_pal_dbg" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.1" : 0xFFFFFF, # TODO: FIX
-    "mm_usa_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_jp_gc" : 0xFFFFFF, # TODO: FIX
+    "mm_pal_1.1" : 0x801AB970 - 0x800A5FE0,
+    "mm_usa_gc" : 0x801A9510 - 0x800A6440,
+    "mm_pal_gc" : 0x801A9F30 - 0x800A65A0,
+    "mm_jp_gc" : 0x801A95B0 - 0x800A6420,
 }
 
 codeRodataStart = {
@@ -262,13 +262,13 @@ codeRodataStart = {
     "ique_tw" : 0x0F3DE0,
 
     "mm_jp_1.0" : 0x12EE80,
-    "mm_jp_1.1" : 0xFFFFFF, # TODO: FIX
+    "mm_jp_1.1" : 0x801D6730 - 0x800A75E0,
     "mm_usa_demo" : 0xFFFFFF, # TODO: FIX
     "mm_usa" : 0x136330,
-    "mm_pal_1.0" : 0xFFFFFF, # TODO: FIX
+    "mm_pal_1.0" : 0x801D4380 - 0x800A5D60,
     "mm_pal_dbg" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.1" : 0xFFFFFF, # TODO: FIX
-    "mm_usa_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_jp_gc" : 0xFFFFFF, # TODO: FIX
+    "mm_pal_1.1" : 0x801D4720 - 0x800A5FE0,
+    "mm_usa_gc" : 0x801DB070 - 0x800A6440,
+    "mm_pal_gc" : 0x801D2CC0 - 0x800A65A0,
+    "mm_jp_gc" : 0x801DB060 - 0x800A6420,
 }
