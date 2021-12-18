@@ -18,7 +18,7 @@ from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileCode import FileCode
 from mips.MipsFileBoot import FileBoot
 from mips.MipsSplitEntry import readSplitsFromCsv
-from mips.ZeldaTables import OverlayTableEntry, contextReadVariablesCsv, getDmaAddresses, DmaEntry
+from mips.ZeldaTables import OverlayTableEntry, contextReadVariablesCsv, contextReadFunctionsCsv, getDmaAddresses, DmaEntry
 from mips import ZeldaOffsets
 
 
@@ -269,6 +269,7 @@ def main():
         contextPerVersion[version] = Context()
         contextPerVersion[version].readFunctionMap(version)
         contextReadVariablesCsv(contextPerVersion[version], version)
+        contextReadFunctionsCsv(contextPerVersion[version], version)
 
     dmaAddresses: Dict[str, Dict[str, DmaEntry]] = dict()
     actorOverlayTable: Dict[str, List[OverlayTableEntry]] = dict()

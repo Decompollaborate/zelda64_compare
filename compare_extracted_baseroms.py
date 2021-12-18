@@ -14,7 +14,7 @@ from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileCode import FileCode
 from mips.MipsFileBoot import FileBoot
 from mips.MipsSplitEntry import readSplitsFromCsv
-from mips.ZeldaTables import contextReadVariablesCsv
+from mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 root_dir = script_dir + "/.."
@@ -44,6 +44,8 @@ def compare_baseroms(args, filelist):
     context_two.readFunctionMap(args.version2)
     contextReadVariablesCsv(context_one, args.version1)
     contextReadVariablesCsv(context_two, args.version2)
+    contextReadFunctionsCsv(context_one, args.version1)
+    contextReadFunctionsCsv(context_two, args.version2)
 
     for filename in filelist:
         filepath_one = os.path.join(baserom_path + args.version1, filename)

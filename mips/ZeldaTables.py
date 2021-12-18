@@ -41,6 +41,11 @@ class OverlayTableEntry:
 
 
 def contextReadVariablesCsv(context: Context, version: str):
-    variablesPath = f"variables/{version}.csv"
+    variablesPath = f"csv/variables/{version}.csv"
     if os.path.exists(variablesPath):
         context.readVariablesCsv(variablesPath)
+
+def contextReadFunctionsCsv(context: Context, version: str):
+    functionsPath = f"csv/functions/{version}.csv"
+    if os.path.exists(functionsPath):
+        context.readFunctionsCsv(functionsPath)
