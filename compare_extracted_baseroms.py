@@ -14,6 +14,7 @@ from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileCode import FileCode
 from mips.MipsFileBoot import FileBoot
 from mips.MipsSplitEntry import readSplitsFromCsv
+from mips.ZeldaTables import contextReadVariablesCsv
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 root_dir = script_dir + "/.."
@@ -41,6 +42,8 @@ def compare_baseroms(args, filelist):
     context_two = Context()
     context_one.readFunctionMap(args.version1)
     context_two.readFunctionMap(args.version2)
+    contextReadVariablesCsv(context_one, args.version1)
+    contextReadVariablesCsv(context_two, args.version2)
 
     for filename in filelist:
         filepath_one = os.path.join(baserom_path + args.version1, filename)
@@ -281,6 +284,13 @@ def main():
     GlobalConfig.IGNORE_04 = args.ignore04
     GlobalConfig.IGNORE_06 = args.ignore06
     GlobalConfig.IGNORE_80 = args.ignore80
+    # GlobalConfig.WRITE_BINARY = False
+    # GlobalConfig.ASM_COMMENT = not args.disable_asm_comments
+    GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
+    # GlobalConfig.TRUST_USER_FUNCTIONS = True
+    # GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS = args.disasm_unknown
+    # GlobalConfig.VERBOSE = args.verbose
+    # GlobalConfig.QUIET = args.quiet
 
     filelist = readFile(args.filelist)
     # filelist = readJson(args.filelist)

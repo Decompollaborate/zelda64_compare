@@ -14,7 +14,7 @@ from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileCode import FileCode
 from mips.MipsFileBoot import FileBoot
 from mips.MipsSplitEntry import readSplitsFromCsv
-from mips.ZeldaTables import DmaEntry, getDmaAddresses, OverlayTableEntry
+from mips.ZeldaTables import DmaEntry, contextReadVariablesCsv, getDmaAddresses, OverlayTableEntry
 from mips import ZeldaOffsets
 
 def disassembleFile(version: str, filename: str, outputfolder: str, context: Context, dmaAddresses: Dict[str, DmaEntry], vram: int = -1, textend: int = -1):
@@ -130,9 +130,15 @@ def disassemblerMain():
     GlobalConfig.IGNORE_80 = False
     GlobalConfig.WRITE_BINARY = False
     GlobalConfig.ASM_COMMENT = not args.disable_asm_comments
+    GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
+    # GlobalConfig.TRUST_USER_FUNCTIONS = True
+    # GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS = args.disasm_unknown
+    # GlobalConfig.VERBOSE = args.verbose
+    # GlobalConfig.QUIET = args.quiet
 
     context = Context()
     context.readFunctionMap(args.version)
+    contextReadVariablesCsv(context, args.version)
     dmaAddresses: Dict[str, DmaEntry] = getDmaAddresses(args.version)
 
     disassembleFile(args.version, args.file, args.outputfolder, context, dmaAddresses, int(args.vram, 16), int(args.text_end_offset, 16))

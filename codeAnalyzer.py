@@ -12,7 +12,7 @@ from py_mips_disasm.mips.MipsRodata import Rodata
 from py_mips_disasm.mips.MipsContext import Context
 
 from mips.MipsFileCode import FileCode
-from mips.ZeldaTables import DmaEntry, getDmaAddresses
+from mips.ZeldaTables import DmaEntry, contextReadVariablesCsv, getDmaAddresses
 
 from mips.ZeldaOffsets import codeVramStart, codeDataStart, codeRodataStart
 
@@ -22,6 +22,12 @@ GlobalConfig.IGNORE_04 = False
 GlobalConfig.IGNORE_06 = False
 GlobalConfig.IGNORE_80 = False
 GlobalConfig.WRITE_BINARY = False
+GlobalConfig.ASM_COMMENT = True
+GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
+# GlobalConfig.TRUST_USER_FUNCTIONS = True
+# GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS = args.disasm_unknown
+# GlobalConfig.VERBOSE = args.verbose
+# GlobalConfig.QUIET = args.quiet
 
 def readCodeSplitsCsv():
     code_splits_file = readCsv("csvsplits/code_text.csv")
@@ -67,6 +73,7 @@ palMqDbg_Code_array = readVersionedFileAsBytearrray(CODE, VERSION)
 codeSplits = readCodeSplitsCsv()
 context = Context()
 context.readFunctionMap(VERSION)
+contextReadVariablesCsv(context, VERSION)
 
 palMqDbg_filesStarts = list()
 if VERSION in codeSplits:

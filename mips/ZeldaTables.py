@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from py_mips_disasm.mips.Utils import *
+from py_mips_disasm.mips.MipsContext import Context
 
 
 class DmaEntry:
@@ -37,3 +38,9 @@ class OverlayTableEntry:
         self.filenameAddres = wordsArray[6]
         self.allocationType = (wordsArray[7] > 16) & 0xFFFF
         self.instancesNum = (wordsArray[7] > 8) & 0xFF
+
+
+def contextReadVariablesCsv(context: Context, version: str):
+    variablesPath = f"variables/{version}.csv"
+    if os.path.exists(variablesPath):
+        context.readVariablesCsv(variablesPath)
