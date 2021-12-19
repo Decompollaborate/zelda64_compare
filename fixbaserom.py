@@ -24,7 +24,7 @@ VERSIONS_HASHES = {
     "JP MQ":            "69895c5c78442260f6eafb2506dc482a",
     "USA GC":           "cd09029edcfb7c097ac01986a0f83d3f",
     "USA MQ":           "da35577fe54579f6a266931cc75f512d",
-    "PAL GC DBG":       None,
+    "PAL GC DBG1":      "ab1ca59d0039e3b34d82db650b54d7b9",
     "PAL MQ DBG":       "f0b7f35375f9cc8ca1b2d59d78e35405",
     "PAL GC DBG2":      "3c10b67a76616ae2c162def7528724cf",
     "PAL GC":           "cd09029edcfb7c097ac01986a0f83d3f",

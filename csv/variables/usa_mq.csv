@@ -1,2 +1,12 @@
+800F0810,gGameStateOverlayTable,GameStateOverlay[6],0x120
+800F10E0,sDisableAttention,s16,2
+80103400,sSeqCmdWrPos,u8,1
+801044B0,sRandInt,u32,4
+8011C770,sDebugObjectListHead,DebugDispObject*,0x4
+8011C8B0,sLightsBuffer,LightsBuffer,0x188
+8011CA40,sZeldaArena,Arena,0x24
+8011DE38,gSegments,u32[16],0x40
+801225C8,gFaultStruct,FaultThreadStruct,0x850
 8011B128,gSaveContext,SaveContext,0x1428
 801267B0,gAudioContext,AudioContext,0x6450
+8011CA70,sLoadedMarkDataTable,MapMarkData**,0x4

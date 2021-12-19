@@ -25,8 +25,8 @@ FILE_TABLE_OFFSET = {
     "USA GC":       0x07170,
     "USA MQ":       0x07170,
     "PAL GC DBG1":  0x12F70,
-    "PAL GC DBG2":  0x12F70,
     "PAL MQ DBG":   0x12F70,
+    "PAL GC DBG2":  0x12F70,
     "PAL GC":       0x07170,
     "PAL MQ":       0x07170,
     "JP GC CE":     0x07170, # Zelda collection

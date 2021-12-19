@@ -42,6 +42,8 @@
 8004ABCC,Collider_DestroyCylinder
 8004C130,CollisionCheck_SetOC
 80050B00,Collider_UpdateCylinder
+80057030,MemCopy
+80057060,MemSet
 80058FF8,Audio_PlaySoundAtPosition
 800625B0,func_8007672C
 80063630,Lib_MemSet
@@ -61,5 +63,7 @@
 800AA6B0,Matrix_Init
 800AA7F4,Matrix_Translate
 800AB900,Matrix_NewMtx
+800BB098,Audio_QueueCmdF32
+800BB0BC,Audio_QueueCmdS32
 800CDCCC,Rand_ZeroOne
 800CF470,sinf

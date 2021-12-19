@@ -1,3 +1,15 @@
+80006850,sIdleThread,OSThread,0x1B0
 8000B140,gDmaDataTable,DmaEntry[0x60C],0x60C0
-80125630,gAudioContext,AudioContext,0x6450
+800F1C10,sDisableAttention,s16,2
+801043B0,sSeqCmdWrPos,u8,1
+80105440,sRandInt,u32,4
 8011A5D0,gSaveContext,SaveContext,0x1428
+8011BEF0,sZeldaArena,Arena,0x24
+8011BF00,sLoadedMarkDataTable,MapMarkData**,0x4
+80120C38,gSegments,u32[16],0x40
+80121204,sMatrixStack,MtxF*,0x4
+80121204,sCurrentMatrix,MtxF*,0x4
+80121F0C,D_80121F0C,u8,1
+80124754,gSoundBankMuted,u8[0xC],0xC
+80124800,sAudioSeqCmds,u32[0x100],0x400
+80125630,gAudioContext,AudioContext,0x6450
