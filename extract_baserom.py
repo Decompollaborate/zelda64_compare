@@ -98,8 +98,9 @@ FILE_NAMES["OOT"]["NJ2"]  = FILE_NAMES["OOT"]["NE2"]
 FILE_NAMES["OOT"]["PAL WII 1.1"] = FILE_NAMES["OOT"]["NP1"]
 
 romData: bytes = None
-Edition = "" # "pal_mq"
+Edition = "" # "cpm"
 Version = "" # "CPM"
+OnlyDma = False
 
 
 def readFile(filepath):
@@ -223,6 +224,9 @@ def ExtractFunc(i):
     globalDmaTable[versionName].append(physStart)
     globalDmaTable[versionName].append(physEnd)
 
+    if OnlyDma:
+        return
+
     print('Extracting ' + filename + " (0x%08X, 0x%08X)" % (virtStart, virtEnd))
     write_output_file(filename, physStart, size)
     if compressed:
@@ -269,6 +273,16 @@ def printBuildData(rom_data: bytes):
     #print(f"| Make Option:  {buildMakeOption}".ljust(39) + "|")
     print("========================================")
 
+def writeDma(dmaTable):
+    filetable = os.path.join(Basedir, Edition, "tables", "dma_addresses.txt")
+    print(f"Creating {filetable}")
+    with open(filetable, "w") as f:
+        for filename, data in dmaTable.items():
+            line = ",".join([filename] + list(map(str, data)))
+            if OnlyDma:
+                print(line)
+            f.write(line + "\n")
+
 def extract_rom(j):
     print("Reading filelists...")
     readFilelists()
@@ -293,10 +307,15 @@ def extract_rom(j):
         print('Failed to read file ' + filename)
         sys.exit(1)
 
-    manager = Manager()
-    dmaTable = manager.dict()
-    for name in file_names_table:
-        dmaTable[name] = manager.list()
+    if j:
+        manager = Manager()
+        dmaTable = manager.dict()
+        for name in file_names_table:
+            dmaTable[name] = manager.list()
+    else:
+        dmaTable = dict()
+        for name in file_names_table:
+            dmaTable[name] = list()
 
     # extract files
     if j:
@@ -309,15 +328,12 @@ def extract_rom(j):
         for i in range(len(file_names_table)):
             ExtractFunc(i)
 
-    printBuildData(rom_data)
+    if not OnlyDma:
+        printBuildData(rom_data)
 
     os.makedirs(os.path.join(Basedir, Edition, "tables"), exist_ok= True)
 
-    filetable = os.path.join(Basedir, Edition, "tables", "dma_addresses.txt")
-    print(f"Creating {filetable}")
-    with open(filetable, "w") as f:
-        for filename, data in dmaTable.items():
-            f.write(",".join([filename] + list(map(str, data))) + "\n")
+    writeDma(dmaTable)
 
 def main():
     description = "Extracts files from the rom. Will try to read the rom 'version.z64', or 'baserom.z64' if that doesn't exist."
@@ -336,21 +352,22 @@ For details on what these abbreviations mean, see the README.md.
     parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
     choices = ["oot", "mm"]
     parser.add_argument("game", help="Game to extract.", choices=choices)
-    # choices = [x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["OOT"]]
     parser.add_argument("edition", help="Version of the game to extract.")
     parser.add_argument("-j", help="Enables multiprocessing.", action="store_true")
-    parser.add_argument("-b", "--basedir", help="folder in which to work")
+    parser.add_argument("--dma", help="Extract only the dma addresses", action="store_true")
     args = parser.parse_args()
 
     global Basedir
     global Game
     global Edition
     global Version
+    global OnlyDma
 
     Basedir = args.game
     Game    = args.game.upper()
     Edition = args.edition
     Version = Edition.upper().replace("_", " ")
+    OnlyDma = args.dma
 
     if Edition not in edition_choices[args.game]:
         print(f"The selected edition '{Edition}' is not a valid option for the game '{args.game}'")
