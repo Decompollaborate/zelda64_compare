@@ -278,10 +278,7 @@ def extract_rom(j):
         print(f"'{Edition}' is not supported yet because the filelist is missing.")
         sys.exit(2)
 
-    try:
-        os.makedirs(os.path.join(Basedir, Edition, "baserom"))
-    except:
-        pass
+    os.makedirs(os.path.join(Basedir, Edition, "baserom"), exist_ok=True)
 
     filename = os.path.join(Basedir, ROM_FILE_NAME_V.format(Basedir, Edition))
     if not os.path.exists(filename):
@@ -314,11 +311,7 @@ def extract_rom(j):
 
     printBuildData(rom_data)
 
-
-    try:
-        os.makedirs(os.path.join(Basedir, Edition, "tables"))
-    except:
-        pass
+    os.makedirs(os.path.join(Basedir, Edition, "tables"), exist_ok= True)
 
     filetable = os.path.join(Basedir, Edition, "tables", "dma_addresses.txt")
     print(f"Creating {filetable}")
@@ -329,11 +322,20 @@ def extract_rom(j):
 def main():
     description = "Extracts files from the rom. Will try to read the rom 'version.z64', or 'baserom.z64' if that doesn't exist."
 
-    parser = argparse.ArgumentParser(description=description, formatter_class=argparse.RawTextHelpFormatter)
+    edition_choices = {
+        "oot": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["OOT"]),
+        "mm": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["MM"]),
+    }
+    epilog = f"""\
+The valid options for the `edition` parameter changes according to the selected `game`
+    For oot: {edition_choices["oot"]}
+    For mm:  {edition_choices["mm"]}
+    """
+    parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
     choices = ["oot", "mm"]
-    parser.add_argument("game", help="Game to extract.", choices=choices, default="oot")
+    parser.add_argument("game", help="Game to extract.", choices=choices)
     # choices = [x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["OOT"]]
-    parser.add_argument("edition", help="Version of the game to extract.", default="pal_mq_dbg")
+    parser.add_argument("edition", help="Version of the game to extract.")
     parser.add_argument("-j", help="Enables multiprocessing.", action="store_true")
     parser.add_argument("-b", "--basedir", help="folder in which to work")
     args = parser.parse_args()
@@ -347,6 +349,10 @@ def main():
     Game    = args.game.upper()
     Edition = args.edition
     Version = Edition.upper().replace("_", " ")
+
+    if Edition not in edition_choices[args.game]:
+        print(f"The selected edition '{Edition}' is not a valid option for the game '{args.game}'")
+        exit(1)
 
     extract_rom(args.j)
 
