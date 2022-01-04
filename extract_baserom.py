@@ -33,7 +33,7 @@ FILE_TABLE_OFFSET = {
         "CJC":        0x07170, # Zelda collection
         "IQS":        0x0B7A0,
         "IQT":        0x0B240,
-        "GATEWAY":    0x0AC80, # fake
+        # "GATEWAY":    0x0AC80, # fake
     },
 
     "MM": {
@@ -75,7 +75,7 @@ FILE_NAMES: Dict[str, Dict[str, List[str] | None]] = {
         "CJC":        None, # Zelda collector's edition
         "IQS":        None,
         "IQT":        None,
-        "GATEWAY":    None, # fake
+        # "GATEWAY":    None, # fake
     },
 
     "MM": {
@@ -327,9 +327,11 @@ def main():
         "mm": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["MM"]),
     }
     epilog = f"""\
-The valid options for the `edition` parameter changes according to the selected `game`
+Each `game` has different versions, and hence different edition options.
     For oot: {edition_choices["oot"]}
     For mm:  {edition_choices["mm"]}
+
+For details on what these abbreviations mean, see the README.md.
     """
     parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
     choices = ["oot", "mm"]
