@@ -138,9 +138,9 @@ def disassemblerMain():
 
     context = Context()
     context.readFunctionMap(args.version)
-    contextReadVariablesCsv(context, args.version)
-    contextReadFunctionsCsv(context, args.version)
-    dmaAddresses: Dict[str, DmaEntry] = getDmaAddresses(args.version)
+    contextReadVariablesCsv(context, args.game, args.version)
+    contextReadFunctionsCsv(context, args.game, args.version)
+    dmaAddresses: Dict[str, DmaEntry] = getDmaAddresses(args.game, args.version)
 
     disassembleFile(args.version, args.file, args.outputfolder, context, dmaAddresses, int(args.vram, 16), int(args.text_end_offset, 16))
 

@@ -13,7 +13,7 @@ from py_mips_disasm.mips.MipsContext import Context
 
 # Not intended to be instanced
 class FileGeneric(FileBase):
-    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context):
+    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context, game: str):
         super().__init__(array_of_bytes, filename, version, context)
 
         self.textList: Dict[str, Text] = dict()

@@ -20,8 +20,8 @@ from .ZeldaTables import OverlayTableEntry
 
 
 class FileOverlay(FileGeneric):
-    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context, tableEntry: OverlayTableEntry=None):
-        super().__init__(array_of_bytes, filename, version, context)
+    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context, game: str, tableEntry: OverlayTableEntry=None):
+        super().__init__(array_of_bytes, filename, version, context, game)
 
         self.initVarsAddress = -1
         if tableEntry is not None:

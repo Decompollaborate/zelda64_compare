@@ -36,10 +36,10 @@ def compare_baseroms(args, filelist):
     context_two = Context()
     context_one.readFunctionMap(args.version1)
     context_two.readFunctionMap(args.version2)
-    contextReadVariablesCsv(context_one, args.version1)
-    contextReadVariablesCsv(context_two, args.version2)
-    contextReadFunctionsCsv(context_one, args.version1)
-    contextReadFunctionsCsv(context_two, args.version2)
+    contextReadVariablesCsv(context_one, args.game, args.version1)
+    contextReadVariablesCsv(context_two, args.game, args.version2)
+    contextReadFunctionsCsv(context_one, args.game, args.version1)
+    contextReadFunctionsCsv(context_two, args.game, args.version2)
 
     for filename in filelist:
         filepath_one = os.path.join(args.game, args.version1, "baserom", filename)
@@ -61,22 +61,22 @@ def compare_baseroms(args, filelist):
         file_two_data = readFileAsBytearray(filepath_two)
 
         if filename.startswith("ovl_"):
-            file_one = FileOverlay(file_one_data, filename, args.version1, context_one)
-            file_two = FileOverlay(file_two_data, filename, args.version2, context_two)
+            file_one = FileOverlay(file_one_data, filename, args.version1, context_one, args.game)
+            file_two = FileOverlay(file_two_data, filename, args.version2, context_two, args.game)
         elif filename == "code":
             textSplits = readSplitsFromCsv("csvsplits/code_text.csv") if os.path.exists("csvsplits/code_text.csv") else {args.version1: dict(), args.version2: dict()}
             dataSplits = readSplitsFromCsv("csvsplits/code_data.csv") if os.path.exists("csvsplits/code_data.csv") else {args.version1: dict(), args.version2: dict()}
             rodataSplits = readSplitsFromCsv("csvsplits/code_rodata.csv") if os.path.exists("csvsplits/code_rodata.csv") else {args.version1: dict(), args.version2: dict()}
             bssSplits = readSplitsFromCsv("csvsplits/code_bss.csv") if os.path.exists("csvsplits/code_bss.csv") else {args.version1: dict(), args.version2: dict()}
-            file_one = FileCode(file_one_data, args.version1, context_one, textSplits[args.version1], dataSplits[args.version1], rodataSplits[args.version1], bssSplits[args.version1])
-            file_two = FileCode(file_two_data, args.version2, context_two, textSplits[args.version2], dataSplits[args.version2], rodataSplits[args.version2], bssSplits[args.version2])
+            file_one = FileCode(file_one_data, args.version1, context_one, args.game, textSplits[args.version1], dataSplits[args.version1], rodataSplits[args.version1], bssSplits[args.version1])
+            file_two = FileCode(file_two_data, args.version2, context_two, args.game, textSplits[args.version2], dataSplits[args.version2], rodataSplits[args.version2], bssSplits[args.version2])
         elif filename == "boot":
             textSplits = readSplitsFromCsv("csvsplits/boot_text.csv") if os.path.exists("csvsplits/boot_text.csv") else {args.version1: dict(), args.version2: dict()}
             dataSplits = readSplitsFromCsv("csvsplits/boot_data.csv") if os.path.exists("csvsplits/boot_data.csv") else {args.version1: dict(), args.version2: dict()}
             rodataSplits = readSplitsFromCsv("csvsplits/boot_rodata.csv") if os.path.exists("csvsplits/boot_rodata.csv") else {args.version1: dict(), args.version2: dict()}
             bssSplits = readSplitsFromCsv("csvsplits/boot_bss.csv") if os.path.exists("csvsplits/boot_bss.csv") else {args.version1: dict(), args.version2: dict()}
-            file_one = FileBoot(file_one_data, args.version1, context_one, textSplits[args.version1], dataSplits[args.version1], rodataSplits[args.version1], bssSplits[args.version1])
-            file_two = FileBoot(file_two_data, args.version2, context_two, textSplits[args.version2], dataSplits[args.version2], rodataSplits[args.version2], bssSplits[args.version2])
+            file_one = FileBoot(file_one_data, args.version1, context_one, args.game, textSplits[args.version1], dataSplits[args.version1], rodataSplits[args.version1], bssSplits[args.version1])
+            file_two = FileBoot(file_two_data, args.version2, context_two, args.game, textSplits[args.version2], dataSplits[args.version2], rodataSplits[args.version2], bssSplits[args.version2])
         else:
             file_one = Section(file_one_data, filename, args.version1, context_one)
             file_two = Section(file_two_data, filename, args.version2, context_two)
@@ -209,22 +209,22 @@ def compare_to_csv(args, filelist):
 
         else:
             if not args.dont_split_files and filename.startswith("ovl_"):
-                file_one = FileOverlay(file_one_data, filename, args.version1, context_one)
-                file_two = FileOverlay(file_two_data, filename, args.version2, context_two)
+                file_one = FileOverlay(file_one_data, filename, args.version1, context_one, args.game)
+                file_two = FileOverlay(file_two_data, filename, args.version2, context_two, args.game)
             elif not args.dont_split_files and filename == "code":
                 textSplits = readSplitsFromCsv("csvsplits/code_text.csv") if os.path.exists("csvsplits/code_text.csv") else {args.version1: dict(), args.version2: dict()}
                 dataSplits = readSplitsFromCsv("csvsplits/code_data.csv") if os.path.exists("csvsplits/code_data.csv") else {args.version1: dict(), args.version2: dict()}
                 rodataSplits = readSplitsFromCsv("csvsplits/code_rodata.csv") if os.path.exists("csvsplits/code_rodata.csv") else {args.version1: dict(), args.version2: dict()}
                 bssSplits = readSplitsFromCsv("csvsplits/code_bss.csv") if os.path.exists("csvsplits/code_bss.csv") else {args.version1: dict(), args.version2: dict()}
-                file_one = FileCode(file_one_data, args.version1, context_one, textSplits.get(args.version1, {}), dataSplits.get(args.version1, {}), rodataSplits.get(args.version1, {}), bssSplits.get(args.version1, {}))
-                file_two = FileCode(file_two_data, args.version2, context_two, textSplits.get(args.version2, {}), dataSplits.get(args.version2, {}), rodataSplits.get(args.version2, {}), bssSplits.get(args.version2, {}))
+                file_one = FileCode(file_one_data, args.version1, context_one, args.game, textSplits.get(args.version1, {}), dataSplits.get(args.version1, {}), rodataSplits.get(args.version1, {}), bssSplits.get(args.version1, {}))
+                file_two = FileCode(file_two_data, args.version2, context_two, args.game, textSplits.get(args.version2, {}), dataSplits.get(args.version2, {}), rodataSplits.get(args.version2, {}), bssSplits.get(args.version2, {}))
             elif filename == "boot":
                 textSplits = readSplitsFromCsv("csvsplits/boot_text.csv") if os.path.exists("csvsplits/boot_text.csv") else {args.version1: dict(), args.version2: dict()}
                 dataSplits = readSplitsFromCsv("csvsplits/boot_data.csv") if os.path.exists("csvsplits/boot_data.csv") else {args.version1: dict(), args.version2: dict()}
                 rodataSplits = readSplitsFromCsv("csvsplits/boot_rodata.csv") if os.path.exists("csvsplits/boot_rodata.csv") else {args.version1: dict(), args.version2: dict()}
                 bssSplits = readSplitsFromCsv("csvsplits/boot_bss.csv") if os.path.exists("csvsplits/boot_bss.csv") else {args.version1: dict(), args.version2: dict()}
-                file_one = FileBoot(file_one_data, args.version1, context_one, textSplits.get(args.version1, {}), dataSplits.get(args.version1, {}), rodataSplits.get(args.version1, {}), bssSplits.get(args.version1, {}))
-                file_two = FileBoot(file_two_data, args.version2, context_two, textSplits.get(args.version2, {}), dataSplits.get(args.version2, {}), rodataSplits.get(args.version2, {}), bssSplits.get(args.version2, {}))
+                file_one = FileBoot(file_one_data, args.version1, context_one, args.game, textSplits.get(args.version1, {}), dataSplits.get(args.version1, {}), rodataSplits.get(args.version1, {}), bssSplits.get(args.version1, {}))
+                file_two = FileBoot(file_two_data, args.version2, context_two, args.game, textSplits.get(args.version2, {}), dataSplits.get(args.version2, {}), rodataSplits.get(args.version2, {}), bssSplits.get(args.version2, {}))
             else:
                 file_one = Section(file_one_data, filename, args.version1, context_one)
                 file_two = Section(file_two_data, filename, args.version2, context_two)

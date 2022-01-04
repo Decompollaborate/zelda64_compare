@@ -61,20 +61,22 @@ def readCodeSplitsCsv():
     return splits
 
 parser = argparse.ArgumentParser()
-parser.add_argument("version", help="Select which baserom folder will be used. Example: ique_cn would look up in folder baserom_ique_cn")
+choices = ["oot", "mm"]
+parser.add_argument("game", help="Game to comapre.", choices=choices)
+parser.add_argument("version", help="Select which baserom folder will be used.")
 args = parser.parse_args()
 
 
 CODE = "code"
 VERSION = args.version
 
-palMqDbg_Code_array = readVersionedFileAsBytearrray(CODE, VERSION)
+palMqDbg_Code_array = readVersionedFileAsBytearrray(CODE, args.game, VERSION)
 
 codeSplits = readCodeSplitsCsv()
 context = Context()
 context.readFunctionMap(VERSION)
-contextReadVariablesCsv(context, VERSION)
-contextReadFunctionsCsv(context, VERSION)
+contextReadVariablesCsv(context, args.game, VERSION)
+contextReadFunctionsCsv(context, args.game, VERSION)
 
 palMqDbg_filesStarts = list()
 if VERSION in codeSplits:
@@ -101,7 +103,7 @@ while i < len(palMqDbg_filesStarts) - 1:
 
     text = Text(palMqDbg_Code_array[start:end], filename, VERSION, context)
     text.offset = start
-    text.vRamStart = codeVramStart.get(VERSION, -1)
+    text.vRamStart = codeVramStart.get(args.game, {}).get(VERSION, -1)
 
     text.analyze()
 
@@ -111,8 +113,8 @@ while i < len(palMqDbg_filesStarts) - 1:
 section_data = Data(palMqDbg_Code_array[codeDataStart.get(VERSION, -1):codeRodataStart.get(VERSION, -1)], CODE, VERSION, context)
 section_rodata = Rodata(palMqDbg_Code_array[codeRodataStart.get(VERSION, -1):], CODE, VERSION, context)
 
-section_data.vRamStart = codeVramStart.get(VERSION, -1) + codeDataStart.get(VERSION, -1)
-section_rodata.vRamStart = codeVramStart.get(VERSION, -1) + codeRodataStart.get(VERSION, -1)
+section_data.vRamStart = codeVramStart.get(args.game, {}).get(VERSION, -1) + codeDataStart.get(args.game, {}).get(VERSION, -1)
+section_rodata.vRamStart = codeVramStart.get(args.game, {}).get(VERSION, -1) + codeRodataStart.get(args.game, {}).get(VERSION, -1)
 
 section_data.analyze()
 section_rodata.analyze()
@@ -130,7 +132,7 @@ for text in palMqDbg_texts:
 
             functionsInBoundary = 0
             for func in text.functions:
-                funcOffset = func.vram - codeVramStart.get(VERSION, -1)
+                funcOffset = func.vram - codeVramStart.get(args.game, {}).get(VERSION, -1)
                 if start <= funcOffset < end:
                     functionsInBoundary += 1
             print("\t", toHex(start, 6)[2:], toHex(end-start, 3)[2:], "\t functions:", functionsInBoundary)
@@ -141,7 +143,7 @@ for text in palMqDbg_texts:
 
         functionsInBoundary = 0
         for func in text.functions:
-            funcOffset = func.vram - codeVramStart.get(VERSION, -1)
+            funcOffset = func.vram - codeVramStart.get(args.game, {}).get(VERSION, -1)
             if start <= funcOffset < end:
                 functionsInBoundary += 1
         print("\t", toHex(start, 6)[2:], toHex(end-start, 3)[2:], "\t functions:", functionsInBoundary)

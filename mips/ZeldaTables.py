@@ -14,8 +14,8 @@ class DmaEntry:
         self.romEnd: int = romEnd
 
 
-def getDmaAddresses(version: str) -> Dict[str, DmaEntry]:
-    filetable = f'baserom_{version}/dma_addresses.txt'
+def getDmaAddresses(game: str, version: str) -> Dict[str, DmaEntry]:
+    filetable = os.path.join(game, version, "tables", "dma_addresses.txt")
     table: Dict[str, DmaEntry] = dict()
     if os.path.exists(filetable):
         with open(filetable) as f:
@@ -40,12 +40,12 @@ class OverlayTableEntry:
         self.instancesNum = (wordsArray[7] > 8) & 0xFF
 
 
-def contextReadVariablesCsv(context: Context, version: str):
-    variablesPath = f"csv/variables/{version}.csv"
+def contextReadVariablesCsv(context: Context, game: str, version: str):
+    variablesPath = os.path.join(game, version, "tables", f"variables_{game}_{version}.csv")
     if os.path.exists(variablesPath):
         context.readVariablesCsv(variablesPath)
 
-def contextReadFunctionsCsv(context: Context, version: str):
-    functionsPath = f"csv/functions/{version}.csv"
+def contextReadFunctionsCsv(context: Context, game: str, version: str):
+    functionsPath = os.path.join(game, version, "tables", f"functions_{game}_{version}.csv")
     if os.path.exists(functionsPath):
         context.readFunctionsCsv(functionsPath)

@@ -153,11 +153,11 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
                                 tableEntry = entry
                                 break
 
-            f = FileOverlay(array_of_bytes, filename, version, contextPerVersion[version], tableEntry=tableEntry)
+            f = FileOverlay(array_of_bytes, filename, version, contextPerVersion[version], game, tableEntry=tableEntry)
         elif is_code:
-            f = FileCode(array_of_bytes, version, contextPerVersion[version], textSplits[version], dataSplits[version], rodataSplits[version], bssSplits[version])
+            f = FileCode(array_of_bytes, version, contextPerVersion[version], game, textSplits[version], dataSplits[version], rodataSplits[version], bssSplits[version])
         elif is_boot:
-            f = FileBoot(array_of_bytes, version, contextPerVersion[version], textSplits[version], dataSplits[version], rodataSplits[version], bssSplits[version])
+            f = FileBoot(array_of_bytes, version, contextPerVersion[version], game, textSplits[version], dataSplits[version], rodataSplits[version], bssSplits[version])
         else:
             f = Section(array_of_bytes, filename, version, contextPerVersion[version])
 
@@ -251,23 +251,23 @@ def main():
     for version in versionsList:
         contextPerVersion[version] = Context()
         contextPerVersion[version].readFunctionMap(version)
-        contextReadVariablesCsv(contextPerVersion[version], version)
-        contextReadFunctionsCsv(contextPerVersion[version], version)
+        contextReadVariablesCsv(contextPerVersion[version], args.game, version)
+        contextReadFunctionsCsv(contextPerVersion[version], args.game, version)
 
     dmaAddresses: Dict[str, Dict[str, DmaEntry]] = dict()
     actorOverlayTable: Dict[str, List[OverlayTableEntry]] = dict()
     for version in versionsList:
-        dmaAddresses[version] = getDmaAddresses(version)
+        dmaAddresses[version] = getDmaAddresses(args.game, version)
 
         codePath = os.path.join(args.game, version, "baserom", "code")
 
         if os.path.exists(codePath) and version in ZeldaOffsets.offset_ActorOverlayTable:
-            tableOffset = ZeldaOffsets.offset_ActorOverlayTable[version]
+            tableOffset = ZeldaOffsets.offset_ActorOverlayTable[args.game][version]
             if tableOffset != 0x0 and tableOffset != 0xFFFFFF:
                 codeData = readFileAsBytearray(codePath)
                 i = 0
                 table = list()
-                while i < ZeldaOffsets.ACTOR_ID_MAX:
+                while i < ZeldaOffsets.ActorIDMax[args.game]:
                     entry = OverlayTableEntry(codeData[tableOffset + i*0x20 : tableOffset + (i+1)*0x20])
                     table.append(entry)
                     i += 1

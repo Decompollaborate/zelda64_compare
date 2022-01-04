@@ -21,9 +21,12 @@ TODO
 ## Version abbreviations
 
 Because OoT has over 20 different versions, and MM 10, it's necessary to have short abbreviations for each version when comparing. The first two letters are mostly from Nintendo's designations, for media
+
 - `N` is cartridge
 - `C` is disc
+
 and for regions
+
 - `J` is Japan
 - `E` is America
 - `P` is PAL (Australia as well as Europe, at least in this case)
