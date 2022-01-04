@@ -11,7 +11,6 @@ from typing import Dict, List
 import zlib
 
 
-ROM_FILE_NAME = 'baserom.z64'
 ROM_FILE_NAME_V = '{}_{}.z64'
 FILE_TABLE_OFFSET = {
     "OOT": {
@@ -101,6 +100,7 @@ romData: bytes = None
 Edition = "" # "cpm"
 Version = "" # "CPM"
 OnlyDma = False
+OnlyBuild = False
 
 
 def readFile(filepath):
@@ -295,9 +295,6 @@ def extract_rom(j):
     os.makedirs(os.path.join(Basedir, Edition, "baserom"), exist_ok=True)
 
     filename = os.path.join(Basedir, ROM_FILE_NAME_V.format(Basedir, Edition))
-    if not os.path.exists(filename):
-        print(f"{filename} not found. Defaulting to {ROM_FILE_NAME}")
-        filename = ROM_FILE_NAME
 
     # read baserom data
     try:
@@ -306,6 +303,10 @@ def extract_rom(j):
     except IOError:
         print('Failed to read file ' + filename)
         sys.exit(1)
+
+    if OnlyBuild:
+        printBuildData(rom_data)
+        sys.exit(0)
 
     if j:
         manager = Manager()
@@ -355,6 +356,7 @@ For details on what these abbreviations mean, see the README.md.
     parser.add_argument("edition", help="Version of the game to extract.")
     parser.add_argument("-j", help="Enables multiprocessing.", action="store_true")
     parser.add_argument("--dma", help="Extract only the dma addresses", action="store_true")
+    parser.add_argument("--build", help="Only print the build data", action="store_true")
     args = parser.parse_args()
 
     global Basedir
@@ -362,12 +364,14 @@ For details on what these abbreviations mean, see the README.md.
     global Edition
     global Version
     global OnlyDma
+    global OnlyBuild
 
-    Basedir = args.game
-    Game    = args.game.upper()
-    Edition = args.edition
-    Version = Edition.upper().replace("_", " ")
-    OnlyDma = args.dma
+    Basedir   = args.game
+    Game      = args.game.upper()
+    Edition   = args.edition
+    Version   = Edition.upper().replace("_", " ")
+    OnlyDma   = args.dma
+    OnlyBuild = args.build
 
     if Edition not in edition_choices[args.game]:
         print(f"The selected edition '{Edition}' is not a valid option for the game '{args.game}'")
