@@ -62,17 +62,16 @@ The following tables give the more common name/description of each version:
 
 ### MM
 
-
-| Abbreviation | Description                                  |
-| ------------ | -------------------------------------------- |
-| nj0          | N64 Japanese 1.0                             |
-| nj1          | N64 Japanese 1.1                             |
-| nek          | N64 American Kiosk Demo                      |
-| ne0          | N64 American 1.0                             |
-| np0          | N64 PAL 1.0                                  |
-| npd          | N64 PAL Debug                                |
-| np1          | N64 PAL 1.1                                  |
-| cjo          | GC Japanese                                  |
-| ceo          | GC American                                  |
-| cpo          | GC PAL original                              |
-| pal_wii_1.1  | Wii Virtual Console PAL. Romhack of np1.     |
+| Abbreviation | Description                              |
+| ------------ | ---------------------------------------- |
+| nj0          | N64 Japanese 1.0                         |
+| nj1          | N64 Japanese 1.1                         |
+| nek          | N64 American Kiosk Demo                  |
+| ne0          | N64 American 1.0                         |
+| np0          | N64 PAL 1.0                              |
+| npd          | N64 PAL Debug                            |
+| np1          | N64 PAL 1.1                              |
+| cjo          | GC Japanese                              |
+| ceo          | GC American                              |
+| cpo          | GC PAL                                   |
+| pal_wii_1.1  | Wii Virtual Console PAL. Romhack of np1. |
