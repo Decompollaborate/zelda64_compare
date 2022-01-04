@@ -15,25 +15,25 @@ ROM_FILE_NAME = 'baserom.z64'
 ROM_FILE_NAME_V = '{}_{}.z64'
 FILE_TABLE_OFFSET = {
     "OOT": {
-        "NTSC 0.9":     0x07430, # a.k.a. NTSC 1.0 RC
-        "NTSC 1.0":     0x07430,
-        "NTSC 1.1":     0x07430,
-        "PAL 1.0":      0x07950,
-        "NTSC 1.2":     0x07960,
-        "PAL 1.1":      0x07950,
-        "JP GC":        0x07170,
-        "JP MQ":        0x07170,
-        "USA GC":       0x07170,
-        "USA MQ":       0x07170,
-        "PAL GC DBG1":  0x12F70,
-        "PAL MQ DBG":   0x12F70,
-        "PAL GC DBG2":  0x12F70,
-        "PAL GC":       0x07170,
-        "PAL MQ":       0x07170,
-        "JP GC CE":     0x07170, # Zelda collection
-        "IQUE CN":      0x0B7A0,
-        "IQUE TW":      0x0B240,
-        "GATEWAY":      0x0AC80, # fake
+        "NER":        0x07430, # a.k.a. NN0 RC
+        "NE0":        0x07430,
+        "NE1":        0x07430,
+        "NP0":        0x07950,
+        "NE2":        0x07960,
+        "NP1":        0x07950,
+        "CJO":        0x07170,
+        "CJM":        0x07170,
+        "CEO":        0x07170,
+        "CEM":        0x07170,
+        "CPOD1":      0x12F70,
+        "CPMD":       0x12F70,
+        "CPOD2":      0x12F70,
+        "CPO":        0x07170,
+        "CPM":        0x07170,
+        "CJC":        0x07170, # Zelda collection
+        "IQS":        0x0B7A0,
+        "IQT":        0x0B240,
+        "GATEWAY":    0x0AC80, # fake
     },
 
     "MM": {
@@ -49,33 +49,33 @@ FILE_TABLE_OFFSET = {
         "CJ0":    0x1AE90,
     },
 }
-FILE_TABLE_OFFSET["OOT"]["NTSC J 0.9"]   = FILE_TABLE_OFFSET["OOT"]["NTSC 0.9"]
-FILE_TABLE_OFFSET["OOT"]["NTSC J 1.0"]   = FILE_TABLE_OFFSET["OOT"]["NTSC 1.0"]
-FILE_TABLE_OFFSET["OOT"]["NTSC J 1.1"]   = FILE_TABLE_OFFSET["OOT"]["NTSC 1.1"]
-FILE_TABLE_OFFSET["OOT"]["NTSC J 1.2"]   = FILE_TABLE_OFFSET["OOT"]["NTSC 1.2"]
-FILE_TABLE_OFFSET["OOT"]["PAL WII 1.1"]  = FILE_TABLE_OFFSET["OOT"]["PAL 1.1"]
+FILE_TABLE_OFFSET["OOT"]["NJR"]   = FILE_TABLE_OFFSET["OOT"]["NER"]
+FILE_TABLE_OFFSET["OOT"]["NJ0"]   = FILE_TABLE_OFFSET["OOT"]["NE0"]
+FILE_TABLE_OFFSET["OOT"]["NJ1"]   = FILE_TABLE_OFFSET["OOT"]["NE1"]
+FILE_TABLE_OFFSET["OOT"]["NJ2"]   = FILE_TABLE_OFFSET["OOT"]["NE2"]
+FILE_TABLE_OFFSET["OOT"]["PAL WII 1.1"]  = FILE_TABLE_OFFSET["OOT"]["NP1"]
 
 FILE_NAMES: Dict[str, Dict[str, List[str] | None]] = {
     "OOT": {
-        "NTSC 0.9":     None,
-        "NTSC 1.0":     None,
-        "NTSC 1.1":     None,
-        "PAL 1.0":      None,
-        "NTSC 1.2":     None,
-        "PAL 1.1":      None,
-        "JP GC":        None,
-        "JP MQ":        None,
-        "USA GC":       None,
-        "USA MQ":       None,
-        "PAL GC DBG1":  None,
-        "PAL GC DBG2":  None,
-        "PAL MQ DBG":   None,
-        "PAL GC":       None,
-        "PAL MQ":       None,
-        "JP GC CE":     None, # Zelda collector's edition
-        "IQUE CN":      None,
-        "IQUE TW":      None,
-        "GATEWAY":      None, # fake
+        "NER":        None,
+        "NE0":        None,
+        "NE1":        None,
+        "NP0":        None,
+        "NE2":        None,
+        "NP1":        None,
+        "CJO":        None,
+        "CJM":        None,
+        "CEO":        None,
+        "CEM":        None,
+        "CPOD1":      None,
+        "CPOD2":      None,
+        "CPMD":       None,
+        "CPO":        None,
+        "CPM":        None,
+        "CJC":        None, # Zelda collector's edition
+        "IQS":        None,
+        "IQT":        None,
+        "GATEWAY":    None, # fake
     },
 
     "MM": {
@@ -91,15 +91,15 @@ FILE_NAMES: Dict[str, Dict[str, List[str] | None]] = {
         "CJ0":    None,
     },
 }
-FILE_NAMES["OOT"]["NTSC J 0.9"]  = FILE_NAMES["OOT"]["NTSC 0.9"]
-FILE_NAMES["OOT"]["NTSC J 1.0"]  = FILE_NAMES["OOT"]["NTSC 1.0"]
-FILE_NAMES["OOT"]["NTSC J 1.1"]  = FILE_NAMES["OOT"]["NTSC 1.1"]
-FILE_NAMES["OOT"]["NTSC J 1.2"]  = FILE_NAMES["OOT"]["NTSC 1.2"]
-FILE_NAMES["OOT"]["PAL WII 1.1"] = FILE_NAMES["OOT"]["PAL 1.1"]
+FILE_NAMES["OOT"]["NJR"]  = FILE_NAMES["OOT"]["NER"]
+FILE_NAMES["OOT"]["NJ0"]  = FILE_NAMES["OOT"]["NE0"]
+FILE_NAMES["OOT"]["NJ1"]  = FILE_NAMES["OOT"]["NE1"]
+FILE_NAMES["OOT"]["NJ2"]  = FILE_NAMES["OOT"]["NE2"]
+FILE_NAMES["OOT"]["PAL WII 1.1"] = FILE_NAMES["OOT"]["NP1"]
 
 romData: bytes = None
 Edition = "" # "pal_mq"
-Version = "" # "PAL MQ"
+Version = "" # "CPM"
 
 
 def readFile(filepath):
@@ -107,38 +107,38 @@ def readFile(filepath):
         return [x.strip() for x in f.readlines()]
 
 def readFilelists():
-    FILE_NAMES["OOT"]["PAL MQ DBG"] = readFile("oot/filelists/filelist_pal_mq_dbg.txt")
-    FILE_NAMES["OOT"]["PAL MQ"]     = readFile("oot/filelists/filelist_pal_mq.txt")
-    FILE_NAMES["OOT"]["USA MQ"]     = readFile("oot/filelists/filelist_usa_mq.txt")
-    FILE_NAMES["OOT"]["NTSC 1.0"]   = readFile("oot/filelists/filelist_ntsc_1.0.txt")
-    FILE_NAMES["OOT"]["PAL 1.0"]    = readFile("oot/filelists/filelist_pal_1.0.txt")
-    FILE_NAMES["OOT"]["JP GC CE"]   = readFile("oot/filelists/filelist_jp_gc_ce.txt")
-    FILE_NAMES["OOT"]["IQUE CN"]    = readFile("oot/filelists/filelist_ique_cn.txt")
+    FILE_NAMES["OOT"]["CPMD"] = readFile("oot/filelists/filelist_pal_mq_dbg.txt")
+    FILE_NAMES["OOT"]["CPM"]     = readFile("oot/filelists/filelist_pal_mq.txt")
+    FILE_NAMES["OOT"]["CEM"]     = readFile("oot/filelists/filelist_usa_mq.txt")
+    FILE_NAMES["OOT"]["NE0"]   = readFile("oot/filelists/filelist_ntsc_1.0.txt")
+    FILE_NAMES["OOT"]["NP0"]    = readFile("oot/filelists/filelist_pal_1.0.txt")
+    FILE_NAMES["OOT"]["CJC"]   = readFile("oot/filelists/filelist_jp_gc_ce.txt")
+    FILE_NAMES["OOT"]["IQS"]    = readFile("oot/filelists/filelist_ique_cn.txt")
 
-    FILE_NAMES["OOT"]["JP MQ"] = FILE_NAMES["OOT"]["USA MQ"]
+    FILE_NAMES["OOT"]["CJM"] = FILE_NAMES["OOT"]["CEM"]
 
-    FILE_NAMES["OOT"]["USA GC"] = FILE_NAMES["OOT"]["JP GC CE"]
-    FILE_NAMES["OOT"]["JP GC"]  = FILE_NAMES["OOT"]["USA GC"]
-    FILE_NAMES["OOT"]["PAL GC"] = FILE_NAMES["OOT"]["PAL MQ"]
+    FILE_NAMES["OOT"]["CEO"] = FILE_NAMES["OOT"]["CJC"]
+    FILE_NAMES["OOT"]["CJO"]  = FILE_NAMES["OOT"]["CEO"]
+    FILE_NAMES["OOT"]["CPO"] = FILE_NAMES["OOT"]["CPM"]
 
-    FILE_NAMES["OOT"]["PAL 1.1"] = FILE_NAMES["OOT"]["PAL 1.0"]
+    FILE_NAMES["OOT"]["NP1"] = FILE_NAMES["OOT"]["NP0"]
 
-    FILE_NAMES["OOT"]["PAL GC DBG1"] = FILE_NAMES["OOT"]["PAL MQ DBG"]
-    FILE_NAMES["OOT"]["PAL GC DBG2"] = FILE_NAMES["OOT"]["PAL MQ DBG"]
+    FILE_NAMES["OOT"]["CPOD1"] = FILE_NAMES["OOT"]["CPMD"]
+    FILE_NAMES["OOT"]["CPOD2"] = FILE_NAMES["OOT"]["CPMD"]
 
-    FILE_NAMES["OOT"]["IQUE TW"] = FILE_NAMES["OOT"]["IQUE CN"]
+    FILE_NAMES["OOT"]["IQT"] = FILE_NAMES["OOT"]["IQS"]
 
-    FILE_NAMES["OOT"]["NTSC 0.9"] = FILE_NAMES["OOT"]["NTSC 1.0"]
-    FILE_NAMES["OOT"]["NTSC 1.1"] = FILE_NAMES["OOT"]["NTSC 1.0"]
-    FILE_NAMES["OOT"]["NTSC 1.2"] = FILE_NAMES["OOT"]["NTSC 1.0"]
+    FILE_NAMES["OOT"]["NER"] = FILE_NAMES["OOT"]["NE0"]
+    FILE_NAMES["OOT"]["NE1"] = FILE_NAMES["OOT"]["NE0"]
+    FILE_NAMES["OOT"]["NE2"] = FILE_NAMES["OOT"]["NE0"]
 
-    FILE_NAMES["OOT"]["NTSC J 0.9"]  = FILE_NAMES["OOT"]["NTSC 0.9"]
-    FILE_NAMES["OOT"]["NTSC J 1.0"]  = FILE_NAMES["OOT"]["NTSC 1.0"]
-    FILE_NAMES["OOT"]["NTSC J 1.1"]  = FILE_NAMES["OOT"]["NTSC 1.1"]
-    FILE_NAMES["OOT"]["NTSC J 1.2"]  = FILE_NAMES["OOT"]["NTSC 1.2"]
-    FILE_NAMES["OOT"]["PAL WII 1.1"] = FILE_NAMES["OOT"]["PAL 1.1"]
+    FILE_NAMES["OOT"]["NTSC J 0.9"]  = FILE_NAMES["OOT"]["NER"]
+    FILE_NAMES["OOT"]["NTSC J 1.0"]  = FILE_NAMES["OOT"]["NE0"]
+    FILE_NAMES["OOT"]["NTSC J 1.1"]  = FILE_NAMES["OOT"]["NE1"]
+    FILE_NAMES["OOT"]["NTSC J 1.2"]  = FILE_NAMES["OOT"]["NE2"]
+    FILE_NAMES["OOT"]["PAL WII 1.1"] = FILE_NAMES["OOT"]["NP1"]
 
-    FILE_NAMES["OOT"]["GATEWAY"] = FILE_NAMES["OOT"]["IQUE CN"]
+    FILE_NAMES["OOT"]["GATEWAY"] = FILE_NAMES["OOT"]["IQS"]
 
     # MM
     FILE_NAMES["MM"]["NJ0"] = readFile("mm/filelists/filelist_mm_jp_1.0.txt")
@@ -227,7 +227,7 @@ def ExtractFunc(i):
     write_output_file(filename, physStart, size)
     if compressed:
         # print(f"decompressing {filename}")
-        if Edition in ("ique_cn", "ique_tw"):
+        if Edition in ("iqt", "iqs"):
             data = readFileAsBytearray(filename)
             decompressed = decompressZlib(data)
             writeBytearrayToFile(filename, decompressed)
