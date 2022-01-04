@@ -54,8 +54,8 @@ def getHashesOfFiles(args, filesPath: List[str]) -> List[str]:
             hashList.append(line)
     return hashList
 
-def compareFileAcrossVersions(filename: str, versionsList: List[str], contextPerVersion: Dict[str, Context], dmaAddresses: dict, actorOverlayTable: dict, args) -> List[List[str]]:
-    md5arglist = list(map(lambda orig_string: "baserom_" + orig_string + "/" + filename, versionsList))
+def compareFileAcrossVersions(filename: str, game: str, versionsList: List[str], contextPerVersion: Dict[str, Context], dmaAddresses: dict, actorOverlayTable: dict, args) -> List[List[str]]:
+    md5arglist = list(map(lambda orig_string: game + "/" + orig_string + "/" + "baserom" + "/" + filename, versionsList))
     # os.system( "md5sum " + " ".join(filesPath) )
 
     # Get hashes.
@@ -72,27 +72,25 @@ def compareFileAcrossVersions(filename: str, versionsList: List[str], contextPer
     for line in output:
         trimmed = removeExtraWhitespace(line)
         filehash, filepath = trimmed.split(" ")
-        abbr = ZeldaOffsets.getVersionAbbr(filepath)
+        version = filepath.split("/")[1]
 
         # Map each abbreviation and its hash.
-        filesHashes[abbr] = filehash
+        filesHashes[version] = filehash
 
         # Find out where in which version this hash appeared for first time.
         if filehash not in firstFilePerHash:
-            firstFilePerHash[filehash] = abbr
+            firstFilePerHash[filehash] = version
 
     row = [filename]
     for ver in versionsList:
-        abbr = ZeldaOffsets.versions.get(ver, None)
-
-        if abbr in filesHashes:
-            fHash = filesHashes[abbr]
+        if ver in filesHashes:
+            fHash = filesHashes[ver]
             row.append(firstFilePerHash[fHash])
         else:
             row.append("")
     return [row]
 
-def compareOverlayAcrossVersions(filename: str, versionsList: List[str], contextPerVersion: Dict[str, Context], dmaAddresses: Dict[str, Dict[str, DmaEntry]], actorOverlayTable: Dict[str, List[OverlayTableEntry]], args) -> List[List[str]]:
+def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[str], contextPerVersion: Dict[str, Context], dmaAddresses: Dict[str, Dict[str, DmaEntry]], actorOverlayTable: Dict[str, List[OverlayTableEntry]], args) -> List[List[str]]:
     column = []
     filesHashes = dict() # "filename": {"NN0": hash}
     firstFilePerHash = dict() # "filename": {hash: "NN0"}
@@ -136,10 +134,11 @@ def compareOverlayAcrossVersions(filename: str, versionsList: List[str], context
                 bssSplits[k] = v
 
     for version in versionsList:
-        path = os.path.join("baserom_" + version, filename)
+        path = os.path.join(game, version, "baserom", filename)
 
         array_of_bytes = readFileAsBytearray(path)
         if len(array_of_bytes) == 0:
+            # print(f"Skipping {path}")
             continue
 
         if is_overlay:
@@ -169,12 +168,6 @@ def compareOverlayAcrossVersions(filename: str, versionsList: List[str], context
             if was_updated:
                 f.updateBytes()
 
-        if args.savetofile:
-            new_file_path = os.path.join(args.savetofile, version, filename, filename)
-            f.saveToFile(new_file_path)
-
-        abbr = ZeldaOffsets.getVersionAbbr(path)
-
         if isinstance(f, FileGeneric):
             subfiles = {
                 ".text" : f.textList,
@@ -198,19 +191,17 @@ def compareOverlayAcrossVersions(filename: str, versionsList: List[str], context
 
                 f_hash = sub.getHash()
                 # Map each abbreviation to its hash.
-                filesHashes[file_section][abbr] = f_hash
+                filesHashes[file_section][version] = f_hash
 
                 # Find out where in which version this hash appeared for first time.
                 if f_hash not in firstFilePerHash[file_section]:
-                    firstFilePerHash[file_section][f_hash] = abbr
+                    firstFilePerHash[file_section][f_hash] = version
 
     for file_section in filesHashes:
         row = [file_section]
         for version in versionsList:
-            abbr = ZeldaOffsets.versions.get(version)
-
-            if abbr in filesHashes[file_section]:
-                fHash = filesHashes[file_section][abbr]
+            if version in filesHashes[file_section]:
+                fHash = filesHashes[file_section][version]
                 row.append(firstFilePerHash[file_section][fHash])
             else:
                 row.append("")
@@ -221,19 +212,18 @@ def compareOverlayAcrossVersions(filename: str, versionsList: List[str], context
 
 def main():
     parser = argparse.ArgumentParser()
+    choices = ["oot", "mm"]
+    parser.add_argument("game", help="Game to comapre.", choices=choices)
     parser.add_argument("versionlist", help="Path to version list.")
     parser.add_argument("filelist", help="List of filenames of the ROM that will be compared.")
     parser.add_argument("--noheader", help="Disables the csv header.", action="store_true")
     # parser.add_argument("--overlays", help="Treats the files in filelist as overlays.", action="store_true")
-    parser.add_argument("--savetofile", help="Specify a folder where each part of an overlay will be written.", metavar="FOLDER")
-    parser.add_argument("--disable-asm-comments", help="Disables the comments in assembly code when using --savetofile.", action="store_true")
     parser.add_argument("--ignore80", help="Ignores words differences that starts in 0x80XXXXXX", action="store_true")
     parser.add_argument("--ignore06", help="Ignores words differences that starts in 0x06XXXXXX", action="store_true")
     parser.add_argument("--ignore04", help="Ignores words starting with 0x04.", action="store_true")
     parser.add_argument("--ignore-branches", help="Ignores the address of every branch, jump and jal.", action="store_true")
     parser.add_argument("--dont-remove-ptrs", help="Disable the pointer removal feature.", action="store_true")
     parser.add_argument("--disable-multiprocessing", help="", action="store_true")
-    parser.add_argument("--save-context", help="Saves the context to a file. The provided filename will be suffixed with the corresponding version.", metavar="FILENAME")
     args = parser.parse_args()
 
     GlobalConfig.REMOVE_POINTERS = not args.dont_remove_ptrs
@@ -241,7 +231,7 @@ def main():
     GlobalConfig.IGNORE_04 = args.ignore04
     GlobalConfig.IGNORE_06 = args.ignore06
     GlobalConfig.IGNORE_80 = args.ignore80
-    GlobalConfig.ASM_COMMENT = not args.disable_asm_comments
+    # GlobalConfig.ASM_COMMENT = True
     GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
     # GlobalConfig.TRUST_USER_FUNCTIONS = True
     # GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS = args.disasm_unknown
@@ -257,13 +247,6 @@ def main():
             versionsList.append(version.strip())
     filesList = readFile(args.filelist)
 
-    if args.savetofile is not None:
-        for ver in versionsList:
-            for filename in filesList:
-                if filename.startswith("#"):
-                    continue
-                os.makedirs(os.path.join(args.savetofile, ver, filename), exist_ok=True)
-
     contextPerVersion: Dict[str, Context] = dict()
     for version in versionsList:
         contextPerVersion[version] = Context()
@@ -276,7 +259,7 @@ def main():
     for version in versionsList:
         dmaAddresses[version] = getDmaAddresses(version)
 
-        codePath = os.path.join(f"baserom_{version}", "code")
+        codePath = os.path.join(args.game, version, "baserom", "code")
 
         if os.path.exists(codePath) and version in ZeldaOffsets.offset_ActorOverlayTable:
             tableOffset = ZeldaOffsets.offset_ActorOverlayTable[version]
@@ -305,7 +288,7 @@ def main():
 
     if args.disable_multiprocessing:
         for filename in filesList:
-            for row in compareFunction(filename, versionsList=versionsList, contextPerVersion=contextPerVersion, dmaAddresses=dmaAddresses, actorOverlayTable=actorOverlayTable, args=args):
+            for row in compareFunction(filename, args.game, versionsList=versionsList, contextPerVersion=contextPerVersion, dmaAddresses=dmaAddresses, actorOverlayTable=actorOverlayTable, args=args):
                 # Print csv row
                 for cell in row:
                     print(cell + ",", end="")
@@ -313,25 +296,12 @@ def main():
     else:
         numCores = cpu_count()
         p = Pool(numCores)
-        for column in p.imap(partial(compareFunction, versionsList=versionsList, contextPerVersion=contextPerVersion, dmaAddresses=dmaAddresses, actorOverlayTable=actorOverlayTable, args=args), filesList):
+        for column in p.imap(partial(compareFunction, game=args.game, versionsList=versionsList, contextPerVersion=contextPerVersion, dmaAddresses=dmaAddresses, actorOverlayTable=actorOverlayTable, args=args), filesList):
             for row in column:
                 # Print csv row
                 for cell in row:
                     print(cell + ",", end="")
                 print(countUnique(row)-1)
-
-    if args.save_context is not None:
-        head, tail = os.path.split(args.save_context)
-        os.makedirs(head, exist_ok=True)
-        name = tail
-        extension = ""
-        if "." in tail:
-            *aux, extension = tail.split(".")
-            name = ".".join(aux)
-            extension = "." + extension
-        name = os.path.join(head, name)
-        for version, context in contextPerVersion.items():
-            context.saveContextToFile(f"{name}_{version}{extension}")
 
 
 if __name__ == "__main__":
