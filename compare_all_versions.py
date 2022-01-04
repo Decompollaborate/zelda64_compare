@@ -261,7 +261,7 @@ def main():
 
         codePath = os.path.join(args.game, version, "baserom", "code")
 
-        if os.path.exists(codePath) and version in ZeldaOffsets.offset_ActorOverlayTable:
+        if os.path.exists(codePath) and version in ZeldaOffsets.offset_ActorOverlayTable[args.game]:
             tableOffset = ZeldaOffsets.offset_ActorOverlayTable[args.game][version]
             if tableOffset != 0x0 and tableOffset != 0xFFFFFF:
                 codeData = readFileAsBytearray(codePath)

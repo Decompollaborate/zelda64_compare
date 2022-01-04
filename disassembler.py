@@ -17,16 +17,12 @@ from mips.MipsSplitEntry import readSplitsFromCsv
 from mips.ZeldaTables import DmaEntry, contextReadVariablesCsv, contextReadFunctionsCsv, getDmaAddresses, OverlayTableEntry
 from mips import ZeldaOffsets
 
-def disassembleFile(version: str, filename: str, outputfolder: str, context: Context, dmaAddresses: Dict[str, DmaEntry], vram: int = -1, textend: int = -1):
+def disassembleFile(version: str, filename: str, game: str, outputfolder: str, context: Context, dmaAddresses: Dict[str, DmaEntry], vram: int = -1, textend: int = -1):
     is_overlay = filename.startswith("ovl_")
     is_code = filename == "code"
     is_boot = filename == "boot"
-    if version.startswith("mm_"):
-        # We are missing a few MM stuff to make this work properly
-        is_code = False
-        is_boot = False
 
-    path = os.path.join(f"baserom_{version}", filename)
+    path = os.path.join(game, version, "baserom", filename)
 
     array_of_bytes = readFileAsBytearray(path)
     if len(array_of_bytes) == 0:
@@ -41,36 +37,35 @@ def disassembleFile(version: str, filename: str, outputfolder: str, context: Con
         if filename in dmaAddresses:
             dmaEntry = dmaAddresses[filename]
 
-            codePath = os.path.join(f"baserom_{version}", "code")
+            codePath = os.path.join(game, version, "baserom", "code")
 
-            if os.path.exists(codePath) and version in ZeldaOffsets.offset_ActorOverlayTable:
-                tableOffset = ZeldaOffsets.offset_ActorOverlayTable[version]
+            if os.path.exists(codePath) and version in ZeldaOffsets.offset_ActorOverlayTable[game]:
+                tableOffset = ZeldaOffsets.offset_ActorOverlayTable[game][version]
                 if tableOffset != 0x0:
                     codeData = readFileAsBytearray(codePath)
                     i = 0
-                    while i < ZeldaOffsets.ACTOR_ID_MAX:
-                    #while i < ZeldaOffsets.ACTOR_ID_MAX_MM:
+                    while i < ZeldaOffsets.ActorIDMax[game]:
                         entry = OverlayTableEntry(codeData[tableOffset + i*0x20 : tableOffset + (i+1)*0x20])
                         if entry.vromStart == dmaEntry.vromStart:
                             tableEntry = entry
                             break
                         i += 1
 
-        f = FileOverlay(array_of_bytes, filename, version, context, tableEntry=tableEntry)
+        f = FileOverlay(array_of_bytes, filename, version, context, game, tableEntry=tableEntry)
     elif is_code:
         print("code detected. Parsing...")
         textSplits = readSplitsFromCsv("csvsplits/code_text.csv") if os.path.exists("csvsplits/code_text.csv") else {version: dict()}
         dataSplits = readSplitsFromCsv("csvsplits/code_data.csv") if os.path.exists("csvsplits/code_data.csv") else {version: dict()}
         rodataSplits = readSplitsFromCsv("csvsplits/code_rodata.csv") if os.path.exists("csvsplits/code_rodata.csv") else {version: dict()}
         bssSplits = readSplitsFromCsv("csvsplits/code_bss.csv") if os.path.exists("csvsplits/code_bss.csv") else {version: dict()}
-        f = FileCode(array_of_bytes, version, context, textSplits.get(version, {}), dataSplits.get(version, {}), rodataSplits.get(version, {}), bssSplits.get(version, {}))
+        f = FileCode(array_of_bytes, version, context, game, textSplits.get(version, {}), dataSplits.get(version, {}), rodataSplits.get(version, {}), bssSplits.get(version, {}))
     elif is_boot:
         print("boot detected. Parsing...")
         textSplits = readSplitsFromCsv("csvsplits/boot_text.csv") if os.path.exists("csvsplits/boot_text.csv") else {version: dict()}
         dataSplits = readSplitsFromCsv("csvsplits/boot_data.csv") if os.path.exists("csvsplits/boot_data.csv") else {version: dict()}
         rodataSplits = readSplitsFromCsv("csvsplits/boot_rodata.csv") if os.path.exists("csvsplits/boot_rodata.csv") else {version: dict()}
         bssSplits = readSplitsFromCsv("csvsplits/boot_bss.csv") if os.path.exists("csvsplits/boot_bss.csv") else {version: dict()}
-        f = FileBoot(array_of_bytes, version, context, textSplits.get(version, {}), dataSplits.get(version, {}), rodataSplits.get(version, {}), bssSplits.get(version, {}))
+        f = FileBoot(array_of_bytes, version, context, game, textSplits.get(version, {}), dataSplits.get(version, {}), rodataSplits.get(version, {}), bssSplits.get(version, {}))
     else:
         print("Unknown file type. Assuming .text. Parsing...")
 
@@ -90,7 +85,7 @@ def disassembleFile(version: str, filename: str, outputfolder: str, context: Con
     print()
     print(f"Found {f.nFuncs} functions.")
 
-    new_file_folder = os.path.join(outputfolder, version, filename)
+    new_file_folder = os.path.join(outputfolder, filename)
     os.makedirs(new_file_folder, exist_ok=True)
     new_file_path = os.path.join(new_file_folder, filename)
 
@@ -114,6 +109,8 @@ def disassembleFile(version: str, filename: str, outputfolder: str, context: Con
 def disassemblerMain():
     description = ""
     parser = argparse.ArgumentParser(description=description)
+    choices = ["oot", "mm"]
+    parser.add_argument("game", help="Game to disassemble.", choices=choices)
     parser.add_argument("version", help="Select which baserom folder will be used. Example: ique_cn would look up in folder baserom_ique_cn")
     parser.add_argument("file", help="File to be disassembled from the baserom folder.")
     parser.add_argument("outputfolder", help="Path to output folder.")
@@ -142,19 +139,13 @@ def disassemblerMain():
     contextReadFunctionsCsv(context, args.game, args.version)
     dmaAddresses: Dict[str, DmaEntry] = getDmaAddresses(args.game, args.version)
 
-    disassembleFile(args.version, args.file, args.outputfolder, context, dmaAddresses, int(args.vram, 16), int(args.text_end_offset, 16))
+    disassembleFile(args.version, args.file, args.game, args.outputfolder, context, dmaAddresses, int(args.vram, 16), int(args.text_end_offset, 16))
 
     if args.save_context is not None:
         head, tail = os.path.split(args.save_context)
-        os.makedirs(head, exist_ok=True)
-        name = tail
-        extension = ""
-        if "." in tail:
-            *aux, extension = tail.split(".")
-            name = ".".join(aux)
-            extension = "." + extension
-        name = os.path.join(head, name)
-        context.saveContextToFile(f"{name}_{args.version}{extension}")
+        if head != "":
+            os.makedirs(head, exist_ok=True)
+        context.saveContextToFile(args.save_context)
 
 
 if __name__ == "__main__":
