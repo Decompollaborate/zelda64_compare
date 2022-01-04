@@ -16,12 +16,6 @@ from mips.MipsFileBoot import FileBoot
 from mips.MipsSplitEntry import readSplitsFromCsv
 from mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv
 
-script_dir = os.path.dirname(os.path.realpath(__file__))
-root_dir = script_dir + "/.."
-if not script_dir.endswith("/tools"):
-    root_dir = script_dir
-baserom_path = root_dir + "/baserom_"
-
 
 def print_result_different(comparison, indentation=0):
     if comparison['size_one'] != comparison['size_two']:
@@ -48,8 +42,8 @@ def compare_baseroms(args, filelist):
     contextReadFunctionsCsv(context_two, args.version2)
 
     for filename in filelist:
-        filepath_one = os.path.join(baserom_path + args.version1, filename)
-        filepath_two = os.path.join(baserom_path + args.version2, filename)
+        filepath_one = os.path.join(args.game, args.version1, "baserom", filename)
+        filepath_two = os.path.join(args.game, args.version2, "baserom", filename)
 
         if not os.path.exists(filepath_one):
             missing_in_one.add(filename)
@@ -155,7 +149,7 @@ def print_section_as_csv(args, index: int, filename: str, section_name: str, sec
         diff_bytes = section["diff_bytes"]
         diff_words = section["diff_words"]
         print(f'{index},{filename} {section_name},{equal},{len_one},{len_two},{div},{size_difference},{diff_bytes},{diff_words}', end="")
-        if args.split_files:
+        if not args.dont_split_files:
             if "text" in section:
                 print(f',{section["text"]["diff_opcode"]},{section["text"]["same_opcode_same_args"]}', end="")
             else:
@@ -174,13 +168,13 @@ def compare_to_csv(args, filelist):
     context_two.readFunctionMap(args.version2)
 
     print(f"Index,File,Are equals,Size in {column1},Size in {column2},Size proportion,Size difference,Bytes different,Words different", end="")
-    if args.split_files:
+    if not args.dont_split_files:
         print(",Opcodes difference,Same opcode but different arguments", end="")
     print(flush=True)
 
     for filename in filelist:
-        filepath_one = os.path.join(baserom_path + args.version1, filename)
-        filepath_two = os.path.join(baserom_path + args.version2, filename)
+        filepath_one = os.path.join(args.game, args.version1, "baserom", filename)
+        filepath_two = os.path.join(args.game, args.version2, "baserom", filename)
 
         index += 1
 
@@ -209,15 +203,15 @@ def compare_to_csv(args, filelist):
             len_two = "" if is_missing_in_two else len(file_two_data)
 
             print(f'{index},{filename},{equal},{len_one},{len_two},{div},{size_difference},{diff_bytes},{diff_words}', end="")
-            if args.split_files:
+            if not args.dont_split_files:
                 print(",,", end="")
             print()
 
         else:
-            if args.split_files and filename.startswith("ovl_"):
+            if not args.dont_split_files and filename.startswith("ovl_"):
                 file_one = FileOverlay(file_one_data, filename, args.version1, context_one)
                 file_two = FileOverlay(file_two_data, filename, args.version2, context_two)
-            elif args.split_files and filename == "code":
+            elif not args.dont_split_files and filename == "code":
                 textSplits = readSplitsFromCsv("csvsplits/code_text.csv") if os.path.exists("csvsplits/code_text.csv") else {args.version1: dict(), args.version2: dict()}
                 dataSplits = readSplitsFromCsv("csvsplits/code_data.csv") if os.path.exists("csvsplits/code_data.csv") else {args.version1: dict(), args.version2: dict()}
                 rodataSplits = readSplitsFromCsv("csvsplits/code_rodata.csv") if os.path.exists("csvsplits/code_rodata.csv") else {args.version1: dict(), args.version2: dict()}
@@ -266,11 +260,13 @@ def main():
     epilog = """\
     """
     parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument("version1", help="A version of the game to compare. The files will be read from baserom_version1. For example: baserom_pal_mq_dbg")
-    parser.add_argument("version2", help="A version of the game to compare. The files will be read from baserom_version2. For example: baserom_pal_mq")
+    choices = ["oot", "mm"]
+    parser.add_argument("game", help="Game to comapre.", choices=choices)
+    parser.add_argument("version1", help="A version of the game to compare.")
+    parser.add_argument("version2", help="A version of the game to compare.")
     parser.add_argument("filelist", help="Path to the filelist that will be used.")
     parser.add_argument("--print", help="Select what will be printed for a cleaner output. Default is 'all'.", choices=["all", "equals", "diffs", "missing"], default="all")
-    parser.add_argument("--split-files", help="Treats each section of a a file as separate files.", action="store_true")
+    parser.add_argument("--dont-split-files", help="Disables treating each section of a a file as separate files.", action="store_true")
     parser.add_argument("--no-csv", help="Don't print the output in csv format.", action="store_true")
     parser.add_argument("--ignore80", help="Ignores words differences that starts in 0x80XXXXXX", action="store_true")
     parser.add_argument("--ignore06", help="Ignores words differences that starts in 0x06XXXXXX", action="store_true")
@@ -295,7 +291,6 @@ def main():
     # GlobalConfig.QUIET = args.quiet
 
     filelist = readFile(args.filelist)
-    # filelist = readJson(args.filelist)
 
     if not args.no_csv:
         compare_to_csv(args, filelist)

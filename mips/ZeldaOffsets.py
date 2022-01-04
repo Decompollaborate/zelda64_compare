@@ -3,46 +3,6 @@
 from __future__ import annotations
 
 
-versions = {
-    "ntsc_0.9" : "NNR",
-    "ntsc_1.0" : "NN0",
-    "ntsc_1.1" : "NN1",
-    "pal_1.0" : "NP0",
-    "ntsc_1.2" : "NN2",
-    "pal_1.1" : "NP1",
-    "jp_gc" : "GJO",
-    "jp_mq" : "GJM",
-    "usa_gc" : "GUO",
-    "usa_mq" : "GUM",
-    "pal_gc" : "GPO",
-    "pal_gc_dbg1" : "GPOD1",
-    "pal_gc_dbg2" : "GPOD2",
-    "pal_mq" : "GPM",
-    "pal_mq_dbg" : "GPMD",
-    "jp_gc_ce" : "GJC",
-    "ique_cn" : "IC",
-    "ique_tw" : "IT",
-
-    "mm_jp_1.0" : "NJ0",
-    "mm_jp_1.1" : "NJ1",
-    "mm_usa_demo" : "NUK",
-    "mm_usa" : "NU0",
-    "mm_pal_1.0" : "NE0",
-    "mm_pal_dbg" : "NED",
-    "mm_pal_1.1" : "NE1",
-    "mm_usa_gc" : "GU",
-    "mm_pal_gc" : "GE",
-    "mm_jp_gc" : "GJ",
-}
-
-def getVersionAbbr(filename: str) -> str:
-    for ver in versions:
-        if "baserom_" + ver + "/" in filename:
-            return versions[ver]
-    # If the version wasn't found.
-    return filename
-
-
 ENTRYPOINT = 0x80000400
 
 ACTOR_ID_MAX    = 0x01D7
