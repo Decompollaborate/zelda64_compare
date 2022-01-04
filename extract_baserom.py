@@ -107,13 +107,13 @@ def readFile(filepath):
         return [x.strip() for x in f.readlines()]
 
 def readFilelists():
-    FILE_NAMES["OOT"]["PAL MQ DBG"] = readFile("filelists/filelist_pal_mq_dbg.txt")
-    FILE_NAMES["OOT"]["PAL MQ"] = readFile("filelists/filelist_pal_mq.txt")
-    FILE_NAMES["OOT"]["USA MQ"] = readFile("filelists/filelist_usa_mq.txt")
-    FILE_NAMES["OOT"]["NTSC 1.0"] = readFile("filelists/filelist_ntsc_1.0.txt")
-    FILE_NAMES["OOT"]["PAL 1.0"] = readFile("filelists/filelist_pal_1.0.txt")
-    FILE_NAMES["OOT"]["JP GC CE"] = readFile("filelists/filelist_jp_gc_ce.txt")
-    FILE_NAMES["OOT"]["IQUE CN"] = readFile("filelists/filelist_ique_cn.txt")
+    FILE_NAMES["OOT"]["PAL MQ DBG"] = readFile("oot/filelists/filelist_pal_mq_dbg.txt")
+    FILE_NAMES["OOT"]["PAL MQ"]     = readFile("oot/filelists/filelist_pal_mq.txt")
+    FILE_NAMES["OOT"]["USA MQ"]     = readFile("oot/filelists/filelist_usa_mq.txt")
+    FILE_NAMES["OOT"]["NTSC 1.0"]   = readFile("oot/filelists/filelist_ntsc_1.0.txt")
+    FILE_NAMES["OOT"]["PAL 1.0"]    = readFile("oot/filelists/filelist_pal_1.0.txt")
+    FILE_NAMES["OOT"]["JP GC CE"]   = readFile("oot/filelists/filelist_jp_gc_ce.txt")
+    FILE_NAMES["OOT"]["IQUE CN"]    = readFile("oot/filelists/filelist_ique_cn.txt")
 
     FILE_NAMES["OOT"]["JP MQ"] = FILE_NAMES["OOT"]["USA MQ"]
 
