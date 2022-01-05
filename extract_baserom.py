@@ -67,8 +67,8 @@ FILE_NAMES: Dict[str, Dict[str, List[str] | None]] = {
         "CEO":        None,
         "CEM":        None,
         "CPOD1":      None,
-        "CPOD2":      None,
         "CPMD":       None,
+        "CPOD2":      None,
         "CPO":        None,
         "CPM":        None,
         "CJC":        None, # Zelda collector's edition
