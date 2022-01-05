@@ -29,8 +29,8 @@ GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
 # GlobalConfig.VERBOSE = args.verbose
 # GlobalConfig.QUIET = args.quiet
 
-def readCodeSplitsCsv():
-    code_splits_file = readCsv("csvsplits/code_text.csv")
+def readCodeSplitsCsv(game: str):
+    code_splits_file = readCsv(os.path.join(game, "csvsplits", "code_text.csv"))
 
     header = code_splits_file[0][3::3]
     splits = { h: dict() for h in header }
@@ -72,7 +72,7 @@ VERSION = args.version
 
 palMqDbg_Code_array = readVersionedFileAsBytearrray(CODE, args.game, VERSION)
 
-codeSplits = readCodeSplitsCsv()
+codeSplits = readCodeSplitsCsv(args.game)
 context = Context()
 context.readFunctionMap(VERSION)
 contextReadVariablesCsv(context, args.game, VERSION)
@@ -84,7 +84,7 @@ if VERSION in codeSplits:
         palMqDbg_filesStarts.append((offset, size, codeFilename))
 else:
     palMqDbg_filesStarts.append((0, len(palMqDbg_Code_array), "start_dummy_000000"))
-palMqDbg_filesStarts.append((codeDataStart.get(VERSION, 0xFFFFFFFF), 0, "end"))
+palMqDbg_filesStarts.append((codeDataStart.get(args.game, {}).get(VERSION, 0xFFFFFFFF), 0, "end"))
 
 palMqDbg_filesStarts.sort()
 
@@ -110,8 +110,8 @@ while i < len(palMqDbg_filesStarts) - 1:
     palMqDbg_texts.append(text)
     i += 1
 
-section_data = Data(palMqDbg_Code_array[codeDataStart.get(VERSION, -1):codeRodataStart.get(VERSION, -1)], CODE, VERSION, context)
-section_rodata = Rodata(palMqDbg_Code_array[codeRodataStart.get(VERSION, -1):], CODE, VERSION, context)
+section_data = Data(palMqDbg_Code_array[codeDataStart.get(args.game, {}).get(VERSION, -1):codeRodataStart.get(args.game, {}).get(VERSION, -1)], CODE, VERSION, context)
+section_rodata = Rodata(palMqDbg_Code_array[codeRodataStart.get(args.game, {}).get(VERSION, -1):], CODE, VERSION, context)
 
 section_data.vRamStart = codeVramStart.get(args.game, {}).get(VERSION, -1) + codeDataStart.get(args.game, {}).get(VERSION, -1)
 section_rodata.vRamStart = codeVramStart.get(args.game, {}).get(VERSION, -1) + codeRodataStart.get(args.game, {}).get(VERSION, -1)
