@@ -164,10 +164,13 @@ def fixBaserom(rom):
     if game_version[0] == "OOT" and language == "J":
         if game_version[1] == "NE0":
             game_version[1] = "NJ0"
+            game_version[2] = "Nintendo 64 Japanese 1.0"
         elif game_version[1] == "NE1":
             game_version[1] = "NJ1"
+            game_version[2] = "Nintendo 64 Japanese 1.1"
         elif game_version[1] == "NE2":
             game_version[1] = "NJ2"
+            game_version[2] = "Nintendo 64 Japanese 1.2"
 
     print("Detected ROM for " + game_version[0] + ", version " + game_version[1] + " (" + game_version[2] + ")")
 
