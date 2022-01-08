@@ -12,11 +12,11 @@ from py_mips_disasm.mips.Utils import *
 from py_mips_disasm.mips.GlobalConfig import GlobalConfig
 from py_mips_disasm.mips.MipsSection import Section
 from py_mips_disasm.mips.MipsContext import Context
+from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat
 
 from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
-from mips.MipsFileCode import FileCode
-from mips.MipsFileBoot import FileBoot
+from mips.MipsFileSplits import FileSplits
 from mips.MipsSplitEntry import readSplitsFromCsv
 from mips.ZeldaTables import OverlayTableEntry, contextReadVariablesCsv, contextReadFunctionsCsv, getDmaAddresses, DmaEntry
 from mips import ZeldaOffsets
@@ -99,21 +99,13 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
         return column
 
     is_overlay = filename.startswith("ovl_")
-    is_code = filename == "code"
-    is_boot = filename == "boot"
 
-    sections = [ "text", "data", "rodata", "bss" ]
-
-    sectionsSplits = dict()
     for version in versionsList:
-        sectionsSplits[version] = dict()
-        for section in sections:
-            sectionsSplits[version][section + "Splits"] = dict()
-            if is_code or is_boot:
-                csvPath = os.path.join("csvsplits", filename + "_" + section + ".csv")
-                if os.path.exists(csvPath):
-                    for k, v in readSplitsFromCsv(csvPath).items():
-                        sectionsSplits[k][section + "Splits"] = v
+        splitsData = None
+        tablePath = os.path.join(game, version, "tables", f"files_{filename}.csv")
+        if os.path.exists(tablePath):
+            # print(tablePath)
+            splitsData = FileSplitFormat(tablePath)
 
         path = os.path.join(game, version, "baserom", filename)
 
@@ -135,10 +127,8 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
                                 break
 
             f = FileOverlay(array_of_bytes, filename, version, contextPerVersion[version], game, tableEntry=tableEntry)
-        elif is_code:
-            f = FileCode(array_of_bytes, version, contextPerVersion[version], game, **sectionsSplits[version])
-        elif is_boot:
-            f = FileBoot(array_of_bytes, version, contextPerVersion[version], game, **sectionsSplits[version])
+        elif filename in ("code", "boot", "n64dd"):
+            f = FileSplits(array_of_bytes, filename, version, contextPerVersion[version], game, splitsData)
         else:
             f = Section(array_of_bytes, filename, version, contextPerVersion[version])
 
