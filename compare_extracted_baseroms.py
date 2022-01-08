@@ -9,11 +9,10 @@ from py_mips_disasm.mips.Utils import *
 from py_mips_disasm.mips.GlobalConfig import GlobalConfig
 from py_mips_disasm.mips.MipsSection import Section
 from py_mips_disasm.mips.MipsContext import Context
+from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat
 
 from mips.MipsFileOverlay import FileOverlay
-from mips.MipsFileCode import FileCode
-from mips.MipsFileBoot import FileBoot
-from mips.MipsSplitEntry import readSplitsFromCsv
+from mips.MipsFileSplits import FileSplits
 from mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv
 
 
@@ -60,23 +59,21 @@ def compare_baseroms(args, filelist):
         file_one_data = readFileAsBytearray(filepath_one)
         file_two_data = readFileAsBytearray(filepath_two)
 
+        splitsDataOne = None
+        splitsDataTwo = None
+        tablePath = os.path.join(args.game, args.version1, "tables", f"files_{filename}.csv")
+        if os.path.exists(tablePath):
+            splitsDataOne = FileSplitFormat(tablePath)
+        tablePath = os.path.join(args.game, args.version2, "tables", f"files_{filename}.csv")
+        if os.path.exists(tablePath):
+            splitsDataTwo = FileSplitFormat(tablePath)
+
         if filename.startswith("ovl_"):
             file_one = FileOverlay(file_one_data, filename, args.version1, context_one, args.game)
             file_two = FileOverlay(file_two_data, filename, args.version2, context_two, args.game)
-        elif filename == "code":
-            textSplits = readSplitsFromCsv("csvsplits/code_text.csv") if os.path.exists("csvsplits/code_text.csv") else {args.version1: dict(), args.version2: dict()}
-            dataSplits = readSplitsFromCsv("csvsplits/code_data.csv") if os.path.exists("csvsplits/code_data.csv") else {args.version1: dict(), args.version2: dict()}
-            rodataSplits = readSplitsFromCsv("csvsplits/code_rodata.csv") if os.path.exists("csvsplits/code_rodata.csv") else {args.version1: dict(), args.version2: dict()}
-            bssSplits = readSplitsFromCsv("csvsplits/code_bss.csv") if os.path.exists("csvsplits/code_bss.csv") else {args.version1: dict(), args.version2: dict()}
-            file_one = FileCode(file_one_data, args.version1, context_one, args.game, textSplits[args.version1], dataSplits[args.version1], rodataSplits[args.version1], bssSplits[args.version1])
-            file_two = FileCode(file_two_data, args.version2, context_two, args.game, textSplits[args.version2], dataSplits[args.version2], rodataSplits[args.version2], bssSplits[args.version2])
-        elif filename == "boot":
-            textSplits = readSplitsFromCsv("csvsplits/boot_text.csv") if os.path.exists("csvsplits/boot_text.csv") else {args.version1: dict(), args.version2: dict()}
-            dataSplits = readSplitsFromCsv("csvsplits/boot_data.csv") if os.path.exists("csvsplits/boot_data.csv") else {args.version1: dict(), args.version2: dict()}
-            rodataSplits = readSplitsFromCsv("csvsplits/boot_rodata.csv") if os.path.exists("csvsplits/boot_rodata.csv") else {args.version1: dict(), args.version2: dict()}
-            bssSplits = readSplitsFromCsv("csvsplits/boot_bss.csv") if os.path.exists("csvsplits/boot_bss.csv") else {args.version1: dict(), args.version2: dict()}
-            file_one = FileBoot(file_one_data, args.version1, context_one, args.game, textSplits[args.version1], dataSplits[args.version1], rodataSplits[args.version1], bssSplits[args.version1])
-            file_two = FileBoot(file_two_data, args.version2, context_two, args.game, textSplits[args.version2], dataSplits[args.version2], rodataSplits[args.version2], bssSplits[args.version2])
+        elif filename in ("code", "boot", "n64dd"):
+            file_one = FileSplits(file_one_data, filename, args.version1, context_one, args.game, splitsDataOne)
+            file_two = FileSplits(file_two_data, filename, args.version2, context_two, args.game, splitsDataTwo)
         else:
             file_one = Section(file_one_data, filename, args.version1, context_one)
             file_two = Section(file_two_data, filename, args.version2, context_two)
@@ -208,23 +205,21 @@ def compare_to_csv(args, filelist):
             print()
 
         else:
+            splitsDataOne = None
+            splitsDataTwo = None
+            tablePath = os.path.join(args.game, args.version1, "tables", f"files_{filename}.csv")
+            if os.path.exists(tablePath):
+                splitsDataOne = FileSplitFormat(tablePath)
+            tablePath = os.path.join(args.game, args.version2, "tables", f"files_{filename}.csv")
+            if os.path.exists(tablePath):
+                splitsDataTwo = FileSplitFormat(tablePath)
+
             if not args.dont_split_files and filename.startswith("ovl_"):
                 file_one = FileOverlay(file_one_data, filename, args.version1, context_one, args.game)
                 file_two = FileOverlay(file_two_data, filename, args.version2, context_two, args.game)
-            elif not args.dont_split_files and filename == "code":
-                textSplits = readSplitsFromCsv("csvsplits/code_text.csv") if os.path.exists("csvsplits/code_text.csv") else {args.version1: dict(), args.version2: dict()}
-                dataSplits = readSplitsFromCsv("csvsplits/code_data.csv") if os.path.exists("csvsplits/code_data.csv") else {args.version1: dict(), args.version2: dict()}
-                rodataSplits = readSplitsFromCsv("csvsplits/code_rodata.csv") if os.path.exists("csvsplits/code_rodata.csv") else {args.version1: dict(), args.version2: dict()}
-                bssSplits = readSplitsFromCsv("csvsplits/code_bss.csv") if os.path.exists("csvsplits/code_bss.csv") else {args.version1: dict(), args.version2: dict()}
-                file_one = FileCode(file_one_data, args.version1, context_one, args.game, textSplits.get(args.version1, {}), dataSplits.get(args.version1, {}), rodataSplits.get(args.version1, {}), bssSplits.get(args.version1, {}))
-                file_two = FileCode(file_two_data, args.version2, context_two, args.game, textSplits.get(args.version2, {}), dataSplits.get(args.version2, {}), rodataSplits.get(args.version2, {}), bssSplits.get(args.version2, {}))
-            elif filename == "boot":
-                textSplits = readSplitsFromCsv("csvsplits/boot_text.csv") if os.path.exists("csvsplits/boot_text.csv") else {args.version1: dict(), args.version2: dict()}
-                dataSplits = readSplitsFromCsv("csvsplits/boot_data.csv") if os.path.exists("csvsplits/boot_data.csv") else {args.version1: dict(), args.version2: dict()}
-                rodataSplits = readSplitsFromCsv("csvsplits/boot_rodata.csv") if os.path.exists("csvsplits/boot_rodata.csv") else {args.version1: dict(), args.version2: dict()}
-                bssSplits = readSplitsFromCsv("csvsplits/boot_bss.csv") if os.path.exists("csvsplits/boot_bss.csv") else {args.version1: dict(), args.version2: dict()}
-                file_one = FileBoot(file_one_data, args.version1, context_one, args.game, textSplits.get(args.version1, {}), dataSplits.get(args.version1, {}), rodataSplits.get(args.version1, {}), bssSplits.get(args.version1, {}))
-                file_two = FileBoot(file_two_data, args.version2, context_two, args.game, textSplits.get(args.version2, {}), dataSplits.get(args.version2, {}), rodataSplits.get(args.version2, {}), bssSplits.get(args.version2, {}))
+            elif filename in ("code", "boot", "n64dd"):
+                file_one = FileSplits(file_one_data, filename, args.version1, context_one, args.game, splitsDataOne)
+                file_two = FileSplits(file_two_data, filename, args.version2, context_two, args.game, splitsDataTwo)
             else:
                 file_one = Section(file_one_data, filename, args.version1, context_one)
                 file_two = Section(file_two_data, filename, args.version2, context_two)

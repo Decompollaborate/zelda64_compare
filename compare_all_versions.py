@@ -17,7 +17,6 @@ from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat
 from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileSplits import FileSplits
-from mips.MipsSplitEntry import readSplitsFromCsv
 from mips.ZeldaTables import OverlayTableEntry, contextReadVariablesCsv, contextReadFunctionsCsv, getDmaAddresses, DmaEntry
 from mips import ZeldaOffsets
 
