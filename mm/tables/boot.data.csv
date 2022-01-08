@@ -1,0 +1,4 @@
+File,,Notes,nj0,,,nj1,,,ne0,,,np0,,,np1,,,nek,,,npd,,,cj0,,,ce0,,,cp0,,
+,,,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
+rsp_boot,,Start of data,,,,17860,800978C0,,16960,800969C0,,169C0,80096A20,,,,,16EC0,80096F20,,,,,,,,,,,,,
+idle,,,,,,,,,,80096B20,,,,,,,,,,,,,,,,,,,,,,

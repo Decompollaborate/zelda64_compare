@@ -39,7 +39,7 @@ def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, SplitEntry]]:
         row = code_splits_file[i]
         filename1, filename2, _, *data = row
         if len(data) % 3 != 0:
-            eprint(f"Error while parsing {csvfilename}. The amount of columns is not divisible by 3")
+            eprint(f"Error while parsing '{csvfilename}' row '{i+1}'. The amount of columns is not divisible by 3")
             exit(1)
 
         name = filename1 or filename2

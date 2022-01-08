@@ -1,2 +1,10 @@
 offset,vram,.text
 0,80080060,boot_main
+
+offset,vram,.data
+
+offset,vram,.rodata
+
+offset,vram,.bss
+19E30,80099E90,boot_main
+20210,800BA0A0,.end

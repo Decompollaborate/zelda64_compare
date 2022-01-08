@@ -1,2 +1,12 @@
 offset,vram,.text
 0,80080060,boot_main
+
+offset,vram,.data
+169C0,80096A20,rsp_boot
+
+offset,vram,.rodata
+18280,800982E0,boot_main
+
+offset,vram,.bss
+195F0,80099650,boot_main
+1F9A0,800B8FF0,.end

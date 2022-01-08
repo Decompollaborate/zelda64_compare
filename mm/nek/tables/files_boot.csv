@@ -57,6 +57,7 @@ AAC0,8008AB20,getsr
 AAD0,8008AB30,setsr
 AAE0,8008AB40,writebackdcache
 AB60,8008ABC0,initialize
+AEB0,8008AF10,file_00AEB0
 AF10,8008AF70,vigetnextframebuf
 AF50,8008AFB0,perspective
 B1E0,8008B240,sprawdma
@@ -68,6 +69,7 @@ B430,8008B490,getthreadid
 B450,8008B4B0,sptaskyield
 B470,8008B4D0,pfsreadwritefile
 B8C0,8008B920,pfsgetstatus
+BAF0,8008BB50,file_00BAF0
 BB00,8008BB60,guMtxIdentF
 BB50,8008BBB0,visetmode
 BBB0,8008BC10,getconfig
@@ -78,10 +80,12 @@ C370,8008C3D0,stoptimer
 C460,8008C4C0,probetlb
 C520,8008C580,pimgr
 C690,8008C6F0,piacs
+C750,8008C7B0,file_00C750
 C760,8008C7C0,devmgr
 CB70,8008CBD0,pirawdma
 CC40,8008CCA0,contpfs
 D7C0,8008D820,getcount
+D7D0,8008D830,file_00D7D0
 D7E0,8008D840,guMtxL2F
 D850,8008D8B0,getmemsize
 D970,8008D9D0,pfssearchfile
@@ -160,6 +164,7 @@ FFB0,80090010,jammesg
 140B0,80094110,epiwrite
 14100,80094160,maptlbrdb
 14160,800941C0,yieldthread
+141B0,80094210,file_0141B0
 141C0,80094220,guTranslate
 14290,800942F0,getcause
 142A0,80094300,contramwrite
@@ -171,6 +176,7 @@ FFB0,80090010,jammesg
 15720,80095780,sirawwrite
 15770,800957D0,spgetstat
 15780,800957E0,spsetstat
+15790,800957F0,file_015790
 157A0,80095800,vimgr
 15AB0,80095B10,vigetcurrcontext
 15AC0,80095B20,writebackdcacheall
@@ -197,3 +203,14 @@ FFB0,80090010,jammesg
 16DB0,80096E10,__osStrcmp
 16DF0,80096E50,__osStrcpy
 16E30,80096E90,__osMemcpy
+16EC0,80096F20,file_016EC0
+
+offset,vram,.data
+16EC0,80096F20,rsp_boot
+
+offset,vram,.rodata
+186A0,80098700,boot_main
+
+offset,vram,.bss
+19AF0,80099B50,boot_main
+1FEA0,800B99F0,.end

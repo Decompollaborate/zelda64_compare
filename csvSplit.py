@@ -37,12 +37,30 @@ def split_fileSplits(game: str, seg: str):
                 # print("\t", filename, splitData)
                 if splitData.offset < 0 or splitData.vram < 0 or splitData.filename == "":
                     continue
-                auxList.append((splitData.offset, splitData.vram, splitData.filename))
+                auxList.append((splitData.offset, splitData.vram, splitData.size, splitData.filename))
+
+            # fake extra to avoid problems
+            auxList.append((0xFFFFFF, 0x80FFFFFF, 0, "end"))
 
             # Reading from the file may not be sorted by offset
             auxList.sort()
-            for offset, vram, filename in auxList:
+
+            i = 0
+            while i < len(auxList) - 1:
+                offset, vram, size, filename = auxList[i]
+                nextOffset, _, _, _ = auxList[i+1]
+
+                end = offset + size
+                if size <= 0:
+                    end = nextOffset
+
+                if end < nextOffset:
+                    # Adds missing files
+                    auxList.insert(i+1, (end, vram + (end - offset), -1, f"file_{end:06X}"))
+
                 tablePerVersion[version].append(f"{offset:X},{vram:X},{filename}\n")
+
+                i += 1
 
 
     for version, lines in tablePerVersion.items():
