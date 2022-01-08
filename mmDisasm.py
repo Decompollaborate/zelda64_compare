@@ -6,16 +6,10 @@ import argparse
 
 from py_mips_disasm.mips.Utils import *
 from py_mips_disasm.mips.GlobalConfig import GlobalConfig
-from py_mips_disasm.mips.MipsText import Text
 from py_mips_disasm.mips.MipsContext import Context
 
-from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
-from mips.MipsFileCode import FileCode
-from mips.MipsFileBoot import FileBoot
-from mips.MipsSplitEntry import readSplitsFromCsv
-from mips.ZeldaTables import DmaEntry, getDmaAddresses, OverlayTableEntry
-from mips import ZeldaOffsets
+from mips.MipsFileSplits import FileSplits
 
 
 def mmDisasmMain():
@@ -54,18 +48,13 @@ def mmDisasmMain():
     if segment.type == "overlay":
         print("Overlay detected. Parsing...")
 
-        f = FileOverlay(array_of_bytes, filename, version, context)
+        f = FileOverlay(array_of_bytes, filename, version, context, "mm")
         subfolder = "overlays"
-    elif segment.type == "code":
-        print("code detected. Parsing...")
+    elif segment.type in ("code", "boot"):
+        print("code/boot detected. Parsing...")
         print("TODO. ABORTING")
         exit(-1)
-        f = FileCode(array_of_bytes, version, context)
-    elif segment.type == "boot":
-        print("boot detected. Parsing...")
-        print("TODO. ABORTING")
-        exit(-1)
-        f = FileBoot(array_of_bytes, version, context)
+        f = FileSplits(array_of_bytes, segment.type, version, context, "mm")
     else:
         print("Unknown file type. Assuming .text. Parsing...")
         print("TODO. ABORTING")

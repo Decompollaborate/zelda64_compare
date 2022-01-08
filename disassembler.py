@@ -8,19 +8,16 @@ from py_mips_disasm.mips.Utils import *
 from py_mips_disasm.mips.GlobalConfig import GlobalConfig
 from py_mips_disasm.mips.MipsText import Text
 from py_mips_disasm.mips.MipsContext import Context
+from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat
 
 from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
-from mips.MipsFileCode import FileCode
-from mips.MipsFileBoot import FileBoot
-from mips.MipsSplitEntry import readSplitsFromCsv
+from mips.MipsFileSplits import FileSplits
 from mips.ZeldaTables import DmaEntry, contextReadVariablesCsv, contextReadFunctionsCsv, getDmaAddresses, OverlayTableEntry
 from mips import ZeldaOffsets
 
 def disassembleFile(version: str, filename: str, game: str, outputfolder: str, context: Context, dmaAddresses: Dict[str, DmaEntry], vram: int = -1, textend: int = -1):
     is_overlay = filename.startswith("ovl_")
-    is_code = filename == "code"
-    is_boot = filename == "boot"
 
     path = os.path.join(game, version, "baserom", filename)
 
@@ -28,6 +25,12 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
     if len(array_of_bytes) == 0:
         eprint(f"File '{path}' not found!")
         exit(-1)
+
+    splitsData = None
+    tablePath = os.path.join(game, version, "tables", f"files_{filename}.csv")
+    if os.path.exists(tablePath):
+        # print(tablePath)
+        splitsData = FileSplitFormat(tablePath)
 
     if is_overlay:
         print("Overlay detected. Parsing...")
@@ -52,20 +55,9 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
                         i += 1
 
         f = FileOverlay(array_of_bytes, filename, version, context, game, tableEntry=tableEntry)
-    elif is_code:
-        print("code detected. Parsing...")
-        textSplits = readSplitsFromCsv("csvsplits/code_text.csv") if os.path.exists("csvsplits/code_text.csv") else {version: dict()}
-        dataSplits = readSplitsFromCsv("csvsplits/code_data.csv") if os.path.exists("csvsplits/code_data.csv") else {version: dict()}
-        rodataSplits = readSplitsFromCsv("csvsplits/code_rodata.csv") if os.path.exists("csvsplits/code_rodata.csv") else {version: dict()}
-        bssSplits = readSplitsFromCsv("csvsplits/code_bss.csv") if os.path.exists("csvsplits/code_bss.csv") else {version: dict()}
-        f = FileCode(array_of_bytes, version, context, game, textSplits.get(version, {}), dataSplits.get(version, {}), rodataSplits.get(version, {}), bssSplits.get(version, {}))
-    elif is_boot:
-        print("boot detected. Parsing...")
-        textSplits = readSplitsFromCsv("csvsplits/boot_text.csv") if os.path.exists("csvsplits/boot_text.csv") else {version: dict()}
-        dataSplits = readSplitsFromCsv("csvsplits/boot_data.csv") if os.path.exists("csvsplits/boot_data.csv") else {version: dict()}
-        rodataSplits = readSplitsFromCsv("csvsplits/boot_rodata.csv") if os.path.exists("csvsplits/boot_rodata.csv") else {version: dict()}
-        bssSplits = readSplitsFromCsv("csvsplits/boot_bss.csv") if os.path.exists("csvsplits/boot_bss.csv") else {version: dict()}
-        f = FileBoot(array_of_bytes, version, context, game, textSplits.get(version, {}), dataSplits.get(version, {}), rodataSplits.get(version, {}), bssSplits.get(version, {}))
+    elif filename in ("code", "boot", "n64dd"):
+        print(f"{filename} detected. Parsing...")
+        f = FileSplits(array_of_bytes, filename, version, context, game, splitsData)
     else:
         print("Unknown file type. Assuming .text. Parsing...")
 
