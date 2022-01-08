@@ -41,11 +41,11 @@ class OverlayTableEntry:
 
 
 def contextReadVariablesCsv(context: Context, game: str, version: str):
-    variablesPath = os.path.join(game, version, "tables", f"variables_{game}_{version}.csv")
+    variablesPath = os.path.join(game, version, "tables", f"variables.csv")
     if os.path.exists(variablesPath):
         context.readVariablesCsv(variablesPath)
 
 def contextReadFunctionsCsv(context: Context, game: str, version: str):
-    functionsPath = os.path.join(game, version, "tables", f"functions_{game}_{version}.csv")
+    functionsPath = os.path.join(game, version, "tables", f"functions.csv")
     if os.path.exists(functionsPath):
         context.readFunctionsCsv(functionsPath)
