@@ -1,0 +1,4 @@
+offset,vram,.text
+0,800A75E0,z_en_a_keep
+445A0,800EBB80,z_demo
+48850,800EFE30,z_draw

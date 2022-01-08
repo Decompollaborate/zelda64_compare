@@ -13,6 +13,22 @@ class SplitEntry:
         self.size: int = size
         self.vram: int = vram
 
+    def __str__(self) -> str:
+        out = "<SplitData "
+
+        out += f"{self.version}/{self.filename} Offset: 0x{self.offset:X}"
+
+        if self.size >= 0:
+            out += f" Size: 0x{self.size:X}"
+        if self.vram >= 0:
+            out += f" VRAM: 0x{self.vram:X}"
+
+        return out + ">"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
 def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, SplitEntry]]:
     code_splits_file = readCsv(csvfilename)
 
@@ -22,6 +38,10 @@ def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, SplitEntry]]:
     for i in range(2, len(code_splits_file)):
         row = code_splits_file[i]
         filename1, filename2, _, *data = row
+        if len(data) % 3 != 0:
+            eprint(f"Error while parsing {csvfilename}. The amount of columns is not divisible by 3")
+            exit(1)
+
         name = filename1 or filename2
         if name == "":
             continue

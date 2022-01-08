@@ -1,0 +1,2 @@
+offset,vram,.text
+0,80080060,boot_main
