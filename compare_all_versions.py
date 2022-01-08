@@ -102,38 +102,19 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
     is_code = filename == "code"
     is_boot = filename == "boot"
 
-    textSplits = {version: dict() for version in versionsList}
-    dataSplits = {version: dict() for version in versionsList}
-    rodataSplits = {version: dict() for version in versionsList}
-    bssSplits = {version: dict() for version in versionsList}
-    if is_code:
-        if os.path.exists("csvsplits/code_text.csv"):
-            for k, v in readSplitsFromCsv("csvsplits/code_text.csv").items():
-                textSplits[k] = v
-        if os.path.exists("csvsplits/code_data.csv"):
-            for k, v in readSplitsFromCsv("csvsplits/code_data.csv").items():
-                dataSplits[k] = v
-        if os.path.exists("csvsplits/code_rodata.csv"):
-            for k, v in readSplitsFromCsv("csvsplits/code_rodata.csv").items():
-                rodataSplits[k] = v
-        if os.path.exists("csvsplits/code_bss.csv"):
-            for k, v in readSplitsFromCsv("csvsplits/code_bss.csv").items():
-                bssSplits[k] = v
-    elif is_boot:
-        if os.path.exists("csvsplits/boot_text.csv"):
-            for k, v in readSplitsFromCsv("csvsplits/boot_text.csv").items():
-                textSplits[k] = v
-        if os.path.exists("csvsplits/boot_data.csv"):
-            for k, v in readSplitsFromCsv("csvsplits/boot_data.csv").items():
-                dataSplits[k] = v
-        if os.path.exists("csvsplits/boot_rodata.csv"):
-            for k, v in readSplitsFromCsv("csvsplits/boot_rodata.csv").items():
-                rodataSplits[k] = v
-        if os.path.exists("csvsplits/boot_bss.csv"):
-            for k, v in readSplitsFromCsv("csvsplits/boot_bss.csv").items():
-                bssSplits[k] = v
+    sections = [ "text", "data", "rodata", "bss" ]
 
+    sectionsSplits = dict()
     for version in versionsList:
+        sectionsSplits[version] = dict()
+        for section in sections:
+            sectionsSplits[version][section + "Splits"] = dict()
+            if is_code or is_boot:
+                csvPath = os.path.join("csvsplits", filename + "_" + section + ".csv")
+                if os.path.exists(csvPath):
+                    for k, v in readSplitsFromCsv(csvPath).items():
+                        sectionsSplits[k][section + "Splits"] = v
+
         path = os.path.join(game, version, "baserom", filename)
 
         array_of_bytes = readFileAsBytearray(path)
@@ -155,9 +136,9 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
 
             f = FileOverlay(array_of_bytes, filename, version, contextPerVersion[version], game, tableEntry=tableEntry)
         elif is_code:
-            f = FileCode(array_of_bytes, version, contextPerVersion[version], game, textSplits[version], dataSplits[version], rodataSplits[version], bssSplits[version])
+            f = FileCode(array_of_bytes, version, contextPerVersion[version], game, **sectionsSplits[version])
         elif is_boot:
-            f = FileBoot(array_of_bytes, version, contextPerVersion[version], game, textSplits[version], dataSplits[version], rodataSplits[version], bssSplits[version])
+            f = FileBoot(array_of_bytes, version, contextPerVersion[version], game, **sectionsSplits[version])
         else:
             f = Section(array_of_bytes, filename, version, contextPerVersion[version])
 
@@ -182,6 +163,8 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
 
         for sectionName, sectionCat in subfiles.items():
             for name, sub in sectionCat.items():
+                if is_overlay:
+                    name = ""
                 if name != "":
                     name = "." + name
                 file_section = filename + name + sectionName
