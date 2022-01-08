@@ -1,0 +1,4 @@
+Function,Notes,nj0,nj1,ne0,np0,np1,nek,npd,cj0,ce0,cp0
+,,VRAM,VRAM,VRAM,VRAM,VRAM,VRAM,VRAM,VRAM,VRAM,VRAM
+Cutscene_TerminatorImpl,,800ECEBC,800ECE6C,800EB364,,,,,,,
+Cutscene_IsPlayingCs,,800EFE4C,800EFDFC,800EE2F4,,,,,,,

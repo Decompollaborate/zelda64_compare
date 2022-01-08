@@ -71,6 +71,58 @@ def split_fileSplits(game: str, seg: str):
             f.writelines(lines)
 
 
+def split_functions(game: str):
+    csvPath = os.path.join(game, "tables", "functions.csv")
+
+    tablePerVersion = dict()
+
+    functions = readCsv(csvPath)
+    header = functions[0][2:]
+    for i in range(2, len(functions)):
+        funcName, _, *data = functions[i]
+
+        for headerIndex, version in enumerate(header):
+            if version not in tablePerVersion:
+                tablePerVersion[version] = []
+
+            vram = data[headerIndex]
+            if vram == "":
+                continue
+
+            tablePerVersion[version].append(f"{vram},{funcName}\n")
+
+    for version, lines in tablePerVersion.items():
+        with open(os.path.join(game, version, "tables", "functions.csv"), "w") as f:
+            f.writelines(lines)
+
+
+def split_variables(game: str):
+    csvPath = os.path.join(game, "tables", "variables.csv")
+
+    tablePerVersion = dict()
+
+    variables = readCsv(csvPath)
+    header = variables[0][3:]
+    for i in range(2, len(variables)):
+        varName, type, _, *data = variables[i]
+
+        for headerIndex, version in enumerate(header[::2]):
+            if version not in tablePerVersion:
+                tablePerVersion[version] = []
+
+            # print(varName, version, data)
+            vram, size = data[2*headerIndex : 2*headerIndex + 2]
+            if vram == "":
+                continue
+            if size == "":
+                size = "4"
+
+            tablePerVersion[version].append(f"{vram},{varName},{type},0x{size}\n")
+
+    for version, lines in tablePerVersion.items():
+        with open(os.path.join(game, version, "tables", "variables.csv"), "w") as f:
+            f.writelines(lines)
+
 
 def main():
     description = ""
@@ -83,7 +135,12 @@ def main():
     parser.add_argument("seg", help="") # TODO
     args = parser.parse_args()
 
-    split_fileSplits(args.game, args.seg)
+    if args.seg == "functions":
+        split_functions(args.game)
+    if args.seg == "variables":
+        split_variables(args.game)
+    else:
+        split_fileSplits(args.game, args.seg)
 
 
 if __name__ == "__main__":
