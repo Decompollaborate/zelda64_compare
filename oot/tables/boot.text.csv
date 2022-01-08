@@ -1,4 +1,4 @@
-,,,ntsc_0.9,,,ntsc_1.0,,,ntsc_1.1,,,pal_1.0,,,ntsc_1.2,,,pal_1.1,,,jp_gc,,,jp_mq,,,usa_gc,,,usa_mq,,,pal_gc,,,pal_gc_dbg1,,,pal_gc_dbg2,,,pal_mq,,,pal_mq_dbg,,,jp_gc_ce,,,ique_cn,,,ique_tw,,
+,,,ner,,,ne0,,,ne1,,,np0,,,ne2,,,np1,,,cjo,,,cjm,,,ceo,,,cem,,,cpo,,,cpod1,,,cpod2,,,cpm,,,cpmd,,,cjc,,,iqs,,,iqt,,
 Debug rom,,Notes,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
 boot_main.c,,,0,80000460,,0,80000460,,0,80000460,,0,80000460,,0,80000460,,0,80000460,140,0,80000460,,0,80000460,,0,80000460,,0,80000460,,0,80000460,,0,80000460,,0,80000460,,0,80000460,140,0,80000460,140,0,80000460,,0,80000450,,0,80000450,
 idle.c,,,,,,,,,140,800005A0,,,,,0140,800005A0,290,0140,800005A0,240,,,,,,,,,,,,,,,,,,,,,,0140,800005A0,290,140,800005a0,470,,,,,,,,,

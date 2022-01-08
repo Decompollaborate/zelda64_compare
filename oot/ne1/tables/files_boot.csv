@@ -1,0 +1,4 @@
+offset,vram,.text
+0,80000460,boot_main.c
+140,800005A0,idle.c
+390,800007F0,z_std_dma.c
