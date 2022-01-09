@@ -198,10 +198,6 @@ FEB0,8008FF10,timerintr
 17890,800978F0,__osMemcpy
 17920,80097980,file_017920
 
-offset,vram,.data
-
-offset,vram,.rodata
-
 offset,vram,.bss
 1B0B0,8009B110,boot_main
 21450,800BC560,.end

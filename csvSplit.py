@@ -28,6 +28,9 @@ def split_fileSplits(game: str, seg: str):
             if version == "":
                 continue
 
+            if len(filesDict) == 0:
+                continue
+
             if version not in tablePerVersion:
                 tablePerVersion[version] = []
             else:

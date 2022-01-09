@@ -206,10 +206,6 @@ FFF0,80090050,position
 16A70,80096AD0,__osMemcpy
 16B00,80096B60,file_016B00
 
-offset,vram,.data
-
-offset,vram,.rodata
-
 offset,vram,.bss
 19870,800998D0,boot_main
 1FC20,800B94F0,.end

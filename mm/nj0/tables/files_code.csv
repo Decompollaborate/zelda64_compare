@@ -133,5 +133,3 @@ FE2F0,801A5990,rsp
 
 offset,vram,.rodata
 12EE80,801D6520,z_en_item00
-
-offset,vram,.bss

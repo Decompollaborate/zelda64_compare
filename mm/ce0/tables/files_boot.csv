@@ -206,10 +206,6 @@ FDD0,8008FE30,voicecontread36
 16F30,80096F90,__osMemcpy
 16FC0,80097020,file_016FC0
 
-offset,vram,.data
-
-offset,vram,.rodata
-
 offset,vram,.bss
 19E30,80099E90,boot_main
 20210,800BA0A0,.end
