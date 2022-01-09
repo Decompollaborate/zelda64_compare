@@ -7,7 +7,7 @@ VERSION  ?= ne0
 
 MAKE = make
 
-DISASSEMBLER    ?= py-mips-disasm/simpleDisasm.py
+DISASSEMBLER    ?= py_mips_disasm/simpleDisasm.py
 
 #### Files ####
 
@@ -57,7 +57,7 @@ $(BASE_DIR)/$(VERSION)/tables/%.csv: $(BASE_DIR)/tables/%.csv
 
 
 
-$(BASE_DIR)/asm/text/%/.disasm: $(BASE_DIR)/baserom/% $(BASE_DIR)/tables/variables.csv $(BASE_DIR)/tables/functions.csv $(BASE_DIR)/tables/files_%.csv
-	$(RM) -rf $(BASE_DIR)/asm/text/$* $(BASE_DIR)/asm/data/$* $(BASE_DIR)/context/$*.txt
-	$(DISASSEMBLER) $< $(BASE_DIR)/asm/text/$* -q --data-output $(BASE_DIR)/asm/data/$* --variables $(BASE_DIR)/tables/variables.csv --functions $(BASE_DIR)/tables/functions.csv --file-splits $(BASE_DIR)/tables/files_$*.csv  --save-context $(BASE_DIR)/context/$*.txt --functions $(BASE_DIR)/tables/functions_$*.csv --variables $(BASE_DIR)/tables/variables_$*.csv --constants $(BASE_DIR)/tables/constants_$*.csv
+$(BASE_DIR)/$(VERSION)/asm/text/%/.disasm: $(BASE_DIR)/$(VERSION)/baserom/% $(BASE_DIR)/$(VERSION)/tables/variables.csv $(BASE_DIR)/$(VERSION)/tables/functions.csv $(BASE_DIR)/$(VERSION)/tables/files_%.csv
+	$(RM) -rf $(BASE_DIR)/$(VERSION)/asm/text/$* $(BASE_DIR)/$(VERSION)/asm/data/$* $(BASE_DIR)/$(VERSION)/context/$*.txt
+	$(DISASSEMBLER) $< $(BASE_DIR)/$(VERSION)/asm/text/$* -q --data-output $(BASE_DIR)/$(VERSION)/asm/data/$* --variables $(BASE_DIR)/$(VERSION)/tables/variables.csv --functions $(BASE_DIR)/$(VERSION)/tables/functions.csv --constants $(BASE_DIR)/tables/constants.csv --file-splits $(BASE_DIR)/$(VERSION)/tables/files_$*.csv  --save-context $(BASE_DIR)/$(VERSION)/context/$*.txt --constants $(BASE_DIR)/$(VERSION)/tables/constants_$*.csv
 	@touch $@
