@@ -132,15 +132,17 @@ def main():
     parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
     choices = ["oot", "mm"]
     parser.add_argument("game", help="Game to extract.", choices=choices)
-    parser.add_argument("seg", help="") # TODO
+    parser.add_argument("csv", help="") # TODO
     args = parser.parse_args()
 
-    if args.seg == "functions":
+    seg = os.path.split(args.csv)[-1].split('.')[0]
+
+    if seg == "functions":
         split_functions(args.game)
-    if args.seg == "variables":
+    if seg == "variables":
         split_variables(args.game)
     else:
-        split_fileSplits(args.game, args.seg)
+        split_fileSplits(args.game, seg)
 
 
 if __name__ == "__main__":
