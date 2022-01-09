@@ -21,9 +21,6 @@ def mmDisasmMain():
 
     GlobalConfig.REMOVE_POINTERS = False
     GlobalConfig.IGNORE_BRANCHES = False
-    GlobalConfig.IGNORE_04 = False
-    GlobalConfig.IGNORE_06 = False
-    GlobalConfig.IGNORE_80 = False
     GlobalConfig.WRITE_BINARY = False
     GlobalConfig.ASM_COMMENT = True
     GlobalConfig.FUNCTION_ASM_COUNT = False

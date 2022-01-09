@@ -114,9 +114,6 @@ def disassemblerMain():
 
     GlobalConfig.REMOVE_POINTERS = False
     GlobalConfig.IGNORE_BRANCHES = False
-    GlobalConfig.IGNORE_04 = False
-    GlobalConfig.IGNORE_06 = False
-    GlobalConfig.IGNORE_80 = False
     GlobalConfig.WRITE_BINARY = False
     GlobalConfig.ASM_COMMENT = not args.disable_asm_comments
     GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True

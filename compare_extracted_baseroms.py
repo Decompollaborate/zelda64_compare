@@ -263,9 +263,7 @@ def main():
     parser.add_argument("--print", help="Select what will be printed for a cleaner output. Default is 'all'.", choices=["all", "equals", "diffs", "missing"], default="all")
     parser.add_argument("--dont-split-files", help="Disables treating each section of a a file as separate files.", action="store_true")
     parser.add_argument("--no-csv", help="Don't print the output in csv format.", action="store_true")
-    parser.add_argument("--ignore80", help="Ignores words differences that starts in 0x80XXXXXX", action="store_true")
-    parser.add_argument("--ignore06", help="Ignores words differences that starts in 0x06XXXXXX", action="store_true")
-    parser.add_argument("--ignore04", help="Ignores words differences that starts in 0x04XXXXXX", action="store_true")
+    parser.add_argument("--ignore-words", help="A space separated list of hex numbers. Word differences will be ignored that starts in any of the provided arguments. Max value: FF", action="extend", nargs="+")
     parser.add_argument("--ignore-branches", help="Ignores the address of every branch, jump and jal.", action="store_true")
     parser.add_argument("--dont-remove-ptrs", help="Disable the pointer removal feature.", action="store_true")
     parser.add_argument("--column1", help="Name for column one (baserom) in the csv.", default=None)
@@ -274,13 +272,13 @@ def main():
 
     GlobalConfig.REMOVE_POINTERS = not args.dont_remove_ptrs
     GlobalConfig.IGNORE_BRANCHES = args.ignore_branches
-    GlobalConfig.IGNORE_04 = args.ignore04
-    GlobalConfig.IGNORE_06 = args.ignore06
-    GlobalConfig.IGNORE_80 = args.ignore80
+    if args.ignore_words:
+        for upperByte in args.ignore_words:
+            GlobalConfig.IGNORE_WORD_LIST.add(int(upperByte, 16))
     # GlobalConfig.WRITE_BINARY = False
     # GlobalConfig.ASM_COMMENT = not args.disable_asm_comments
     GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
-    # GlobalConfig.TRUST_USER_FUNCTIONS = True
+    GlobalConfig.TRUST_USER_FUNCTIONS = True
     # GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS = args.disasm_unknown
     # GlobalConfig.VERBOSE = args.verbose
     # GlobalConfig.QUIET = args.quiet
