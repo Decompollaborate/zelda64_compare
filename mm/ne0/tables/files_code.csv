@@ -170,6 +170,7 @@ offset,vram,.data
 114740,801BA200,z_collision_check
 114A90,801BA550,z_debug_display
 1155D0,801BB090,z_debug_mode
+115660,801BB120,z_demo
 1156B0,801BB170,z_draw
 116780,801BC240,z_eff_footmark
 1167E0,801BC2A0,code_801BC2A0
