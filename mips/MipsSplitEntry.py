@@ -29,11 +29,11 @@ class SplitEntry:
         return self.__str__()
 
 
-def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, SplitEntry]]:
+def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, List[SplitEntry]]]:
     code_splits_file = readCsv(csvfilename)
 
     header = code_splits_file[0][3::3]
-    splits: Dict[str, Dict[str, SplitEntry]] = { h: dict() for h in header }
+    splits: Dict[str, Dict[str, List[SplitEntry]]] = { h: dict() for h in header }
 
     for i in range(2, len(code_splits_file)):
         row = code_splits_file[i]
@@ -63,7 +63,10 @@ def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, SplitEntry]]:
             except:
                 vram = -1
 
-            splits[h][name] = SplitEntry(h, name, offset, size, vram)
+            if name not in splits[h]:
+                splits[h][name] = list()
+
+            splits[h][name].append(SplitEntry(h, name, offset, size, vram))
     return splits
 
 def getFileStartsFromEntries(splits: Dict[str, SplitEntry], fileEndOffset: int) -> List[Tuple[int, int, str]]:

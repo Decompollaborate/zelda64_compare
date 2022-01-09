@@ -22,7 +22,7 @@ def split_fileSplits(game: str, seg: str):
         splits = readSplitsFromCsv(csvPath)
         # print(splits)
 
-        for version, files in splits.items():
+        for version, filesDict in splits.items():
             # print(version)
 
             if version == "":
@@ -36,11 +36,12 @@ def split_fileSplits(game: str, seg: str):
 
             auxList = []
 
-            for filename, splitData in files.items():
-                # print("\t", filename, splitData)
-                if splitData.offset < 0 or splitData.vram < 0 or splitData.filename == "":
-                    continue
-                auxList.append((splitData.offset, splitData.vram, splitData.size, splitData.filename))
+            for filename, splitDataList in filesDict.items():
+                for splitData in splitDataList:
+                    # print("\t", filename, splitData)
+                    if splitData.offset < 0 or splitData.vram < 0 or splitData.filename == "":
+                        continue
+                    auxList.append((splitData.offset, splitData.vram, splitData.size, splitData.filename))
 
             # fake extra to avoid problems
             auxList.append((0xFFFFFF, 0x80FFFFFF, 0, "end"))
