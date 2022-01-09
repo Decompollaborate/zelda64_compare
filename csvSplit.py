@@ -28,14 +28,10 @@ def split_fileSplits(game: str, seg: str):
             if version == "":
                 continue
 
-            if len(filesDict) == 0:
-                continue
-
             if version not in tablePerVersion:
                 tablePerVersion[version] = []
             else:
                 tablePerVersion[version].append("\n")
-            tablePerVersion[version].append(f"offset,vram,.{section}\n")
 
             auxList = []
 
@@ -46,11 +42,16 @@ def split_fileSplits(game: str, seg: str):
                         continue
                     auxList.append((splitData.offset, splitData.vram, splitData.size, splitData.filename))
 
+            if len(auxList) == 0:
+                continue
+
             # fake extra to avoid problems
             auxList.append((0xFFFFFF, 0x80FFFFFF, 0, "end"))
 
             # Reading from the file may not be sorted by offset
             auxList.sort()
+
+            tablePerVersion[version].append(f"offset,vram,.{section}\n")
 
             i = 0
             while i < len(auxList) - 1:
