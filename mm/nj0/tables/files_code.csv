@@ -127,3 +127,11 @@ D9B80,80181220,code_80185F90
 DA660,80181D00,file_0DA660
 FE2E0,801A5980,z_construct
 FE2F0,801A5990,file_0FE2F0
+
+offset,vram,.data
+FE2F0,801A5990,rsp
+
+offset,vram,.rodata
+12EE80,801D6520,z_en_item00
+
+offset,vram,.bss

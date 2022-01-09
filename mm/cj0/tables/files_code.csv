@@ -1,1 +1,7 @@
 offset,vram,.text
+
+offset,vram,.data
+
+offset,vram,.rodata
+
+offset,vram,.bss
