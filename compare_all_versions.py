@@ -219,10 +219,14 @@ def main():
 
     contextPerVersion: Dict[str, Context] = dict()
     for version in versionsList:
-        contextPerVersion[version] = Context()
-        contextPerVersion[version].readFunctionMap(version)
-        contextReadVariablesCsv(contextPerVersion[version], args.game, version)
-        contextReadFunctionsCsv(contextPerVersion[version], args.game, version)
+        context = Context()
+        context.fillDefaultBannedSymbols()
+        context.fillLibultraSymbols()
+        context.fillHardwareRegs()
+        context.readFunctionMap(version)
+        contextReadVariablesCsv(context, args.game, version)
+        contextReadFunctionsCsv(context, args.game, version)
+        contextPerVersion[version] = context
 
     dmaAddresses: Dict[str, Dict[str, DmaEntry]] = dict()
     actorOverlayTable: Dict[str, List[OverlayTableEntry]] = dict()

@@ -33,7 +33,13 @@ def compare_baseroms(args, filelist):
 
     context_one = Context()
     context_two = Context()
+    context_one.fillDefaultBannedSymbols()
+    context_one.fillLibultraSymbols()
+    context_one.fillHardwareRegs()
     context_one.readFunctionMap(args.version1)
+    context_two.fillDefaultBannedSymbols()
+    context_two.fillLibultraSymbols()
+    context_two.fillHardwareRegs()
     context_two.readFunctionMap(args.version2)
     contextReadVariablesCsv(context_one, args.game, args.version1)
     contextReadVariablesCsv(context_two, args.game, args.version2)

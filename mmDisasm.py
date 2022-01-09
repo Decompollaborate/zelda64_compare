@@ -28,6 +28,9 @@ def mmDisasmMain():
     GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
 
     context = Context()
+    context.fillDefaultBannedSymbols()
+    context.fillLibultraSymbols()
+    context.fillHardwareRegs()
     context.readMMAddressMaps("../mm/tools/disasm/files.txt", "../mm/tools/disasm/functions.txt", "../mm/tools/disasm/variables.txt")
 
     path = args.filepath
