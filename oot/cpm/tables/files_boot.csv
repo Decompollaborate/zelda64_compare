@@ -26,7 +26,7 @@ FC0,80001420,osDriveRomInit.c
 2C20,80003080,osWritebackDCache.s
 2CA0,80003100,osViGetNextFramebuffer.c
 2CE0,80003140,pimgr.c
-2E50,800032B0,*fill*         0x00000000800048f0       0x10
+2E50,800032B0,[PADDING]
 2E60,800032C0,__osDevMgrMain.c
 3270,800036D0,__osPiRawStartDma.c
 3340,800037A0,osVirtualToPhysical.c

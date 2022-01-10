@@ -56,3 +56,5 @@
 80005550,osCartRomInit
 80005940,osCreateViManager
 80005C60,osStartThread
+80004EC0,__osDisableInt
+80004F30,__osRestoreInt

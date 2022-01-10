@@ -31,7 +31,7 @@ offset,vram,.text
 4260,800046C0,osWritebackDCache.s
 42E0,80004740,osViGetNextFramebuffer.c
 4320,80004780,pimgr.c
-4490,800048F0,*fill*         0x00000000800048f0       0x10
+4490,800048F0,[PADDING]
 44A0,80004900,__osDevMgrMain.c
 48B0,80004D10,__osPiRawStartDma.c
 4980,80004DE0,osVirtualToPhysical.c

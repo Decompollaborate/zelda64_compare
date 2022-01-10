@@ -1,0 +1,6 @@
+ner
+ne0
+ne1
+np0
+ne2
+np1

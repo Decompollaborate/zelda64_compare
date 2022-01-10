@@ -64,3 +64,7 @@
 800CDCCC,Rand_ZeroOne
 800CF470,sinf
 80001890,StackCheck_Init
+800CD390,SystemHeap_Init
+801C7F90,n64dd_SetDiskVersion
+80005130,__osDisableInt
+800051A0,__osRestoreInt
