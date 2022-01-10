@@ -1,6 +1,12 @@
 offset,vram,.text
 0,801C7040,n64dd_000000
 
+offset,vram,.data
+BFB0,801D2FF0,n64dd_000000
+
+offset,vram,.rodata
+11F60,801D8FA0,n64dd_000000
+
 offset,vram,.bss
 12CF0,801D9D30,n64dd_012D10
 20970,801E79B0,.end
