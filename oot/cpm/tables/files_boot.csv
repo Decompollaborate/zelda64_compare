@@ -5,7 +5,7 @@ offset,vram,.text
 520,80000980,z_std_dma.c
 B60,80000FC0,yaz0.c
 EA0,80001300,z_locale.c
-FC0,80001420,osDriveRomInit.c
+FC0,80001420,driverominit.c
 11A0,80001600,mio0.s
 1250,800016B0,stackcheck.c
 14A0,80001900,logutils.c
@@ -13,7 +13,7 @@ FC0,80001420,osDriveRomInit.c
 15C0,80001A20,osSendMesg.c
 1710,80001B70,osStopThread.c
 17D0,80001C30,osViExtendVStart.c
-17E0,80001C40,osRecvMesg.c
+17E0,80001C40,recvmesg.c
 1920,80001D80,initialize.c
 1C70,800020D0,ll.c
 1F30,80002390,exceptasm.s
@@ -30,7 +30,7 @@ FC0,80001420,osDriveRomInit.c
 2E60,800032C0,__osDevMgrMain.c
 3270,800036D0,__osPiRawStartDma.c
 3340,800037A0,osVirtualToPhysical.c
-33C0,80003820,osViBlack.c
+33C0,80003820,viblack.c
 3430,80003890,__osSiRawReadIo.c
 3480,800038E0,osGetThreadId.c
 34A0,80003900,osSetIntMask.s
@@ -39,7 +39,7 @@ FC0,80001420,osDriveRomInit.c
 3660,80003AC0,osGetMemSize.c
 3780,80003BE0,osSetEventMesg.c
 3840,80003CA0,osUnmapTLBAll.s
-3890,80003CF0,osEPiStartDma.c
+3890,80003CF0,epidma.c
 3930,80003D90,osInvalICache.s
 39B0,80003E10,osCreateMesgQueue.c
 39E0,80003E40,osInvalDCache.s

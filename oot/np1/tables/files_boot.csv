@@ -5,14 +5,14 @@ offset,vram,.text
 4D0,80000930,z_std_dma.c
 C40,800010A0,yaz0.c
 F80,800013E0,z_locale.c
-1300,80001760,osDriveRomInit.c
+1300,80001760,driverominit.c
 14E0,80001940,mio0.s
 1590,800019F0,stackcheck.c
 1A60,80001EC0,piacs.c
 1B20,80001F80,osSendMesg.c
 1C70,800020D0,osStopThread.c
 1D30,80002190,osViExtendVStart.c
-1D40,800021A0,osRecvMesg.c
+1D40,800021A0,recvmesg.c
 1E80,800022E0,ll.c
 2140,800025A0,exceptasm.s
 2A40,80002EA0,__osDequeueThread.c
