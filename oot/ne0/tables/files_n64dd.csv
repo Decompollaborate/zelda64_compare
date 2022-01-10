@@ -1,0 +1,5 @@
+offset,vram,.text
+0,801C6E80,n64dd_000000
+
+offset,vram,.bss
+12D10,801D9B90,n64dd_012D10
