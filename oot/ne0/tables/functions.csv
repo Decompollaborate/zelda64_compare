@@ -63,3 +63,4 @@
 800AB900,Matrix_NewMtx
 800CDCCC,Rand_ZeroOne
 800CF470,sinf
+80001890,StackCheck_Init

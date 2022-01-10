@@ -1,7 +1,7 @@
 ,,,ner,,,ne0,,,ne1,,,np0,,,ne2,,,np1,,
 File,,Notes,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
-n64dd_012D10,,,12C20,801D98A0,,12D10,801D9B90,,12CF0,801D9D30,,12C90,801D7B50,,12CD0,801DA410,,12C90,801D7B90,
-,,,,,,,,,,,,,,,,,,,,
+z_n64dd,,,12C20,801D98A0,8310,12D10,801D9B90,,12CF0,801D9D30,,12C90,801D7B50,,12CD0,801DA410,,12C90,801D7B90,
+n64dd_001180,,,1AF30,801E1BB0,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,
