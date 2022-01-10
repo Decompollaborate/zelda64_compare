@@ -3,3 +3,4 @@ offset,vram,.text
 
 offset,vram,.bss
 12D10,801D9B90,n64dd_012D10
+20990,801E7810,.end
