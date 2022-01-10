@@ -84,7 +84,7 @@ def find_fbdemo_dlftbls(data, game):
 
 
 def main():
-    description = ""
+    description = "Finds the VRAM of the start of code and the offsets of various sections and dlftbls within it."
     epilog = ""
     parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
     choices = ["oot", "mm"]
