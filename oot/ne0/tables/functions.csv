@@ -57,6 +57,8 @@
 800900EC,Sram_InitDebugSave
 800912C4,Sram_Alloc
 80091858,View_Init
+800A0BD0,GameState_Update
+800A0DF8,GameState_Init
 800A1C50,Main
 800A4EBC,Math3D_Cos
 800AA6B0,Matrix_Init

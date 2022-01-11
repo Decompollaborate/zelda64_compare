@@ -109,7 +109,7 @@ B6360,800D31C0,code_800D31A0.c
 B63E0,800D3240,irqmgr.c
 B6C50,800D3AB0,debug_malloc.c
 B70E0,800D3F40,fault.c
-B9930,800D6790,faut_drawer.c
+B9930,800D6790,fault_drawer.c
 BA3B0,800D7210,code_800D71F0.s
 BAE90,800D7CF0,ucode_disas.c
 BDE80,800DACE0,audio_synthesis.c

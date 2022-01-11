@@ -103,7 +103,7 @@ DB40,8001EA20,z_actor.c (+z_cheap_proc.c)
 9B7F0,800AC6D0,code_800D31A0.c
 9B820,800AC700,irqmgr.c
 9BE40,800ACD20,fault.c
-9E690,800AF570,faut_drawer.c
+9E690,800AF570,fault_drawer.c
 9F110,800AFFF0,code_800D71F0.s
 9FBF0,800B0AD0,file_09FBF0
 9FC00,800B0AE0,audio_synthesis.c

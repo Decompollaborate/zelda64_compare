@@ -104,7 +104,7 @@ DB40,8001EA40,z_actor.c (+z_cheap_proc.c)
 9B8B0,800AC7B0,code_800D31A0.c
 9B8E0,800AC7E0,irqmgr.c
 9BF00,800ACE00,fault.c
-9E750,800AF650,faut_drawer.c
+9E750,800AF650,fault_drawer.c
 9F1D0,800B00D0,code_800D71F0.s
 9FCB0,800B0BB0,file_09FCB0
 9FCC0,800B0BC0,audio_synthesis.c

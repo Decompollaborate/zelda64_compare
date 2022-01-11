@@ -386,4 +386,4 @@ offset,vram,.bss
 1633D0,80208E90,jpegdecoder
 1633E0,80208EA0,gfxbuffers
 1A4A00,8024A4C0,buffers
-6DA540,80780000,.end
+75A540,80800000,.end
