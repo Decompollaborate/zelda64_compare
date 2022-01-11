@@ -16,17 +16,18 @@ BASE_DIR       := $(GAME)/$(VERSION)
 # ROM image
 BASE_ROM       := $(GAME)/$(GAME)_$(VERSION).z64
 
-ASM_DIRS       := $(shell find $(BASE_DIR)/asm/ -type d)
+# ASM_DIRS       := $(shell find $(BASE_DIR)/asm/ -type d)
 
-S_FILES        := $(foreach dir,$(ASM_DIRS),$(wildcard $(dir)/*.s))
+# S_FILES        := $(foreach dir,$(ASM_DIRS),$(wildcard $(dir)/*.s))
 
 BASEROM_FILES  := $(wildcard $(BASE_DIR)/baserom/*)
 
-DISASM_LIST    := $(shell cat $(GAME)/tables/disasm_list.txt)
+DISASM_LIST    := $(shell cat $(GAME)/tables/disasm_list.txt) \
+                  $(shell [ -f $(BASE_DIR)/tables/disasm_list.txt ] && cat $(BASE_DIR)/tables/disasm_list.txt)
 
-CSV_FILES      := $(foreach file,$(DISASM_LIST),$(wildcard $(BASE_DIR)/tables/files_$(file).csv)) \
+CSV_FILES      := $(DISASM_LIST:%=$(BASE_DIR)/tables/files_%.csv) \
                   $(BASE_DIR)/tables/functions.csv $(BASE_DIR)/tables/variables.csv
-DISASM_TARGETS := $(foreach file,$(DISASM_LIST),$(wildcard $(BASE_DIR)/asm/text/$(file)/.disasm))
+DISASM_TARGETS := $(DISASM_LIST:%=$(BASE_DIR)/asm/text/%/.disasm)
 
 .PHONY: all splitcsvs disasm clean
 .DEFAULT_GOAL := all
