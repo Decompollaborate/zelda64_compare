@@ -22,7 +22,11 @@ S_FILES        := $(foreach dir,$(ASM_DIRS),$(wildcard $(dir)/*.s))
 
 BASEROM_FILES  := $(wildcard $(BASE_DIR)/baserom/*)
 
-DISASM_TARGETS := $(shell sed -r 's/(.+)/$(GAME)\/$(VERSION)\/asm\/text\/\1\/.disasm/' $(GAME)/tables/disasm_list.txt)
+DISASM_LIST    := $(shell cat $(GAME)/tables/disasm_list.txt)
+
+CSV_FILES      := $(foreach file,$(DISASM_LIST),$(wildcard $(BASE_DIR)/tables/files_$(file).csv)) \
+                  $(BASE_DIR)/tables/functions.csv $(BASE_DIR)/tables/variables.csv
+DISASM_TARGETS := $(foreach file,$(DISASM_LIST),$(wildcard $(BASE_DIR)/asm/text/$(file)/.disasm))
 
 .PHONY: all splitcsvs disasm clean
 .DEFAULT_GOAL := all
@@ -49,12 +53,12 @@ all: disasm
 
 disasm: splitcsvs
 
-# ??
-#splitcsvs: $(BASE_DIR)/tables/%.csv
-
+splitcsvs: $(CSV_FILES)
 
 #### Various Recipes ####
 $(BASE_DIR)/tables/%.csv: $(GAME)/tables/%.csv
+	./csvSplit.py $(GAME) $<
+$(BASE_DIR)/tables/files_%.csv: $(GAME)/tables/%.*.csv
 	./csvSplit.py $(GAME) $<
 
 
