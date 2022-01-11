@@ -11,17 +11,18 @@ DISASSEMBLER    ?= py_mips_disasm/simpleDisasm.py
 
 #### Files ####
 
-BASE_DIR       := $(GAME)
+BASE_DIR       := $(GAME)/$(VERSION)
 
 # ROM image
-BASE_ROM       := $(BASE_DIR)/$(GAME)_$(VERSION).z64
+BASE_ROM       := $(GAME)/$(GAME)_$(VERSION).z64
 
-ASM_DIRS       := $(shell find $(BASE_DIR)/$(VERSION)/asm/ -type d)
+ASM_DIRS       := $(shell find $(BASE_DIR)/asm/ -type d)
 
 S_FILES        := $(foreach dir,$(ASM_DIRS),$(wildcard $(dir)/*.s))
 
-BASEROM_FILES  := $(wildcard $(BASE_DIR)/$(VERSION)/baserom/*)
+BASEROM_FILES  := $(wildcard $(BASE_DIR)/baserom/*)
 
+DISASM_TARGETS := $(shell sed -r 's/(.+)/$(GAME)\/$(VERSION)\/asm\/text\/\1\/.disasm/' $(GAME)/tables/disasm_list.txt)
 
 .PHONY: all splitcsvs disasm clean
 .DEFAULT_GOAL := all
@@ -31,7 +32,7 @@ BASEROM_FILES  := $(wildcard $(BASE_DIR)/$(VERSION)/baserom/*)
 
 ## Cleaning ##
 clean:
-	$(RM) -rf $(BASE_DIR)/$(VERSION)/asm $(BASE_DIR)/$(VERSION)/context
+	$(RM) -rf $(BASE_DIR)/asm $(BASE_DIR)/context
 
 ## Extraction step
 setup:
@@ -48,16 +49,17 @@ all: disasm
 
 disasm: splitcsvs
 
-splitcsvs: $(BASE_DIR)/$(VERSION)/tables/%.csv
+# ??
+#splitcsvs: $(BASE_DIR)/tables/%.csv
 
 
 #### Various Recipes ####
-$(BASE_DIR)/$(VERSION)/tables/%.csv: $(BASE_DIR)/tables/%.csv
+$(BASE_DIR)/tables/%.csv: $(GAME)/tables/%.csv
 	./csvSplit.py $(GAME) $<
 
 
 
-$(BASE_DIR)/$(VERSION)/asm/text/%/.disasm: $(BASE_DIR)/$(VERSION)/baserom/% $(BASE_DIR)/$(VERSION)/tables/variables.csv $(BASE_DIR)/$(VERSION)/tables/functions.csv $(BASE_DIR)/$(VERSION)/tables/files_%.csv
-	$(RM) -rf $(BASE_DIR)/$(VERSION)/asm/text/$* $(BASE_DIR)/$(VERSION)/asm/data/$* $(BASE_DIR)/$(VERSION)/context/$*.txt
-	$(DISASSEMBLER) $< $(BASE_DIR)/$(VERSION)/asm/text/$* -q --data-output $(BASE_DIR)/$(VERSION)/asm/data/$* --variables $(BASE_DIR)/$(VERSION)/tables/variables.csv --functions $(BASE_DIR)/$(VERSION)/tables/functions.csv --constants $(BASE_DIR)/tables/constants.csv --file-splits $(BASE_DIR)/$(VERSION)/tables/files_$*.csv  --save-context $(BASE_DIR)/$(VERSION)/context/$*.txt --constants $(BASE_DIR)/$(VERSION)/tables/constants_$*.csv
+$(BASE_DIR)/asm/text/%/.disasm: $(BASE_DIR)/baserom/% $(BASE_DIR)/tables/variables.csv $(BASE_DIR)/tables/functions.csv $(BASE_DIR)/tables/files_%.csv
+	$(RM) -rf $(BASE_DIR)/asm/text/$* $(BASE_DIR)/asm/data/$* $(BASE_DIR)/context/$*.txt
+	$(DISASSEMBLER) $< $(BASE_DIR)/asm/text/$* -q --data-output $(BASE_DIR)/asm/data/$* --variables $(BASE_DIR)/tables/variables.csv --functions $(BASE_DIR)/tables/functions.csv --constants $(GAME)/tables/constants.csv --file-splits $(BASE_DIR)/tables/files_$*.csv  --save-context $(BASE_DIR)/context/$*.txt --constants $(BASE_DIR)/tables/constants_$*.csv
 	@touch $@
