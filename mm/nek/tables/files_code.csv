@@ -147,7 +147,6 @@ FF310,801A5430,code_801A5BD0
 103760,801A9880,code_801AA020
 103D50,801A9E70,z_game_over
 1041E0,801AA300,z_construct
-1041F0,801AA310,file_1041F0
 
 offset,vram,.data
 1041F0,801AA310,rsp
@@ -240,7 +239,6 @@ offset,vram,.data
 132780,801D88A0,audio_sound_params
 134B60,801DAC80,code_801A5BD0
 134BB0,801DACD0,code_801A7B10
-1354E0,801DB600,file_1354E0
 
 offset,vram,.rodata
 1354E0,801DB600,z_en_item00
@@ -324,7 +322,6 @@ offset,vram,.rodata
 13A7F0,801E0910,audio_init_params
 13A800,801E0920,z_game_over
 13A870,801E0990,rsp
-13D690,801E37B0,file_13D690
 
 offset,vram,.bss
 13D690,801E37B0,code_801E3FA0

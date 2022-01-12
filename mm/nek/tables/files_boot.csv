@@ -203,7 +203,6 @@ FFB0,80090010,jammesg
 16DB0,80096E10,__osStrcmp
 16DF0,80096E50,__osStrcpy
 16E30,80096E90,__osMemcpy
-16EC0,80096F20,file_016EC0
 
 offset,vram,.data
 16EC0,80096F20,rsp_boot
@@ -247,7 +246,6 @@ offset,vram,.data
 18640,800986A0,xldtob
 18670,800986D0,vimgr
 18690,800986F0,voicecontrolgain
-186A0,80098700,file_0186A0
 
 offset,vram,.rodata
 186A0,80098700,boot_main
@@ -274,7 +272,6 @@ offset,vram,.rodata
 19A50,80099AB0,xldtob
 19AB0,80099B10,llcvt
 19AC0,80099B20,build
-19AF0,80099B50,file_019AF0
 
 offset,vram,.bss
 19AF0,80099B50,boot_main

@@ -29,9 +29,7 @@ def split_fileSplits(game: str, seg: str):
                 continue
 
             if version not in tablePerVersion:
-                tablePerVersion[version] = []
-            else:
-                tablePerVersion[version].append("\n")
+                tablePerVersion[version] = dict()
 
             auxList = []
 
@@ -51,7 +49,7 @@ def split_fileSplits(game: str, seg: str):
             # Reading from the file may not be sorted by offset
             auxList.sort()
 
-            tablePerVersion[version].append(f"offset,vram,.{section}\n")
+            tablePerVersion[version][section] = list()
 
             i = 0
             while i < len(auxList) - 1:
@@ -66,14 +64,34 @@ def split_fileSplits(game: str, seg: str):
                     # Adds missing files
                     auxList.insert(i+1, (end, vram + (end - offset), -1, f"file_{end:06X}"))
 
-                tablePerVersion[version].append(f"{offset:X},{vram:X},{filename}\n")
+                tablePerVersion[version][section].append((offset, vram, filename))
 
                 i += 1
 
 
-    for version, lines in tablePerVersion.items():
+    for version, sectionedDict in tablePerVersion.items():
+        sections = list(sectionedDict.keys())
+        for i in range(len(sections)-1):
+            currentSection = sections[i]
+            nextSection = sections[i+1]
+            lastOffsetCurrent = sectionedDict[currentSection][-1][0]
+            firstOffsetNext = sectionedDict[nextSection][0][0]
+            if lastOffsetCurrent == firstOffsetNext:
+                del sectionedDict[currentSection][-1]
+
+    for version, sectionedDict in tablePerVersion.items():
+        isFirst = True
         with open(os.path.join(game, version, "tables", f"files_{seg}.csv"), "w") as f:
-            f.writelines(lines)
+            for section, data in sectionedDict.items():
+                if isFirst:
+                    isFirst = False
+                else:
+                    f.write("\n")
+
+                f.write(f"offset,vram,.{section}\n")
+                for row in data:
+                    offset, vram, filename = row
+                    f.writelines(f"{offset:X},{vram:X},{filename}\n")
 
 
 def split_functions(game: str):

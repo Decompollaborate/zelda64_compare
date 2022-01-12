@@ -148,7 +148,6 @@ FF730,801A51F0,code_801A51F0
 104560,801AA020,code_801AA020
 104B50,801AA610,z_game_over
 104FE0,801AAAA0,z_construct
-104FF0,801AAAB0,file_104FF0
 
 offset,vram,.data
 104FF0,801AAAB0,rsp
@@ -242,7 +241,6 @@ offset,vram,.data
 1335D0,801D9090,audio_sound_params
 1359B0,801DB470,code_801A5BD0
 135A00,801DB4C0,code_801A7B10
-136330,801DBDF0,file_136330
 
 offset,vram,.rodata
 136330,801DBDF0,z_en_item00
@@ -326,7 +324,6 @@ offset,vram,.rodata
 13B640,801E1100,audio_init_params
 13B650,801E1110,z_game_over
 13B6C0,801E1180,rsp
-13E4E0,801E3FA0,file_13E4E0
 
 offset,vram,.bss
 13E4E0,801E3FA0,code_801E3FA0
