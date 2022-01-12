@@ -96,10 +96,23 @@ def constructMapMarkDataTable(data, game):
         i += 1
     return mapMarkDataTable
 
+def constructOverlayTable(code, game):
+    try:
+        with open(code, 'rb') as f:
+            data = f.read()
+    except IOError:
+        print('Failed to read file ' + code)
+        sys.exit(1)
 
-# def constructVRAMtable(dmadataFile, outFile):
-#     with open(dmadataFile, "r") as f:
-#         dmadata = list(csv.reader(f))
+    overlayTable = []
+    overlayTable.extend(constructActorTable(data, game))
+    overlayTable.extend(constructEffectSsTable(data, game))
+    overlayTable.extend(constructGamestateTable(data, game))
+    overlayTable.extend(constructKaleidoTable(data, game))
+    overlayTable.extend(constructMapMarkDataTable(data, game))
+
+    overlayTable.sort()
+    return overlayTable
 
 def main():
     description = "Construct a basic spec from dmadata"
@@ -111,27 +124,13 @@ def main():
     args = parser.parse_args()
 
 
-    try:
-        with open(args.code, 'rb') as f:
-            data = f.read()
-    except IOError:
-        print('Failed to read file ' + args.code)
-        sys.exit(1)
-
-
     # for entry in constructKaleidoTable(data, args.game):
     #     for number in entry:
     #         print(f"{number:X},",end="")
     #     print("")
     
-    overlayTable = []
-    overlayTable.extend(constructActorTable(data, args.game))
-    overlayTable.extend(constructEffectSsTable(data, args.game))
-    overlayTable.extend(constructGamestateTable(data, args.game))
-    overlayTable.extend(constructKaleidoTable(data, args.game))
-    overlayTable.extend(constructMapMarkDataTable(data, args.game))
+    overlayTable = constructOverlayTable(args.code, args.game)
 
-    overlayTable.sort()
     for entry in overlayTable:
         for number in entry:
             print(f"{number:X},",end="")

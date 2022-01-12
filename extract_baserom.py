@@ -274,11 +274,11 @@ def printBuildData(rom_data: bytes):
     print("========================================")
 
 def writeDma(dmaTable):
-    filetable = os.path.join(Basedir, Edition, "tables", "dma_addresses.txt")
+    filetable = os.path.join(Basedir, Edition, "tables", "dma_addresses.csv")
     print(f"Creating {filetable}")
     with open(filetable, "w") as f:
         for filename, data in dmaTable.items():
-            line = ",".join([filename] + list(map(str, data)))
+            line = ",".join([filename] + list(map(lambda x: f"{x:X}", data)))
             if OnlyDma:
                 print(line)
             f.write(line + "\n")

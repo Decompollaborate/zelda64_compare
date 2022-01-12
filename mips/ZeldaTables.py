@@ -15,13 +15,13 @@ class DmaEntry:
 
 
 def getDmaAddresses(game: str, version: str) -> Dict[str, DmaEntry]:
-    filetable = os.path.join(game, version, "tables", "dma_addresses.txt")
+    filetable = os.path.join(game, version, "tables", "dma_addresses.csv")
     table: Dict[str, DmaEntry] = dict()
     if os.path.exists(filetable):
         with open(filetable) as f:
             for line in f:
                 filename, *data = line.strip().split(",")
-                virtStart, virtEnd, physStart, physEnd = map(int, data)
+                virtStart, virtEnd, physStart, physEnd = map(lambda x : int(x, 16), data)
                 table[filename] = DmaEntry(virtStart, virtEnd, physStart, physEnd)
     return table
 

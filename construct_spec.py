@@ -28,10 +28,10 @@ def constructSpec(dmadataFile, outFile):
             print("beginseg", file=outFile)
             print("    name \"" + entry[0] + "\"", file=outFile)
 
-            if int(entry[4]) != 0:
+            if int(entry[4],16) != 0:
                 print("compress", file=outFile)
 
-            if ((int(entry[1]) % 0x1000 == 0) and ((i == len(dmadata) - 1) or (int(dmadata[i+1][1]) % 0x1000 == 0))):
+            if ((int(entry[1],16) % 0x1000 == 0) and ((i == len(dmadata) - 1) or (int(dmadata[i+1][1],16) % 0x1000 == 0))):
                 print("    romalign 0x1000", file=outFile)
             
 
