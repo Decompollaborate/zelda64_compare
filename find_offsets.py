@@ -77,6 +77,11 @@ def find_effect_dlftbls(data, game):
     else:
         return bad_find(data, search, 4) - 0xDC
 
+# Only OoT has this
+def find_map_mark_data_dlftbl(data, game):
+    search = bytes.fromhex("00000400 00000400 00000000")
+    return data.find(search) + 0x8
+
 # Only MM has this
 def find_fbdemo_dlftbls(data, game):
     search = bytes.fromhex("0000000C 00000000 80")
@@ -114,21 +119,28 @@ def main():
         print(f",{find_actor_dlftbls(data, args.game):06X}", end="")
         print(f",{find_game_dlftbls(data, args.game):06X}", end="")
         print(f",{find_kaleido_dlftbls(data, args.game):06X}", end="")
+
+        if args.game == "oot":
+           print(f",{find_map_mark_data_dlftbl(data, args.game):06X}", end="")
+
         if args.game == "mm":
            print(f",{find_fbdemo_dlftbls(data, args.game):06X}", end="")
+
         print("")
 
     else:
-        print(f"code VRAM start:    {find_code_vram(data, args.game):X}\n")
-        print(f"code data offset:     {find_code_data_offset(data, args.game):06X}")
-        print(f"code rodata offset:   {find_code_rodata_offset(data, args.game):06X}\n")
+        print(f"code VRAM start:       {find_code_vram(data, args.game):X}\n")
+        print(f"code data offset:        {find_code_data_offset(data, args.game):06X}")
+        print(f"code rodata offset:      {find_code_rodata_offset(data, args.game):06X}\n")
 
-        print(f"effect table:         {find_effect_dlftbls(data, args.game):06X}")
-        print(f"actor table:          {find_actor_dlftbls(data, args.game):06X}")
-        print(f"game table:           {find_game_dlftbls(data, args.game):06X}")
-        print(f"kaleido table:        {find_kaleido_dlftbls(data, args.game):06X}")
+        print(f"effectSs table:          {find_effect_dlftbls(data, args.game):06X}")
+        print(f"actor table:             {find_actor_dlftbls(data, args.game):06X}")
+        print(f"game table:              {find_game_dlftbls(data, args.game):06X}")
+        print(f"kaleido table:           {find_kaleido_dlftbls(data, args.game):06X}")
+        if args.game == "oot":
+            print(f"map_mark_data table: {find_fbdemo_dlftbls(data, args.game):06X}")
         if args.game == "mm":
-            print(f"fbdemo table:         {find_fbdemo_dlftbls(data, args.game):06X}")
+            print(f"fbdemo table:        {find_fbdemo_dlftbls(data, args.game):06X}")
 
 
 if __name__ == "__main__":
