@@ -27,13 +27,15 @@ fi
 
 
 if [[ "$#" -ge 2 ]]; then
-    GAME_VERSIONS=$(cat "${GAME}/versions_${GAME}.txt")
+    GAME_VERSIONS=$(tr '\n' ' ' <"${GAME}/versions_${GAME}.txt")
 
     for version in "${@:2}"
     do
-        if [[ "GAME_VERSIONS" =~ "${version}" ]]; then
+        echo ""
+        echo "$version"
+        if [[ ! "${GAME_VERSIONS}" =~ "${version}" ]]; then
             echo "Error: VERSION not found, must be one of:"
-            echo -e "$GAME_VERSIONS"
+            echo "$GAME_VERSIONS"
             continue
         fi
 
@@ -46,7 +48,7 @@ if [[ "$#" -ge 2 ]]; then
             continue
         fi
 
-        N64_VERSIONS=$(cat "${GAME}/n64_versions.txt")
+        N64_VERSIONS=$(tr '\n' ' ' <"${GAME}/n64_versions.txt")
         for file in n64dd
         do
             if [[ "${N64_VERSIONS}" =~ "${version}" ]]; then
