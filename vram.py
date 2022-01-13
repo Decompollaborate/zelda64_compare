@@ -100,9 +100,10 @@ def constructFbdemoTable(data, game):
     tableOffset = find_offsets.find_fbdemo_dlftbls(data, game)
     fbdemoTable = []
     i = 0
-    while i < 5:
+    while i < 7:
         curOffset = tableOffset + i * 0x1C
-        entry = list(struct.unpack(">IIII", data[curOffset + 4 : curOffset + 0x10 + 4 ])) + ["fbdemo", i]
+        # Naturally the fbdemo table is reversed compared to every other dlftbl.
+        entry = list(struct.unpack(">II", data[curOffset + 8 + 4 : curOffset + 0x10 + 4 ])) + list(struct.unpack(">II", data[curOffset + 4 : curOffset + 8 + 4 ])) + ["fbdemo", i]
         fbdemoTable.append(entry)
         i += 1
     return fbdemoTable
@@ -130,7 +131,7 @@ def constructOverlayTable(code, game):
     return overlayTable
 
 def main():
-    description = "Construct a basic spec from dmadata"
+    description = "Construct table of all overlays' VRAM"
 
     parser = argparse.ArgumentParser(description=description, formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("game", help="Game to use")
@@ -147,7 +148,7 @@ def main():
     overlayTable = constructOverlayTable(args.code, args.game)
 
     for entry in overlayTable:
-        for number in entry:
+        for number in entry[:4]:
             print(f"{number:X},",end="")
         print("")
 
