@@ -1,7 +1,6 @@
 File,,Notes,nj0,,,nj1,,,ne0,,,np0,,,np1,,,nek,,,npd,,,cj0,,,ce0,,,cp0,,
 ,,,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
-rsp_boot,,Start of data,,,,17860,800978C0,,16960,800969C0,160,169C0,80096A20,,,,,16EC0,80096F20,160,,,,,,,,,,,,
-idle,,,,,,,,,16AC0,80096B20,20,,,,,,,17020,80097080,20,,,,,,,,,,,,
+idle,,Start of data,,,,,,,16AC0,80096B20,20,,,,,,,17020,80097080,20,,,,,,,,,,,,
 viconfig,,,,,,,,,16AE0,80096B40,10,,,,,,,17040,800970A0,10,,,,,,,,,,,,
 z_std_dma,,,,,,,,,16AF0,80096B50,10,,,,,,,17050,800970B0,10,,,,,,,,,,,,
 irqmgr,,,,,,,,,16B00,80096B60,20,,,,,,,17060,800970C0,20,,,,,,,,,,,,

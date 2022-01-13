@@ -203,9 +203,9 @@ FFB0,80090010,jammesg
 16DB0,80096E10,__osStrcmp
 16DF0,80096E50,__osStrcpy
 16E30,80096E90,__osMemcpy
+16EC0,80096F20,rspboot
 
 offset,vram,.data
-16EC0,80096F20,rsp_boot
 17020,80097080,idle
 17040,800970A0,viconfig
 17050,800970B0,z_std_dma

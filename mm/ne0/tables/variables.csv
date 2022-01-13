@@ -2,3 +2,11 @@
 801EF670,gSaveContext,SaveContext,0x48E8
 803824C0,gSystemHeap,u8,0x1
 801F3F60,gGameInfo,GameInfo*,0x4
+801AAAB0,aspMainTextStart,u64,0x1000
+801ABAB0,gspS2DEX2_fifoTextStart,u64,0x18C0
+801AD370,njpgdspMainTextStart,u64,0xAF0
+801E1E80,aspMainDataStart,u64,0x2E0
+801E2160,gspF3DZEX2_NoN_PosLight_fifoTextStart,u64,0x1630
+801E3790,gspF3DZEX2_NoN_PosLight_fifoDataStart,u64,0x420
+801E3BB0,gspS2DEX2_fifoDataStart,u64,0x390
+801E3F40,njpgdspMainDataStart,u64,0x60

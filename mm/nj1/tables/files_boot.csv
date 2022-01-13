@@ -204,9 +204,7 @@ FFA0,80090000,voicecrc
 17750,800977B0,__osStrcmp
 17790,800977F0,__osStrcpy
 177D0,80097830,__osMemcpy
-
-offset,vram,.data
-17860,800978C0,rsp_boot
+17860,800978C0,rspboot
 
 offset,vram,.rodata
 190A0,80099100,boot_main

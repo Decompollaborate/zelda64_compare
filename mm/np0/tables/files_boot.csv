@@ -204,9 +204,7 @@ FEB0,8008FF10,position
 168B0,80096910,__osStrcmp
 168F0,80096950,__osStrcpy
 16930,80096990,__osMemcpy
-
-offset,vram,.data
-169C0,80096A20,rsp_boot
+169C0,80096A20,rspboot
 
 offset,vram,.rodata
 18280,800982E0,boot_main

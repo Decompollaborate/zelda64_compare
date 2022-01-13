@@ -1,7 +1,6 @@
 File,,Notes,nj0,,,nj1,,,ne0,,,np0,,,np1,,,nek,,,npd,,,cj0,,,ce0,,,cp0,,
 ,,,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
-rsp,,Start of data,FE2F0,801A5990,,,,,104FF0,801AAAB0,33B0,,,,,,,1041F0,801AA310,33B0,,,,,,,,,,,,
-code_801ADE60,,,,,,,,,1083A0,801ADE60,60,,,,,,,1075A0,801AD6C0,60,,,,,,,,,,,,
+z_en_a_keep,,Start of data,,,,,,,1083A0,801ADE60,60,,,,,,,1075A0,801AD6C0,60,,,,,,,,,,,,
 z_en_item00,,,,,,,,,108400,801ADEC0,380,,,,,,,107600,801AD720,380,,,,,,,,,,,,
 z_eff_blure,,,,,,,,,108780,801AE240,B0,,,,,,,107980,801ADAA0,B0,,,,,,,,,,,,
 z_eff_shield_particle,,,,,,,,,108830,801AE2F0,40,,,,,,,107A30,801ADB50,40,,,,,,,,,,,,
