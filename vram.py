@@ -47,7 +47,7 @@ def constructActorTable(data, game):
     i = 0
     while i < ActorIDCount[game]:
         curOffset = tableOffset + ActorOverlayEntrySize * i
-        entry = struct.unpack(">IIII", data[curOffset:curOffset + 0x10 ])
+        entry = list(struct.unpack(">IIII", data[curOffset:curOffset + 0x10 ])) + ["actor", i]
         actorTable.append(entry)
         i += 1
     return actorTable
@@ -58,7 +58,7 @@ def constructEffectSsTable(data, game):
     i = 0
     while i < EffectSsIDCount[game]:
         curOffset = tableOffset + EffectSsOverlayEntrySize * i
-        entry = struct.unpack(">IIII", data[curOffset:curOffset + 0x10 ])
+        entry = list(struct.unpack(">IIII", data[curOffset:curOffset + 0x10 ])) + ["effectSs", i]
         effectTable.append(entry)
         i += 1
     return effectTable
@@ -69,7 +69,7 @@ def constructGamestateTable(data, game):
     i = 0
     while i < GamestateIDCount[game]:
         curOffset = tableOffset + GamestateOverlayEntrySize * i
-        entry = struct.unpack(">IIII", data[curOffset + 4 : curOffset + 0x10 + 4 ])
+        entry = list(struct.unpack(">IIII", data[curOffset + 4 : curOffset + 0x10 + 4 ])) + ["gamestate", i]
         gameTable.append(entry)
         i += 1
     return gameTable
@@ -80,7 +80,7 @@ def constructKaleidoTable(data, game):
     i = 0
     while i < 2:
         curOffset = tableOffset + KaleidoOverlayEntrySize * i
-        entry = struct.unpack(">IIII", data[curOffset + 4 : curOffset + 0x10 + 4 ])
+        entry = list(struct.unpack(">IIII", data[curOffset + 4 : curOffset + 0x10 + 4 ])) + ["kaleido", i]
         kaleidoTable.append(entry)
         i += 1
     return kaleidoTable
@@ -91,10 +91,21 @@ def constructMapMarkDataTable(data, game):
     i = 0
     while i < 1:
         curOffset = tableOffset + i * 0x8
-        entry = struct.unpack(">IIII", data[curOffset + 4 : curOffset + 0x10 + 4 ])
+        entry = list(struct.unpack(">IIII", data[curOffset + 4 : curOffset + 0x10 + 4 ])) + ["mapmarkdata", i]
         mapMarkDataTable.append(entry)
         i += 1
     return mapMarkDataTable
+
+def constructFbdemoTable(data, game):
+    tableOffset = find_offsets.find_fbdemo_dlftbls(data, game)
+    fbdemoTable = []
+    i = 0
+    while i < 5:
+        curOffset = tableOffset + i * 0x1C
+        entry = list(struct.unpack(">IIII", data[curOffset + 4 : curOffset + 0x10 + 4 ])) + ["fbdemo", i]
+        fbdemoTable.append(entry)
+        i += 1
+    return fbdemoTable
 
 def constructOverlayTable(code, game):
     try:
@@ -109,7 +120,11 @@ def constructOverlayTable(code, game):
     overlayTable.extend(constructEffectSsTable(data, game))
     overlayTable.extend(constructGamestateTable(data, game))
     overlayTable.extend(constructKaleidoTable(data, game))
-    overlayTable.extend(constructMapMarkDataTable(data, game))
+    if game == "oot":
+        overlayTable.extend(constructMapMarkDataTable(data, game))
+    if game == "mm":
+        overlayTable.extend(constructFbdemoTable(data, game))
+        
 
     overlayTable.sort()
     return overlayTable
