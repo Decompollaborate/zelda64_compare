@@ -163,6 +163,16 @@ def initialize_worker(rom_data: bytes, dmaTable: dict):
 def read_uint32_be(offset):
     return struct.unpack('>I', romData[offset:offset+4])[0]
 
+def write_empty_output_file(name, size):
+    try:
+        with open(name, 'wb+') as f:
+            # Write a 0 to pad to the right size
+            f.seek(size-1)
+            f.write(bytearray([0]))
+    except IOError:
+        print('failed to write file ' + name)
+        sys.exit(1)
+
 def write_output_file(name, offset, size):
     try:
         with open(name, 'wb') as f:
@@ -205,14 +215,17 @@ def ExtractFunc(i):
     physStart = read_uint32_be(entryOffset + 8)
     physEnd   = read_uint32_be(entryOffset + 12)
 
+    deleted = False
     if physStart == 0xFFFFFFFF and physEnd == 0xFFFFFFFF: # file deleted
         if (virtEnd - virtStart) == 0:
             return
-        physStart = virtStart
-        physEnd = 0
+        # physStart = virtStart
+        # physEnd = 0
         compressed = False
+        deleted = True
         size = virtEnd - virtStart
-    if physEnd == 0:  # uncompressed
+
+    elif physEnd == 0:  # uncompressed
         compressed = False
         size = virtEnd - virtStart
     else:             # compressed
@@ -228,7 +241,12 @@ def ExtractFunc(i):
         return
 
     print('Extracting ' + filename + " (0x%08X, 0x%08X)" % (virtStart, virtEnd))
-    write_output_file(filename, physStart, size)
+
+    if deleted:
+        write_empty_output_file(filename, size)
+    else:
+        write_output_file(filename, physStart, size)
+
     if compressed:
         # print(f"decompressing {filename}")
         if Edition in ("iqt", "iqs"):
