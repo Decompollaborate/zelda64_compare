@@ -70,6 +70,8 @@ DB80,8001EC20,z_actor.c (+z_cheap_proc.c)
 8F240,800A02E0,audioMgr.c
 8F660,800A0700,title_setup.c
 8F6D0,800A0770,file_08F6D0
+8FF50,800A0FF0,gamealloc.c
+90090,800A1130,graph.c
 90BB0,800A1C50,main.c
 90F60,800A2000,padmgr.c
 91A80,800A2B20,sched.c
@@ -122,3 +124,6 @@ D1F20,800E2FC0,rsp.s
 
 offset,vram,.data
 D6610,800E76B0,z_en_a_keep.c
+
+offset,vram,.rodata
+F4CC0,80105D60,z_en_a_keep.c

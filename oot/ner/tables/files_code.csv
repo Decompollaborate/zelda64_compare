@@ -32,3 +32,6 @@ D1D10,800E2DB0,rsp.s
 
 offset,vram,.data
 D6400,800E74A0,z_en_a_keep.c
+
+offset,vram,.rodata
+F4AB0,80105B50,z_en_a_keep.c

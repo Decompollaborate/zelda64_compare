@@ -21,3 +21,6 @@ CF830,800E0F10,rsp.s
 
 offset,vram,.data
 D3F20,800E5600,z_en_a_keep.c
+
+offset,vram,.rodata
+F25D0,80103CB0,z_en_a_keep.c

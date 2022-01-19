@@ -215,3 +215,6 @@ F5280,801120E0,rsp.s
 
 offset,vram,.data
 F85E0,80115440,z_en_a_keep.c
+
+offset,vram,.rodata
+117EF0,80134D50,z_en_a_keep.c

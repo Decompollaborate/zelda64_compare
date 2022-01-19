@@ -26,3 +26,6 @@ D2960,800E3840,rsp.s
 
 offset,vram,.data
 D5CC0,800E6BA0,z_en_a_keep.c
+
+offset,vram,.rodata
+F3F40,80104E20,z_en_a_keep.c

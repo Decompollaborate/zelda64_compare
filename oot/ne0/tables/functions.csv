@@ -134,3 +134,8 @@
 80001310,Locale_ResetRegion
 800D4390,bcmp
 800D3810,__osSumcalc
+800A1118,GameAlloc_Init
+800A1130,Graph_InitTHGA
+800A1248,Graph_GetNextGamestate
+800A12F8,Graph_Init
+800A1354,Graph_TaskSet00
