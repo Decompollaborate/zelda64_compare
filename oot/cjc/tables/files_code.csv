@@ -32,4 +32,6 @@ C5890,800D6770,sqrt.c
 C58A0,800D6780,absf.c
 C58B0,800D6790,file_0C58B0
 D2960,800E3840,rsp.s
-D5CC0,800E6BA0,file_0D5CC0
+
+offset,vram,.data
+D5CC0,800E6BA0,z_en_a_keep.c

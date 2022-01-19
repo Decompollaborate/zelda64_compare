@@ -148,4 +148,6 @@ C5A80,800D6980,z_message_PAL.c
 CE840,800DF740,z_game_over.c
 CED80,800DFC80,z_construct.c
 D02C0,800E11C0,rsp.s
-D3620,800E4520,file_0D3620
+
+offset,vram,.data
+D3620,800E4520,z_en_a_keep.c

@@ -214,4 +214,6 @@ E9B50,801069B0,z_message_PAL.c
 F35F0,80110450,z_game_over.c
 F3B30,80110990,z_construct.c
 F5260,801120C0,rsp.s
-F85C0,80115420,file_0F85C0
+
+offset,vram,.data
+F85C0,80115420,z_en_a_keep.c

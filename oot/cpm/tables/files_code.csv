@@ -203,4 +203,6 @@ C5A60,800D6960,z_message_PAL.c
 CE820,800DF720,z_game_over.c
 CED60,800DFC60,z_construct.c
 D02A0,800E11A0,rsp.s
-D3600,800E4500,file_0D3600
+
+offset,vram,.data
+D3600,800E4500,z_en_a_keep.c

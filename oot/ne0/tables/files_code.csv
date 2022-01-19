@@ -119,4 +119,6 @@ C4D40,800D5DE0,file_0C4D40
 D0610,800E16B0,z_game_over.c
 D0B50,800E1BF0,z_construct.c
 D1F20,800E2FC0,rsp.s
-D6610,800E76B0,file_0D6610
+
+offset,vram,.data
+D6610,800E76B0,z_en_a_keep.c

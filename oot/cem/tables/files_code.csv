@@ -203,4 +203,6 @@ C59A0,800D6880,file_0C59A0
 D1040,800E1F20,z_game_over.c
 D1580,800E2460,z_construct.c
 D2940,800E3820,rsp.s
-D5CA0,800E6B80,file_0D5CA0
+
+offset,vram,.data
+D5CA0,800E6B80,z_en_a_keep.c

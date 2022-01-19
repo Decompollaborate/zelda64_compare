@@ -12,8 +12,14 @@ wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZ
 ## boot
 wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=10092675"   -O - | tr -d '\r' > "oot/tables/boot.text.csv"
 
+
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=34933535"   -O - | tr -d '\r' > "oot/tables/boot.bss.csv"
+
 ## code
 wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=204902945"  -O - | tr -d '\r' > "oot/tables/code.text.csv"
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=428775213"  -O - | tr -d '\r' > "oot/tables/code.data.csv"
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=1062318484" -O - | tr -d '\r' > "oot/tables/code.rodata.csv"
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=1375291344" -O - | tr -d '\r' > "oot/tables/code.bss.csv"
 
 ## n64dd
 wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=959352547"  -O - | tr -d '\r' > "oot/tables/n64dd.text.csv"
