@@ -22,6 +22,7 @@ class FileBase:
         self.pointersOffsets: List[int] = list()
 
         self.isHandwritten: bool = False
+        self.isRsp: bool = False
         self.newStuffSuffix = ""
 
     @property
@@ -97,6 +98,8 @@ class FileBase:
 
     def saveToFile(self, filepath: str):
         if self.size == 0 or not GlobalConfig.WRITE_BINARY:
+            return
+        if filepath == "-":
             return
         writeBytearrayToFile(filepath, self.bytes)
 

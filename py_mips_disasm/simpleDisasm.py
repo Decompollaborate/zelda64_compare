@@ -7,14 +7,16 @@ import argparse
 from mips.Utils import *
 from mips.GlobalConfig import GlobalConfig, printQuietless, printVerbose
 from mips.FileSplitFormat import FileSplitFormat, FileSectionType
+from mips.MipsSection import Section
 from mips.MipsText import Text
 from mips.MipsData import Data
 from mips.MipsRodata import Rodata
 from mips.MipsBss import Bss
+from mips.MipsFunction import Function
 from mips.MipsContext import Context
 
 
-def simpleDisasmFile(array_of_bytes: bytearray, outputPath: str, offsetStart: int, offsetEnd: int, vram: int, context: Context, isHandwritten: bool=False, newStuffSuffix: str=""):
+def simpleDisasmFile(array_of_bytes: bytearray, outputPath: str, offsetStart: int, offsetEnd: int, vram: int, context: Context, isHandwritten: bool=False, isRsp: bool=False, newStuffSuffix: str=""):
     head, tail = os.path.split(outputPath)
 
     if offsetEnd >= 0:
@@ -26,6 +28,7 @@ def simpleDisasmFile(array_of_bytes: bytearray, outputPath: str, offsetStart: in
 
     f = Text(array_of_bytes, tail, "ver", context)
     f.isHandwritten = isHandwritten
+    f.isRsp = isRsp
     f.newStuffSuffix = newStuffSuffix
 
     if vram >= 0:
@@ -75,7 +78,7 @@ def simpleDisasmFile(array_of_bytes: bytearray, outputPath: str, offsetStart: in
     return f
 
 
-def simpleDisasmData(array_of_bytes: bytearray, outputPath: str, offsetStart: int, offsetEnd: int, vram: int, context: Context, isHandwritten: bool=False, newStuffSuffix: str=""):
+def simpleDisasmData(array_of_bytes: bytearray, outputPath: str, offsetStart: int, offsetEnd: int, vram: int, context: Context, isHandwritten: bool=False, isRsp: bool=False, newStuffSuffix: str=""):
     head, tail = os.path.split(outputPath)
 
     if offsetEnd >= 0:
@@ -87,6 +90,7 @@ def simpleDisasmData(array_of_bytes: bytearray, outputPath: str, offsetStart: in
 
     f = Data(array_of_bytes, tail, "ver", context)
     f.isHandwritten = isHandwritten
+    f.isRsp = isRsp
     f.newStuffSuffix = newStuffSuffix
 
     if vram >= 0:
@@ -102,7 +106,7 @@ def simpleDisasmData(array_of_bytes: bytearray, outputPath: str, offsetStart: in
     return f
 
 
-def simpleDisasmRodata(array_of_bytes: bytearray, outputPath: str, offsetStart: int, offsetEnd: int, vram: int, context: Context, isHandwritten: bool=False, newStuffSuffix: str=""):
+def simpleDisasmRodata(array_of_bytes: bytearray, outputPath: str, offsetStart: int, offsetEnd: int, vram: int, context: Context, isHandwritten: bool=False, isRsp: bool=False, newStuffSuffix: str=""):
     head, tail = os.path.split(outputPath)
 
     if offsetEnd >= 0:
@@ -114,6 +118,7 @@ def simpleDisasmRodata(array_of_bytes: bytearray, outputPath: str, offsetStart: 
 
     f = Rodata(array_of_bytes, tail, "ver", context)
     f.isHandwritten = isHandwritten
+    f.isRsp = isRsp
     f.newStuffSuffix = newStuffSuffix
 
     if vram >= 0:
@@ -129,7 +134,7 @@ def simpleDisasmRodata(array_of_bytes: bytearray, outputPath: str, offsetStart: 
     return f
 
 
-def simpleDisasmBss(array_of_bytes: bytearray, outputPath: str, offsetStart: int, offsetEnd: int, vram: int, context: Context, isHandwritten: bool=False, newStuffSuffix: str=""):
+def simpleDisasmBss(array_of_bytes: bytearray, outputPath: str, offsetStart: int, offsetEnd: int, vram: int, context: Context, isHandwritten: bool=False, isRsp: bool=False, newStuffSuffix: str=""):
     head, tail = os.path.split(outputPath)
 
     if vram < 0:
@@ -137,6 +142,7 @@ def simpleDisasmBss(array_of_bytes: bytearray, outputPath: str, offsetStart: int
 
     f = Bss(vram, vram + offsetEnd - offsetStart, tail, "ver", context)
     f.isHandwritten = isHandwritten
+    f.isRsp = isRsp
     f.newStuffSuffix = newStuffSuffix
 
     if vram >= 0:
@@ -165,19 +171,138 @@ def writeSection(x):
 
     return path
 
+def writeSplitedFunction(path: str, func: Function, rodataFileList: List[Tuple[str, Rodata]], context: Context):
+    os.makedirs(path, exist_ok=True)
+    with open(os.path.join(path, func.name) + ".s", "w") as f:
+        rdataList = []
+        lateRodataList = []
+        lateRodataLen = 0
+        firstRodata = None
+        for _, rodata in rodataFileList:
+            if len(rdataList) > 0 or len(lateRodataList) > 0:
+                # We already have the rodata for this function. Stop searching
+                break
+
+            # Skip the file if there's nothing in this file refenced by the current function
+            intersection = func.referencedVRams & rodata.symbolsVRams
+            if len(intersection) == 0:
+                continue
+
+            sortedSymbolVRams = sorted(rodata.symbolsVRams)
+
+            for vram in sorted(intersection):
+                nextVramIndex = sortedSymbolVRams.index(vram) + 1
+                nextVram = float("inf") if nextVramIndex >= len(sortedSymbolVRams) else sortedSymbolVRams[nextVramIndex]
+
+                rodataSymbol = context.getGenericSymbol(vram, False)
+                assert rodataSymbol is not None
+                # We only care for rodata that's used once
+                if rodataSymbol.referenceCounter != 1:
+                    break
+
+                j = 0
+                while j < len(rodata.words):
+                    rodataVram = rodata.getVramOffset(j*4)
+                    if rodataVram < vram:
+                        j += 1
+                        continue
+                    if rodataVram >= nextVram:
+                        break
+
+                    if firstRodata is None:
+                        firstRodata = rodata.vRamStart
+
+                    nthRodata, skip = rodata.getNthWord(j)
+                    j += skip
+                    j += 1
+                    if rodataSymbol.isLateRodata:
+                        lateRodataList.append(nthRodata)
+                        lateRodataList.append("\n")
+                        lateRodataLen += 1
+                    else:
+                        rdataList.append(nthRodata)
+                        rdataList.append("\n")
+
+                if rodataSymbol.isLateRodata:
+                    lateRodataList.append("\n")
+                else:
+                    rdataList.append("\n")
+
+        if len(rdataList) > 0:
+            # Write the rdata
+            f.write(".rdata\n")
+            for x in rdataList:
+                f.write(x)
+
+            f.write("\n.text\n")
+
+        if len(lateRodataList) > 0:
+            # Write the late_rodata
+            f.write(".late_rodata\n")
+            if lateRodataLen / len(func.instructions) > 1/3:
+                align = 4
+                if firstRodata is not None:
+                    if firstRodata % 8 == 0:
+                        align = 8
+                f.write(f".late_rodata_alignment {align}\n")
+            for x in lateRodataList:
+                f.write(x)
+
+            f.write("\n.text\n")
+
+        # Write the function
+        f.write(func.disassemble())
+
+def writeOtherRodata(path: str, rodataFileList: List[Tuple[str, Rodata]], context: Context):
+    for _, rodata in rodataFileList:
+        rodataPath = os.path.join(path, rodata.filename)
+        os.makedirs(rodataPath, exist_ok=True)
+        sortedSymbolVRams = sorted(rodata.symbolsVRams)
+
+        for vram in sortedSymbolVRams:
+            nextVramIndex = sortedSymbolVRams.index(vram) + 1
+            nextVram = float("inf") if nextVramIndex >= len(sortedSymbolVRams) else sortedSymbolVRams[nextVramIndex]
+
+            rodataSymbol = context.getGenericSymbol(vram, False)
+            assert rodataSymbol is not None
+            if rodataSymbol.referenceCounter == 1:
+                continue
+
+            rodataSymbolPath = os.path.join(rodataPath, rodataSymbol.name) + ".s"
+            # print(rodataSymbolPath, rodataSymbol.referenceCounter)
+
+            with open(rodataSymbolPath, "w") as f:
+                f.write(".rdata\n")
+                j = 0
+                while j < len(rodata.words):
+                    rodataVram = rodata.getVramOffset(j*4)
+                    if rodataVram < vram:
+                        j += 1
+                        continue
+                    if rodataVram >= nextVram:
+                        break
+
+                    nthRodata, skip = rodata.getNthWord(j)
+                    f.write(nthRodata)
+                    f.write("\n")
+                    j += skip
+                    j += 1
+
 
 def disassemblerMain():
     description = "General purpose N64-mips disassembler"
     parser = argparse.ArgumentParser(description=description)
 
     parser.add_argument("binary", help="Path to input binary")
-    parser.add_argument("output", help="Path to output")
+    parser.add_argument("output", help="Path to output. Use '-' to print to stdout instead")
 
     parser.add_argument("--data-output", help="Path to output the data and rodata disassembly")
 
     parser.add_argument("--start", help="", default="0")
     parser.add_argument("--end", help="",  default="0xFFFFFF")
     parser.add_argument("--vram", help="Set the VRAM address", default="-1")
+
+    parser.add_argument("--split-functions", help="Enables the function and rodata splitter. Expects a path to place the splited functions", metavar="PATH")
 
     parser.add_argument("--save-context", help="Saves the context to a file. The provided filename will be suffixed with the corresponding version.", metavar="FILENAME")
 
@@ -189,6 +314,7 @@ def disassemblerMain():
     parser.add_argument("--add-filename", help="Adds the filename of the file to the generated function/variable name")
 
     parser.add_argument("--disasm-unknown", help="Force disassembly of functions with unknown instructions",  action="store_true")
+    parser.add_argument("--disasm-rsp", help="Experimental. Enables the disassembly of rsp abi instructions. Warning: In its current state the generated asm may not be assemblable to a matching binary",  action="store_true")
 
     parser.add_argument("-v", "--verbose", help="Enable verbose mode",  action="store_true")
     parser.add_argument("-q", "--quiet", help="Silence most output",  action="store_true")
@@ -200,6 +326,11 @@ def disassemblerMain():
 
     parser.add_argument("--non-libultra", help="Don't use built-in libultra symbols", action="store_true")
     parser.add_argument("--non-hardware-regs", help="Don't use built-in hardware registers symbols", action="store_true")
+
+    parser.add_argument("--disable-string-guesser", help="Disables the string guesser feature (does nto affect the strings referenced by .data)", action="store_true")
+
+    parser.add_argument("--debug-func-analysis", help="Enables some debug info printing related to the function analysis)", action="store_true")
+    parser.add_argument("--debug-symbol-finder", help="Enables some debug info printing related to the symbol finder system)", action="store_true")
 
     args = parser.parse_args()
 
@@ -215,8 +346,13 @@ def disassemblerMain():
     GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
     GlobalConfig.TRUST_USER_FUNCTIONS = True
     GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS = args.disasm_unknown
+    GlobalConfig.DISASSEMBLE_RSP = args.disasm_rsp
+    # TODO: remove? add flag?
+    GlobalConfig.STRING_GUESSER = not args.disable_string_guesser
     GlobalConfig.VERBOSE = args.verbose
     GlobalConfig.QUIET = args.quiet
+    GlobalConfig.PRINT_FUNCTION_ANALYSIS_DEBUG_INFO = args.debug_func_analysis
+    GlobalConfig.PRINT_SYMBOL_FINDER_DEBUG_INFO = args.debug_symbol_finder
 
     newStuffSuffix = args.add_filename
     if newStuffSuffix is None:
@@ -242,12 +378,17 @@ def disassemblerMain():
     array_of_bytes = readFileAsBytearray(args.binary)
     input_name = os.path.splitext(os.path.split(args.binary)[1])[0]
 
-    processedFiles = []
+    processedFiles = {
+        FileSectionType.Text: [],
+        FileSectionType.Data: [],
+        FileSectionType.Rodata: [],
+        FileSectionType.Bss: [],
+    }
     lenLastLine = 80
 
     if args.file_splits is None:
-        f =  simpleDisasmFile(array_of_bytes, args.output, int(args.start, 16), int(args.end, 16), int(args.vram, 16), context, False, newStuffSuffix)
-        processedFiles.append((args.output, f))
+        f =  simpleDisasmFile(array_of_bytes, args.output, int(args.start, 16), int(args.end, 16), int(args.vram, 16), context, False, GlobalConfig.DISASSEMBLE_RSP, newStuffSuffix)
+        processedFiles[FileSectionType.Text].append((args.output, f))
     else:
         splits = FileSplitFormat(args.file_splits)
 
@@ -262,7 +403,7 @@ def disassemblerMain():
         outputPath = args.output
         i = 0
         for row in splits:
-            offset, vram, fileName, section, nextOffset, isHandwritten = row
+            offset, vram, fileName, section, nextOffset, isHandwritten, isRsp = row
 
             if section == FileSectionType.Text:
                 modeCallback = simpleDisasmFile
@@ -284,8 +425,8 @@ def disassemblerMain():
                 eprint("Error! Section not set!")
                 exit(1)
             printVerbose(f"Reading '{fileName}'")
-            f = modeCallback(array_of_bytes, f"{outputPath}/{fileName}", offset, nextOffset, vram, context, isHandwritten, newStuffSuffix)
-            processedFiles.append((f"{outputPath}/{fileName}", f))
+            f = modeCallback(array_of_bytes, f"{outputPath}/{fileName}", offset, nextOffset, vram, context, isHandwritten, isRsp, newStuffSuffix)
+            processedFiles[section].append((f"{outputPath}/{fileName}", f))
 
             printQuietless(lenLastLine*" " + "\r", end="")
             progressStr = f" Analyzing: {i/splitsCount:%}. File: {fileName}\r"
@@ -295,27 +436,48 @@ def disassemblerMain():
             printVerbose("\n")
             i += 1
 
-    processedFilesCount = len(processedFiles)
+    processedFilesCount = 0
+    processedFiles
+    for sect in processedFiles.values():
+        processedFilesCount += len(sect)
+
     if args.nuke_pointers:
         printVerbose("Nuking pointers...")
-        for i, (path, f) in enumerate(processedFiles):
-            printVerbose(f"Nuking pointers of {path}")
+        i = 0
+        for section, filesInSection in processedFiles.items():
+            for path, f in filesInSection:
+                printVerbose(f"Nuking pointers of {path}")
+                printQuietless(lenLastLine*" " + "\r", end="")
+                progressStr = f" Nuking pointers: {i/processedFilesCount:%}. File: {path}\r"
+                lenLastLine = max(len(progressStr), lenLastLine)
+                printQuietless(progressStr, end="")
+
+                f.removePointers()
+                i += 1
+
+    printVerbose("Writing files...")
+    i = 0
+    for section, filesInSection in processedFiles.items():
+        for path, f in filesInSection:
+            printVerbose(f"Writing {path}")
             printQuietless(lenLastLine*" " + "\r", end="")
-            progressStr = f" Nuking pointers: {i/processedFilesCount:%}. File: {path}\r"
+            progressStr = f" Writing: {i/processedFilesCount:%}. File: {path}\r"
             lenLastLine = max(len(progressStr), lenLastLine)
             printQuietless(progressStr, end="")
 
-            f.removePointers()
+            if path == "-":
+                printQuietless()
 
-    printVerbose("Writing files...")
-    for i, (path, f) in enumerate(processedFiles):
-        printVerbose(f"Writing {path}")
-        printQuietless(lenLastLine*" " + "\r", end="")
-        progressStr = f" Writing: {i/processedFilesCount:%}. File: {path}\r"
-        lenLastLine = max(len(progressStr), lenLastLine)
-        printQuietless(progressStr, end="")
+            writeSection((path, f))
+            i += 1
 
-        writeSection((path, f))
+    printVerbose("Spliting functions")
+    if args.split_functions is not None:
+        for path, f in processedFiles[FileSectionType.Text]:
+            file: Text = f
+            for func in file.functions:
+                writeSplitedFunction(os.path.join(args.split_functions, file.filename), func, processedFiles[FileSectionType.Rodata], context)
+        writeOtherRodata(args.split_functions, processedFiles[FileSectionType.Rodata], context)
 
     if args.save_context is not None:
         head, tail = os.path.split(args.save_context)

@@ -7,6 +7,7 @@ from .MipsConstants import InstructionId
 from ..Utils import *
 
 from .MipsInstructionBase import InstructionBase
+from ..GlobalConfig import GlobalConfig
 from ..MipsContext import Context
 
 
@@ -88,7 +89,14 @@ class InstructionNormal(InstructionBase):
     def __init__(self, instr: int):
         super().__init__(instr)
 
-        self.uniqueId = InstructionNormal.NormalOpcodes.get(self.opcode, InstructionId.INVALID)
+        self.opcodesDict = dict(InstructionNormal.NormalOpcodes)
+        self.processUniqueId()
+
+
+    def processUniqueId(self):
+        super().processUniqueId()
+
+        self.uniqueId = self.opcodesDict.get(self.opcode, InstructionId.INVALID)
         if self.rt == 0:
             if self.uniqueId == InstructionId.BEQ:
                 if self.rs == 0:
@@ -97,7 +105,6 @@ class InstructionNormal(InstructionBase):
                     self.uniqueId = InstructionId.BEQZ
             elif self.uniqueId == InstructionId.BNE:
                 self.uniqueId = InstructionId.BNEZ
-
 
     def isFloatInstruction(self) -> bool:
         if self.isDoubleFloatInstruction():
@@ -214,14 +221,15 @@ class InstructionNormal(InstructionBase):
         if self.isJType():
             # instr_index = toHex(self.instr_index, 7)
             # return f"{opcode} {instr_index}"
-            vram = (self.instr_index<<2) | 0x80000000
+            vram = self.instr_index<<2
+            if not self.isRsp:
+                vram |= 0x80000000
             instrIndexHex = toHex(vram, 6)[2:]
             label = f"func_{instrIndexHex}"
             if context is not None:
                 symbol = context.getAnySymbol(vram)
                 if symbol is not None:
-                    #label = f"{symbol} # func_{instrIndexHex}"
-                    label = f"{symbol}"
+                    label = symbol.name
             return f"{result}{label}"
 
         if self.isBranch():

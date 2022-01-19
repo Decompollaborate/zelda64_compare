@@ -6,7 +6,7 @@ from .Utils import *
 from .GlobalConfig import GlobalConfig
 from .MipsFileBase import FileBase
 from .MipsSection import Section
-from .Instructions import InstructionBase, wordToInstruction, InstructionId, InstructionCoprocessor0, InstructionCoprocessor2
+from .Instructions import InstructionBase, wordToInstruction, wordToInstructionRsp, InstructionId, InstructionCoprocessor0, InstructionCoprocessor2
 from .MipsFunction import Function
 from .MipsContext import Context, ContextSymbol
 
@@ -32,13 +32,18 @@ class Text(Section):
 
         instructions: List[InstructionBase] = list()
         for word in self.words:
-            instructions.append(wordToInstruction(word))
+            if self.isRsp:
+                instr = wordToInstructionRsp(word)
+            else:
+                instr = wordToInstruction(word)
+            instructions.append(instr)
 
         trackedRegisters: Dict[int, int] = dict()
         registersValues: Dict[int, int] = dict()
         instructionOffset = 0
 
         isLikelyHandwritten = self.isHandwritten
+        newFunctions = list()
 
         isInstrImplemented = True
         index = 0
@@ -50,6 +55,16 @@ class Text(Section):
 
             if functionEnded:
                 functionEnded = False
+
+                if not isLikelyHandwritten or self.isRsp:
+                    for isFake, targetVram, targetFuncName in newFunctions:
+                        if isFake:
+                            self.context.addFakeFunction(targetVram, targetFuncName)
+                        else:
+                            self.context.addFunction(None, targetVram, targetFuncName)
+
+                newFunctions.clear()
+
                 isLikelyHandwritten = self.isHandwritten
                 index += 1
                 instructionOffset += 4
@@ -74,10 +89,9 @@ class Text(Section):
                 instr = instructions[index]
                 isInstrImplemented = instr.isImplemented()
 
-            if not isLikelyHandwritten:
+            if not self.isRsp and not isLikelyHandwritten:
                 if isinstance(instr, InstructionCoprocessor2):
                     isLikelyHandwritten = True
-                    isInstrImplemented = False
                 elif isinstance(instr, InstructionCoprocessor0):
                     isLikelyHandwritten = True
                 elif instr.getRegisterName(instr.rs) in ("$k0", "$k1"):
@@ -99,7 +113,7 @@ class Text(Section):
                         j = len(funcsStartsList) - 1
                         while j >= 0:
                             if index + branch < funcsStartsList[j]:
-                                if GlobalConfig.TRUST_USER_FUNCTIONS:
+                                if GlobalConfig.TRUST_USER_FUNCTIONS or (GlobalConfig.DISASSEMBLE_RSP and self.isRsp):
                                     vram = self.getVramOffset(funcsStartsList[j]*4)
                                     if self.context.getFunction(vram) is not None:
                                         j -= 1
@@ -123,6 +137,15 @@ class Text(Section):
                         lowerHalf = from2Complement(instr.immediate, 16)
                         registersValues[instr.rt] = upperHalf + lowerHalf
 
+            elif instr.isJType():
+                target = instr.instr_index << 2
+                if not self.isRsp:
+                    target |= 0x80000000
+                if instr.uniqueId == InstructionId.J and not self.isRsp:
+                    newFunctions.append((True, target, f"fakefunc_{target:08X}"))
+                else:
+                    newFunctions.append((False, target, f"func_{target:08X}"))
+
             if not (farthestBranch > 0):
                 if instr.uniqueId == InstructionId.JR:
                     if instr.getRegisterName(instr.rs) == "$ra":
@@ -130,15 +153,15 @@ class Text(Section):
                     else:
                         if instr.rs in registersValues:
                             functionEnded = True
-                elif instr.uniqueId == InstructionId.J and isLikelyHandwritten:
+                elif instr.uniqueId == InstructionId.J and (isLikelyHandwritten or (GlobalConfig.DISASSEMBLE_RSP and self.isRsp)):
                     functionEnded = True
 
             if self.vRamStart > 0:
-                if GlobalConfig.TRUST_USER_FUNCTIONS:
+                if GlobalConfig.TRUST_USER_FUNCTIONS or (GlobalConfig.DISASSEMBLE_RSP and self.isRsp):
                     vram = self.getVramOffset(instructionOffset) + 8
                     funcContext = self.context.getFunction(vram)
                     if funcContext is not None:
-                        if funcContext.isUserDefined:
+                        if funcContext.isUserDefined or (GlobalConfig.DISASSEMBLE_RSP and self.isRsp):
                             functionEnded = True
 
             index += 1
@@ -193,6 +216,7 @@ class Text(Section):
             func.pointersOffsets += self.pointersOffsets
             func.hasUnimplementedIntrs = hasUnimplementedIntrs
             func.parent = self
+            func.isRsp = self.isRsp
             func.analyze()
             self.functions.append(func)
             i += 1
@@ -265,23 +289,29 @@ class Text(Section):
                 self.words.append(instr.instr)
         super().updateBytes()
 
+    def disassembleToFile(self, f: TextIO):
+        f.write(".include \"macro.inc\"\n")
+        f.write("\n")
+        f.write("# assembler directives\n")
+        f.write(".set noat      # allow manual use of $at\n")
+        f.write(".set noreorder # don't insert nops after branches\n")
+        f.write(".set gp=64     # allow use of 64-bit general purpose registers\n")
+        f.write("\n")
+        f.write(".section .text\n")
+        f.write("\n")
+        f.write(".balign 16\n")
+        for func in self.functions:
+            f.write("\n")
+            f.write(func.disassemble())
+
     def saveToFile(self, filepath: str):
         super().saveToFile(filepath + ".text")
 
-        with open(filepath + ".text.s", "w") as f:
-            f.write(".include \"macro.inc\"\n")
-            f.write("\n")
-            f.write("# assembler directives\n")
-            f.write(".set noat      # allow manual use of $at\n")
-            f.write(".set noreorder # don't insert nops after branches\n")
-            f.write(".set gp=64     # allow use of 64-bit general purpose registers\n")
-            f.write("\n")
-            f.write(".section .text\n")
-            f.write("\n")
-            f.write(".balign 16\n")
-            for func in self.functions:
-                f.write("\n")
-                f.write(func.disassemble())
+        if filepath == "-":
+            self.disassembleToFile(sys.stdout)
+        else:
+            with open(filepath + ".text.s", "w") as f:
+                self.disassembleToFile(f)
 
     def setCommentOffset(self, commentOffset: int):
         super().setCommentOffset(commentOffset)

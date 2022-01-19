@@ -148,10 +148,10 @@ class InstructionId(enum.Enum):
     DSRL32    = enum.auto() # Doubleword Shift Right Logical plus 32
     DSRA32    = enum.auto() # Doubleword Shift Right Arithmetic plus 32
 
-    BLTZ      = enum.auto()
-    BGEZ      = enum.auto()
-    BLTZL     = enum.auto()
-    BGEZL     = enum.auto()
+    BLTZ      = enum.auto() # Branch on Less Than Zero
+    BGEZ      = enum.auto() # Branch on Greater than or Equal to Zero
+    BLTZL     = enum.auto() # Branch on Less Than Zero Likely
+    BGEZL     = enum.auto() # Branch on Greater than or Equal to Zero Likely
 
     TGEI      = enum.auto()
     TGEIU     = enum.auto()
@@ -342,3 +342,107 @@ class InstructionId(enum.Enum):
     MOVE      = enum.auto() # Move
     NEGU      = enum.auto() 
     NOT       = enum.auto() # Not
+
+
+@enum.unique
+class InstructionVectorId(enum.Enum):
+    INVALID   = -1
+
+    VMULF     = enum.auto()
+    VMULU     = enum.auto()
+    VRNDP     = enum.auto()
+    VMULQ     = enum.auto()
+    VMUDL     = enum.auto()
+    VMUDM     = enum.auto()
+    VMUDN     = enum.auto()
+    VMUDH     = enum.auto()
+    VMACF     = enum.auto()
+    VMACU     = enum.auto()
+    VRNDN     = enum.auto()
+    VMACQ     = enum.auto()
+    VMADL     = enum.auto()
+    VMADM     = enum.auto()
+    VMADN     = enum.auto()
+    VMADH     = enum.auto()
+    VADD      = enum.auto()
+    VSUB      = enum.auto()
+    VABS      = enum.auto()
+    VADDC     = enum.auto()
+    VSUBC     = enum.auto()
+    VSAR      = enum.auto()
+    VAND      = enum.auto()
+    VNAND     = enum.auto()
+    VOR       = enum.auto()
+    VNOR      = enum.auto()
+    VXOR      = enum.auto()
+    VNXOR     = enum.auto()
+
+    VLT       = enum.auto()
+    VEQ       = enum.auto()
+    VNE       = enum.auto()
+    VGE       = enum.auto()
+    VCL       = enum.auto()
+    VCH       = enum.auto()
+    VCR       = enum.auto()
+    VMRG      = enum.auto()
+
+    VRCP      = enum.auto()
+    VRCPL     = enum.auto()
+    VRCPH     = enum.auto()
+    VMOV      = enum.auto()
+    VRSQ      = enum.auto()
+    VRSQL     = enum.auto()
+    VRSQH     = enum.auto()
+    VNOP      = enum.auto()
+
+    MFC2      = enum.auto()
+    MTC2      = enum.auto()
+    CFC2      = enum.auto()
+    CTC2      = enum.auto()
+
+    SBV       = enum.auto()
+    SSV       = enum.auto()
+    SLV       = enum.auto()
+    SDV       = enum.auto()
+
+    SQV       = enum.auto()
+    SRV       = enum.auto()
+
+    SPV       = enum.auto()
+
+    SUV       = enum.auto()
+    SWV       = enum.auto()
+
+    SHV       = enum.auto()
+
+    SFV       = enum.auto()
+    STV       = enum.auto()
+
+    LBV       = enum.auto()
+    LSV       = enum.auto()
+    LLV       = enum.auto()
+    LDV       = enum.auto()
+
+    LQV       = enum.auto()
+    LRV       = enum.auto()
+
+    LPV       = enum.auto()
+
+    LUV       = enum.auto()
+
+    LHV       = enum.auto()
+
+    LFV       = enum.auto()
+    LTV       = enum.auto()
+
+InstructionsNotEmitedByIDO = {
+    InstructionId.ADD,
+    InstructionId.ADDI,
+    InstructionId.MTC0,
+    InstructionId.MFC0,
+    InstructionId.ERET,
+    InstructionId.TLBP,
+    InstructionId.TLBR,
+    InstructionId.TLBWI,
+    InstructionId.CACHE,
+}
