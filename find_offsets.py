@@ -138,9 +138,9 @@ def main():
         print(f"game table:              {find_game_dlftbls(data, args.game):06X}")
         print(f"kaleido table:           {find_kaleido_dlftbls(data, args.game):06X}")
         if args.game == "oot":
-            print(f"map_mark_data table: {find_fbdemo_dlftbls(data, args.game):06X}")
+            print(f"map_mark_data table:     {find_map_mark_data_dlftbl(data, args.game):06X}")
         if args.game == "mm":
-            print(f"fbdemo table:        {find_fbdemo_dlftbls(data, args.game):06X}")
+            print(f"fbdemo table:            {find_fbdemo_dlftbls(data, args.game):06X}")
 
 
 if __name__ == "__main__":
