@@ -1,5 +1,10 @@
 offset,vram,.text
 0,80000460,boot_main.c
+140,800005A0,idle.c
+390,800007F0,file_000390
+E40,800012A0,z_locale.c
+EC0,80001320,file_000EC0
+1140,800015A0,is_debug.c
 11A0,80001600,driverominit.c
 1380,800017E0,mio0.s
 1430,80001890,stackcheck.c

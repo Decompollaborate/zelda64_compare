@@ -6,7 +6,7 @@ offset,vram,.text
 16D0,80001B30,yaz0.c
 1A00,80001E60,z_locale.c
 1B90,80001FF0,assert.c
-1C10,80002070,*fill*         0x0000000080002070       0x10
+1C10,80002070,[PADDING]
 1C20,80002080,is_debug.c
 1F70,800023D0,driverominit.c
 2150,800025B0,mio0.s

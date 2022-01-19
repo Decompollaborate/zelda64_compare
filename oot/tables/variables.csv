@@ -1,4 +1,11 @@
 Variables,Type,Notes,ner,,ne0,,ne1,,np0,,ne2,,np1,,cjo,,cjm,,ceo,,cem,,cpo,,cpod1,,cpod2,,cpm,,cpmd,,cjc,,iqs,,iqt,
 ,,,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size
-gSaveContext,SaveContext,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,8015E660,1428,,,,,,
+gSaveContext,SaveContext,,,,8011A5D0,1428,,,,,,,,,,,,,,,,,,,,,,,,,8015E660,1428,,,,,,
 _string_n64dd_c,char,,801D8B00,1,801D8E00,1,801D8FA0,1,801D6DC0,1,801D9680,1,801D6E00,1,,,,,,,,,,,,,,,,,,,,,,,,
+gN64ddIsLoaded,u8,,,,80121210,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+gGameInfo,GameInfo*,,,,8011BA00,4,,,,,,,,,,,,,,,,,,,,,,,,,8015FA90,4,,,,,,
+gSystemArena,Arena,,,,8012BAA0,10,,,,,,,,,,,,,,,,,,,,,,,,,80175610,24,,,,,,
+D_801DC000,struct_801DC000,,,,801DC000,4D10,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+D_801D9C30,struct_801D9C30,,,,801D9C30,118,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+D_801D9D48,struct_801D9D48,,,,801D9D48,14,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+gCurrentRegion,u32,,,,80006280,4,,,,,,,,,,,,,,,,,,,,,,,,,8000AC60,,,,,,,

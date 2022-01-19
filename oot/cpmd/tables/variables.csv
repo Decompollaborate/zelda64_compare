@@ -1,1 +1,4 @@
 8015E660,gSaveContext,SaveContext,0x1428
+8015FA90,gGameInfo,GameInfo*,0x4
+80175610,gSystemArena,Arena,0x24
+8000AC60,gCurrentRegion,u32,0x4

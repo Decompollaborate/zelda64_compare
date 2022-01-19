@@ -86,7 +86,9 @@
 800CA508,SysCfb_GetFbPtr
 800FCB24,SystemHeap_Init
 800CA530,SysCfb_GetFbEnd
-800FD5C0,SystemArena_Malloc/MallocDebug
+800FD5C0,SystemArena_MallocDebug
+800FD570,SystemArena_Malloc
+800FD8E4,SystemArena_Init
 800D3E84,DebugArena_Init
 800636C0,func_800636C0
 800D3990,IrqMgr_Init
@@ -169,3 +171,7 @@
 80007A90,osEPiWriteIo
 80009270,__osSetHWIntrRoutine
 80008FC0,osStartThread
+800D31A0,func_800D31A0_Freeze
+800636C0,GameInfo_Init
+80001E60,Locale_Init
+80001F3C,Locale_ResetRegion
