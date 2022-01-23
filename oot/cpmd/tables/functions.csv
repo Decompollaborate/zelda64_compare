@@ -175,3 +175,5 @@
 800636C0,GameInfo_Init
 80001E60,Locale_Init
 80001F3C,Locale_ResetRegion
+801067F0,fmodf
+801069B0,Message_ResetOcarinaNoteState
