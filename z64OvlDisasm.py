@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 
 from py_mips_disasm.mips.Utils import *
 from py_mips_disasm.mips.GlobalConfig import GlobalConfig, printQuietless, printVerbose
@@ -51,6 +52,8 @@ def ovlDisassemblerMain():
     printVerbose("Analyzing")
     f.analyze()
     f.setCommentOffset(0)
+
+    os.makedirs(args.output, exist_ok=True)
 
     f.saveToFile(args.output)
 
