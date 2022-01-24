@@ -28,6 +28,13 @@ wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZ
 wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=1720384253" -O - | tr -d '\r' > "oot/tables/n64dd.bss.csv"
 
 
+## ovl_file_choose
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=2117679852"  -O - | tr -d '\r' > "oot/tables/ovl_file_choose.text.csv"
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=879682381"   -O - | tr -d '\r' > "oot/tables/ovl_file_choose.data.csv"
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=344185256"   -O - | tr -d '\r' > "oot/tables/ovl_file_choose.rodata.csv"
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=702866421"   -O - | tr -d '\r' > "oot/tables/ovl_file_choose.bss.csv"
+
+
 # MM
 
 ## Functions and variables
