@@ -22,7 +22,7 @@ class FileSplits(FileGeneric):
         if splitsData is None:
             self.textList[filename] = Text(self.bytes, filename, version, context)
         else:
-            for offset, vram, sub_fileName, section, nextOffset, isHandwritten in splitsData:
+            for offset, vram, sub_fileName, section, nextOffset, isHandwritten, isRsp in splitsData:
                 if self.vRamStart <= 0:
                     self.vRamStart = vram
 
