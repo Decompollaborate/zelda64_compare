@@ -160,7 +160,7 @@ def main():
     """
     parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
     choices = ["oot", "mm"]
-    parser.add_argument("game", help="Game to extract.", choices=choices)
+    parser.add_argument("game", help="", choices=choices)
     parser.add_argument("csv", help="") # TODO
     args = parser.parse_args()
 

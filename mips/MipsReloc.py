@@ -91,6 +91,7 @@ class Reloc(Section):
 
     def saveToFile(self, filepath: str):
         super().saveToFile(filepath + ".reloc")
+        print(filepath)
 
         if self.size == 0:
             return

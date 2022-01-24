@@ -12,6 +12,7 @@ from py_mips_disasm.mips.MipsRodata import Rodata
 from py_mips_disasm.mips.MipsBss import Bss
 from py_mips_disasm.mips.MipsContext import Context
 from py_mips_disasm.mips.Instructions import wordToInstruction
+from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat, FileSectionType
 
 from .MipsReloc import Reloc
 from .MipsFileGeneric import FileGeneric
@@ -20,7 +21,7 @@ from .ZeldaTables import OverlayTableEntry
 
 
 class FileOverlay(FileGeneric):
-    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context, game: str, tableEntry: OverlayTableEntry=None):
+    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context, game: str, tableEntry: OverlayTableEntry=None, splitsData: FileSplitFormat | None = None):
         super().__init__(array_of_bytes, filename, version, context, game)
 
         self.initVarsAddress = -1
@@ -44,44 +45,93 @@ class FileOverlay(FileGeneric):
         bss_size = self.words[headerWPos+3]
         reloc_size = 4*5 + 4*self.words[headerWPos+4]
 
-        start = 0
-        end = text_size
-        text = Text(self.bytes[start:end], filename, version, context)
-        text.parent = self
-        text.offset = start
-        text.vRamStart = self.vRamStart
-        self.textList[self.filename] = text
+        if splitsData is None:
+            start = 0
+            end = text_size
+            text = Text(self.bytes[start:end], filename, version, context)
+            text.parent = self
+            text.offset = start
+            text.vRamStart = self.vRamStart
+            self.textList[self.filename] = text
 
-        start += text_size
-        end += data_size
-        data = Data(self.bytes[start:end], filename, version, context)
-        data.parent = self
-        data.offset = start
-        data.vRamStart = self.vRamStart
-        self.dataList[self.filename] = data
+            start += text_size
+            end += data_size
+            data = Data(self.bytes[start:end], filename, version, context)
+            data.parent = self
+            data.offset = start
+            data.vRamStart = self.vRamStart
+            self.dataList[self.filename] = data
 
-        start += data_size
-        end += rodata_size
-        rodata = Rodata(self.bytes[start:end], filename, version, context)
-        rodata.parent = self
-        rodata.offset = start
-        rodata.vRamStart = self.vRamStart
-        self.rodataList[self.filename] = rodata
+            start += data_size
+            end += rodata_size
+            rodata = Rodata(self.bytes[start:end], filename, version, context)
+            rodata.parent = self
+            rodata.offset = start
+            rodata.vRamStart = self.vRamStart
+            self.rodataList[self.filename] = rodata
 
-        #start += rodata_size
-        #end += bss_size
-        #self.bss = Bss(self.bytes[start:end], filename, version)
-        # TODO
-        #bss = Bss(self.bytes[0:0], filename, version, context)
-        #bss.parent = self
-        #bss.offset = start
-        #bss.vRamStart = self.vRamStart
-        #self.bssList[self.filename] = bss
+            #start += rodata_size
+            #end += bss_size
+            #self.bss = Bss(self.bytes[start:end], filename, version)
+            # TODO
+            #bss = Bss(self.bytes[0:0], filename, version, context)
+            #bss.parent = self
+            #bss.offset = start
+            #bss.vRamStart = self.vRamStart
+            #self.bssList[self.filename] = bss
+        else:
+            for offset, vram, sub_fileName, section, nextOffset, isHandwritten, isRsp in splitsData:
+                if self.vRamStart <= 0:
+                    self.vRamStart = vram
 
-        start += rodata_size
-        self.reloc = Reloc(self.bytes[start:], filename, version, context)
+                # print("\t", offset, vram, sub_fileName, section, nextOffset, isHandwritten)
+
+                if section == FileSectionType.Text:
+                    f = Text(self.bytes[offset:nextOffset], sub_fileName, version, context)
+
+                    f.parent = self
+                    f.offset = offset
+                    f.vRamStart = self.vRamStart
+                    f.isHandwritten = isHandwritten
+
+                    self.textList[sub_fileName] = f
+                elif section == FileSectionType.Data:
+                    f = Data(self.bytes[offset:nextOffset], sub_fileName, version, context)
+
+                    f.parent = self
+                    f.offset = offset
+                    f.vRamStart = self.vRamStart
+                    f.isHandwritten = isHandwritten
+
+                    self.dataList[sub_fileName] = f
+                elif section == FileSectionType.Rodata:
+                    f = Rodata(self.bytes[offset:nextOffset], sub_fileName, version, context)
+
+                    f.parent = self
+                    f.offset = offset
+                    f.vRamStart = self.vRamStart
+                    f.isHandwritten = isHandwritten
+
+                    self.rodataList[sub_fileName] = f
+                elif section == FileSectionType.Bss:
+                    f = Bss(vram, vram + (nextOffset - offset), sub_fileName, version, context)
+
+                    f.parent = self
+                    f.offset = offset
+                    f.vRamStart = self.vRamStart
+                    f.isHandwritten = isHandwritten
+
+                    self.bssList[sub_fileName] = f
+                else:
+                    eprint("Error! Section not set!")
+                    exit(1)
+
+
+
+        relocStart = text_size + data_size + rodata_size
+        self.reloc = Reloc(self.bytes[relocStart:], filename, version, context)
         self.reloc.parent = self
-        self.reloc.offset = start
+        self.reloc.offset = relocStart
         self.reloc.vRamStart = self.vRamStart
 
 
@@ -110,13 +160,17 @@ class FileOverlay(FileGeneric):
             if entry.reloc == 0:
                 continue
             if section == ".text":
-                self.textList[self.filename].pointersOffsets.append(offset)
+                for subFile in self.textList.values():
+                    subFile.pointersOffsets.append(offset)
             elif section == ".data":
-                self.dataList[self.filename].pointersOffsets.append(offset)
+                for subFile in self.dataList.values():
+                    subFile.pointersOffsets.append(offset)
             elif section == ".rodata":
-                self.rodataList[self.filename].pointersOffsets.append(offset)
+                for subFile in self.rodataList.values():
+                    subFile.pointersOffsets.append(offset)
             elif section == ".bss":
-                self.bssList[self.filename].pointersOffsets.append(offset)
+                for subFile in self.bssList.values():
+                    subFile.pointersOffsets.append(offset)
 
         # self.textList[self.filename].removeTrailingNops()
 
@@ -212,4 +266,6 @@ class FileOverlay(FileGeneric):
 
     def saveToFile(self, filepath: str):
         super().saveToFile(filepath)
+
+        print(self.filename)
         self.reloc.saveToFile(filepath + self.reloc.filename)
