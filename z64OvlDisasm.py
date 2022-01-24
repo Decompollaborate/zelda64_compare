@@ -10,6 +10,7 @@ from py_mips_disasm.mips.MipsContext import Context
 from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat
 
 from mips.MipsFileOverlay import FileOverlay
+from mips.ZeldaTables import getFileAddresses
 
 
 def ovlDisassemblerMain():
@@ -20,6 +21,8 @@ def ovlDisassemblerMain():
     parser.add_argument("output", help="Path to output. Use '-' to print to stdout instead")
 
     parser.add_argument("--file-splits", help="Path to a file splits csv")
+
+    parser.add_argument("--file-addresses", help="Path to a csv with the addresses of every file")
 
     args = parser.parse_args()
 
@@ -37,7 +40,13 @@ def ovlDisassemblerMain():
     if args.file_splits is not None and os.path.exists(args.file_splits):
         splitsData = FileSplitFormat(args.file_splits)
 
+    fileAddresses = getFileAddresses(args.file_addresses)
+
     f = FileOverlay(array_of_bytes, input_name, "ver", context, "", splitsData=splitsData)
+
+    if input_name in fileAddresses:
+        if f.vRamStart < 0:
+            f.setVRamStart(fileAddresses[input_name].vramStart)
 
     printVerbose("Analyzing")
     f.analyze()

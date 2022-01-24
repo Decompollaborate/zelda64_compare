@@ -81,6 +81,8 @@ def main():
                 print("room,", end="")
             elif entry[0].startswith("anime_") or entry[0].startswith("bump_") or entry[0].startswith("softsprite_"):
                 print("segment,", end="")
+            else:
+                print(",", end="")
 
 
         print("")

@@ -267,5 +267,4 @@ class FileOverlay(FileGeneric):
     def saveToFile(self, filepath: str):
         super().saveToFile(filepath)
 
-        print(self.filename)
         self.reloc.saveToFile(filepath + self.reloc.filename)
