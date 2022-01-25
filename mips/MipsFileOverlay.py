@@ -45,7 +45,7 @@ class FileOverlay(FileGeneric):
         data_size = self.words[headerWPos+1]
         rodata_size = self.words[headerWPos+2]
         bss_size = self.words[headerWPos+3]
-        reloc_size = 4*5 + 4*self.words[headerWPos+4]
+        reloc_size = self.size - (text_size + data_size + rodata_size)
 
         self.splitsDataList: List[FileSplitEntry] = []
         if splitsData is not None and len(splitsData) > 0:
