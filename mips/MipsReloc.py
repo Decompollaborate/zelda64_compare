@@ -112,17 +112,19 @@ class Reloc(Section):
 
             f.write(f"glabel {self.filename}OverlayInfo\n")
 
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentTextSize # {self.textSize}\n" % (offset + 0x0, currentVram + 0x0, self.textSize))
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentDataSize # {self.dataSize}\n" % (offset + 0x4, currentVram + 0x4, self.dataSize))
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentRoDataSize # {self.rodataSize}\n" % (offset + 0x8, currentVram + 0x8, self.rodataSize))
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentBssSize # {self.bssSize}\n" % (offset + 0xC, currentVram + 0xC, self.bssSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentTextSize # {self.textSize}\n" % (offset + self.commentOffset + 0x0, currentVram + 0x0, self.textSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentDataSize # {self.dataSize}\n" % (offset + self.commentOffset + 0x4, currentVram + 0x4, self.dataSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentRoDataSize # {self.rodataSize}\n" % (offset + self.commentOffset + 0x8, currentVram + 0x8, self.rodataSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentBssSize # {self.bssSize}\n" % (offset + self.commentOffset + 0xC, currentVram + 0xC, self.bssSize))
             f.write(f"\n")
-            f.write(f"/* %05X %08X %08X */  .word  {self.relocCount} # reloc_count\n" % (offset + 0x10, currentVram + 0x10, self.relocCount))
+            f.write(f"/* %05X %08X %08X */  .word  {self.relocCount} # reloc_count\n" % (offset + self.commentOffset + 0x10, currentVram + 0x10, self.relocCount))
             f.write(f"\n")
+
+            offset += 0x14
 
             f.write(f"glabel {self.filename}OverlayRelocations\n")
             for r in self.entries:
-                offsetHex = toHex(offset, 5)[2:]
+                offsetHex = toHex(offset + self.commentOffset, 5)[2:]
                 vramHex = ""
                 if self.vRamStart != -1:
                     currentVram = self.getVramOffset(offset)
@@ -135,7 +137,7 @@ class Reloc(Section):
 
             f.write("\n")
             for pad in self.tail:
-                offsetHex = toHex(offset, 5)[2:]
+                offsetHex = toHex(offset + self.commentOffset, 5)[2:]
                 vramHex = ""
                 if self.vRamStart != -1:
                     currentVram = self.getVramOffset(offset)
