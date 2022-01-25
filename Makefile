@@ -45,8 +45,8 @@ asmclean:
 
 ## Extraction step
 setup:
-	$(MAKE) -C tools
-	./extract_baserom.py $(VERSION) $(BASE_ROM)
+#	$(MAKE) -C tools
+	./extract_baserom.py $(GAME) $(VERSION)
 
 ## Assembly generation
 disasm: $(DISASM_TARGETS)
