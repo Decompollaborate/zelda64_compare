@@ -75,8 +75,8 @@ class FileOverlay(FileGeneric):
             splitEntry = FileSplitEntry(start, vram, filename, FileSectionType.Rodata, end, False, False)
             self.splitsDataList.append(splitEntry)
 
-            start += rodata_size
-            end += bss_size
+            start += rodata_size + reloc_size
+            end += bss_size + reloc_size
             if self.vRamStart > 0:
                 vram = self.vRamStart + start
             splitEntry = FileSplitEntry(start, vram, filename, FileSectionType.Bss, end, False, False)
