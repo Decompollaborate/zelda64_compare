@@ -112,10 +112,10 @@ class Reloc(Section):
 
             f.write(f"glabel {self.filename}OverlayInfo\n")
 
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentTextSize # {self.textSize}\n" % (offset + self.commentOffset + 0x0, currentVram + 0x0, self.textSize))
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentDataSize # {self.dataSize}\n" % (offset + self.commentOffset + 0x4, currentVram + 0x4, self.dataSize))
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentRoDataSize # {self.rodataSize}\n" % (offset + self.commentOffset + 0x8, currentVram + 0x8, self.rodataSize))
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentBssSize # {self.bssSize}\n" % (offset + self.commentOffset + 0xC, currentVram + 0xC, self.bssSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentTextSize # 0x{self.textSize:02X}\n" % (offset + self.commentOffset + 0x0, currentVram + 0x0, self.textSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentDataSize # 0x{self.dataSize:02X}\n" % (offset + self.commentOffset + 0x4, currentVram + 0x4, self.dataSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentRoDataSize # 0x{self.rodataSize:02X}\n" % (offset + self.commentOffset + 0x8, currentVram + 0x8, self.rodataSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentBssSize # 0x{self.bssSize:02X}\n" % (offset + self.commentOffset + 0xC, currentVram + 0xC, self.bssSize))
             f.write(f"\n")
             f.write(f"/* %05X %08X %08X */  .word  {self.relocCount} # reloc_count\n" % (offset + self.commentOffset + 0x10, currentVram + 0x10, self.relocCount))
             f.write(f"\n")
@@ -149,4 +149,4 @@ class Reloc(Section):
 
             f.write(f"glabel {self.filename}OverlayInfoOffset\n")
             currentVram = self.getVramOffset(offset)
-            f.write(f"/* %05X %08X %08X */  .word  {self.seekup}\n" % (offset + 0x0, currentVram + 0x0, self.seekup))
+            f.write(f"/* %05X %08X %08X */  .word  0x{self.seekup:02X}\n" % (offset + 0x0, currentVram + 0x0, self.seekup))
