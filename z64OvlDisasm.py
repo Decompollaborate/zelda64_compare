@@ -108,6 +108,11 @@ def ovlDisassemblerMain():
 
     f.updateCommentOffset()
 
+    if GlobalConfig.VERBOSE:
+        for sectDict in f.sectionsDict.values():
+            for section in sectDict.values():
+                section.printAnalyzisResults()
+
     if args.nuke_pointers:
         printVerbose("Nuking pointers...")
         f.removePointers()

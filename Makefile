@@ -82,7 +82,7 @@ $(BASE_DIR)/asm/text/%/.disasm: $(BASE_DIR)/baserom/% $(BASE_DIR)/tables/variabl
 
 $(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables/variables.csv $(BASE_DIR)/tables/functions.csv
 	$(RM) -rf $(BASE_DIR)/asm/text/ovl_$* $(BASE_DIR)/asm/data/ovl_$* $(BASE_DIR)/context/ovl_$*.txt
-	$(OVL_DISASSEMBLER) $< $(BASE_DIR)/asm/text/ovl_$* -q --data-output $(BASE_DIR)/asm/data/ovl_$* \
+	$(OVL_DISASSEMBLER) $< $(BASE_DIR)/asm/text/ovl_$* -v --data-output $(BASE_DIR)/asm/data/ovl_$* \
 		--file-splits $(BASE_DIR)/tables/files_ovl_$*.csv \
 		--variables $(BASE_DIR)/tables/variables.csv \
 		--functions $(BASE_DIR)/tables/functions.csv \
