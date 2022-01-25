@@ -11,8 +11,8 @@ from py_mips_disasm.mips.MipsData import Data
 from py_mips_disasm.mips.MipsRodata import Rodata
 from py_mips_disasm.mips.MipsBss import Bss
 from py_mips_disasm.mips.MipsContext import Context
-from py_mips_disasm.mips.Instructions import wordToInstruction
 from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat, FileSectionType
+from py_mips_disasm.mips.FilesHandlers import createSectionFromSplitEntry
 
 from .MipsReloc import Reloc
 from .MipsFileGeneric import FileGeneric
@@ -52,7 +52,7 @@ class FileOverlay(FileGeneric):
             text.parent = self
             text.offset = start
             text.vRamStart = self.vRamStart
-            self.textList[self.filename] = text
+            self.sectionsDict[FileSectionType.Text][self.filename] = text
 
             start += text_size
             end += data_size
@@ -60,7 +60,7 @@ class FileOverlay(FileGeneric):
             data.parent = self
             data.offset = start
             data.vRamStart = self.vRamStart
-            self.dataList[self.filename] = data
+            self.sectionsDict[FileSectionType.Data][self.filename] = data
 
             start += data_size
             end += rodata_size
@@ -68,7 +68,7 @@ class FileOverlay(FileGeneric):
             rodata.parent = self
             rodata.offset = start
             rodata.vRamStart = self.vRamStart
-            self.rodataList[self.filename] = rodata
+            self.sectionsDict[FileSectionType.Rodata][self.filename] = rodata
 
             #start += rodata_size
             #end += bss_size
@@ -78,53 +78,16 @@ class FileOverlay(FileGeneric):
             #bss.parent = self
             #bss.offset = start
             #bss.vRamStart = self.vRamStart
-            #self.bssList[self.filename] = bss
+            #self.sectionsDict[FileSectionType.Bss][self.filename] = bss
         else:
-            for offset, vram, sub_fileName, section, nextOffset, isHandwritten, isRsp in splitsData:
+            for splitEntry in splitsData:
                 if self.vRamStart <= 0:
-                    self.vRamStart = vram
+                    self.vRamStart = splitEntry.vram
 
-                # print("\t", offset, vram, sub_fileName, section, nextOffset, isHandwritten)
+                f = createSectionFromSplitEntry(splitEntry, self.bytes, splitEntry.fileName, context)
+                f.parent = self
 
-                if section == FileSectionType.Text:
-                    f = Text(self.bytes[offset:nextOffset], sub_fileName, version, context)
-
-                    f.parent = self
-                    f.offset = offset
-                    f.vRamStart = self.vRamStart
-                    f.isHandwritten = isHandwritten
-
-                    self.textList[sub_fileName] = f
-                elif section == FileSectionType.Data:
-                    f = Data(self.bytes[offset:nextOffset], sub_fileName, version, context)
-
-                    f.parent = self
-                    f.offset = offset
-                    f.vRamStart = self.vRamStart
-                    f.isHandwritten = isHandwritten
-
-                    self.dataList[sub_fileName] = f
-                elif section == FileSectionType.Rodata:
-                    f = Rodata(self.bytes[offset:nextOffset], sub_fileName, version, context)
-
-                    f.parent = self
-                    f.offset = offset
-                    f.vRamStart = self.vRamStart
-                    f.isHandwritten = isHandwritten
-
-                    self.rodataList[sub_fileName] = f
-                elif section == FileSectionType.Bss:
-                    f = Bss(vram, vram + (nextOffset - offset), sub_fileName, version, context)
-
-                    f.parent = self
-                    f.offset = offset
-                    f.vRamStart = self.vRamStart
-                    f.isHandwritten = isHandwritten
-
-                    self.bssList[sub_fileName] = f
-                else:
-                    eprint("Error! Section not set!")
-                    exit(1)
+                self.sectionsDict[splitEntry.section][splitEntry.fileName] = f
 
 
 
@@ -141,13 +104,13 @@ class FileOverlay(FileGeneric):
 
     def getHash(self) -> str:
         bytes = bytearray(0)
-        for section in self.textList.values():
+        for section in self.sectionsDict[FileSectionType.Text].values():
             bytes += section.bytes
-        for section in self.dataList.values():
+        for section in self.sectionsDict[FileSectionType.Data].values():
             bytes += section.bytes
-        for section in self.rodataList.values():
+        for section in self.sectionsDict[FileSectionType.Rodata].values():
             bytes += section.bytes
-        for section in self.bssList.values():
+        for section in self.sectionsDict[FileSectionType.Bss].values():
             bytes += section.bytes
         bytes += self.reloc.bytes
         return getStrHash(bytes)
@@ -160,19 +123,19 @@ class FileOverlay(FileGeneric):
             if entry.reloc == 0:
                 continue
             if section == ".text":
-                for subFile in self.textList.values():
+                for subFile in self.sectionsDict[FileSectionType.Text].values():
                     subFile.pointersOffsets.append(offset)
             elif section == ".data":
-                for subFile in self.dataList.values():
+                for subFile in self.sectionsDict[FileSectionType.Data].values():
                     subFile.pointersOffsets.append(offset)
             elif section == ".rodata":
-                for subFile in self.rodataList.values():
+                for subFile in self.sectionsDict[FileSectionType.Rodata].values():
                     subFile.pointersOffsets.append(offset)
             elif section == ".bss":
-                for subFile in self.bssList.values():
+                for subFile in self.sectionsDict[FileSectionType.Bss].values():
                     subFile.pointersOffsets.append(offset)
 
-        # self.textList[self.filename].removeTrailingNops()
+        # self.sectionsDict[FileSectionType.Text][self.filename].removeTrailingNops()
 
         super().analyze()
         self.reloc.analyze()

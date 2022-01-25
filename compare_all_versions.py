@@ -12,7 +12,7 @@ from py_mips_disasm.mips.Utils import *
 from py_mips_disasm.mips.GlobalConfig import GlobalConfig
 from py_mips_disasm.mips.MipsSection import Section
 from py_mips_disasm.mips.MipsContext import Context
-from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat
+from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat, FileSectionType
 
 from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
@@ -140,9 +140,9 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
 
         if isinstance(f, FileGeneric):
             subfiles = {
-                ".text" : f.textList,
-                ".data" : f.dataList,
-                ".rodata" : f.rodataList,
+                ".text" : f.sectionsDict[FileSectionType.Text],
+                ".data" : f.sectionsDict[FileSectionType.Data],
+                ".rodata" : f.sectionsDict[FileSectionType.Rodata],
                 #".bss" : f.bss,
             }
         else:
