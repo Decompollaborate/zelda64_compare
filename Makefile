@@ -70,11 +70,24 @@ $(BASE_DIR)/tables/files_%.csv: $(GAME)/tables/%.*.csv
 
 $(BASE_DIR)/asm/text/%/.disasm: $(BASE_DIR)/baserom/% $(BASE_DIR)/tables/variables.csv $(BASE_DIR)/tables/functions.csv $(BASE_DIR)/tables/files_%.csv
 	$(RM) -rf $(BASE_DIR)/asm/text/$* $(BASE_DIR)/asm/data/$* $(BASE_DIR)/context/$*.txt
-	$(DISASSEMBLER) $< $(BASE_DIR)/asm/text/$* -q --data-output $(BASE_DIR)/asm/data/$* --variables $(BASE_DIR)/tables/variables.csv --functions $(BASE_DIR)/tables/functions.csv --constants $(GAME)/tables/constants.csv --file-splits $(BASE_DIR)/tables/files_$*.csv  --save-context $(BASE_DIR)/context/$*.txt --constants $(BASE_DIR)/tables/constants_$*.csv
+	$(DISASSEMBLER) $< $(BASE_DIR)/asm/text/$* -q --data-output $(BASE_DIR)/asm/data/$* \
+		--file-splits $(BASE_DIR)/tables/files_$*.csv  \
+		--variables $(BASE_DIR)/tables/variables.csv \
+		--functions $(BASE_DIR)/tables/functions.csv \
+		--constants $(GAME)/tables/constants.csv \
+		--save-context $(BASE_DIR)/context/$*.txt \
+		--constants $(BASE_DIR)/tables/constants_$*.csv
 	@touch $@
 
 
 $(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables/variables.csv $(BASE_DIR)/tables/functions.csv
 	$(RM) -rf $(BASE_DIR)/asm/text/ovl_$* $(BASE_DIR)/asm/data/ovl_$* $(BASE_DIR)/context/ovl_$*.txt
-	$(OVL_DISASSEMBLER) $< $(BASE_DIR)/asm/text/ovl_$*/ --file-splits $(BASE_DIR)/tables/files_ovl_$*.csv --file-addresses $(BASE_DIR)/tables/file_addresses.csv
+	$(OVL_DISASSEMBLER) $< $(BASE_DIR)/asm/text/ovl_$* -q --data-output $(BASE_DIR)/asm/data/ovl_$* \
+		--file-splits $(BASE_DIR)/tables/files_ovl_$*.csv \
+		--variables $(BASE_DIR)/tables/variables.csv \
+		--functions $(BASE_DIR)/tables/functions.csv \
+		--constants $(GAME)/tables/constants.csv \
+		--save-context $(BASE_DIR)/context/ovl_$*.txt \
+		--constants $(BASE_DIR)/tables/constants_ovl_$*.csv \
+		--file-addresses $(BASE_DIR)/tables/file_addresses.csv
 	@touch $@
