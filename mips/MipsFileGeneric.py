@@ -15,7 +15,7 @@ from py_mips_disasm.mips.FileSplitFormat import FileSectionType
 
 # Not intended to be instanced
 class FileGeneric(FileBase):
-    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context, game: str):
+    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context):
         super().__init__(array_of_bytes, filename, version, context)
 
         self.sectionsDict: Dict[FileSectionType, Dict[str, Section]] = {

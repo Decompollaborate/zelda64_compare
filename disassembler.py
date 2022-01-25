@@ -8,7 +8,7 @@ from py_mips_disasm.mips.Utils import *
 from py_mips_disasm.mips.GlobalConfig import GlobalConfig
 from py_mips_disasm.mips.MipsText import Text
 from py_mips_disasm.mips.MipsContext import Context
-from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat
+from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat, FileSectionType
 
 from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
@@ -54,10 +54,10 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
                             break
                         i += 1
 
-        f = FileOverlay(array_of_bytes, filename, version, context, game, tableEntry=tableEntry)
+        f = FileOverlay(array_of_bytes, filename, version, context, tableEntry=tableEntry)
     elif filename in ("code", "boot", "n64dd"):
         print(f"{filename} detected. Parsing...")
-        f = FileSplits(array_of_bytes, filename, version, context, game, splitsData)
+        f = FileSplits(array_of_bytes, filename, version, context, splitsData)
     else:
         print("Unknown file type. Assuming .text. Parsing...")
 
@@ -83,7 +83,7 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
 
     nBoundaries: int = 0
     if isinstance(f, FileGeneric):
-        for name, text in f.textList.items():
+        for name, text in f.sectionsDict[FileSectionType.Text].items():
             nBoundaries += len(text.fileBoundaries)
     else:
         nBoundaries += len(f.fileBoundaries)

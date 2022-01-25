@@ -14,8 +14,8 @@ from .MipsFileGeneric import FileGeneric
 
 
 class FileSplits(FileGeneric):
-    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context, game: str, splitsData: FileSplitFormat | None = None):
-        super().__init__(array_of_bytes, filename, version, context, game)
+    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context, splitsData: FileSplitFormat | None = None):
+        super().__init__(array_of_bytes, filename, version, context)
 
         if splitsData is None:
             self.sectionsDict[FileSectionType.Text][filename] = Text(self.bytes, filename, version, context)
