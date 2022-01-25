@@ -46,7 +46,7 @@ class FileOverlay(FileGeneric):
         reloc_size = 4*5 + 4*self.words[headerWPos+4]
 
         self.splitsDataList: List[FileSplitEntry] = []
-        if splitsData is not None:
+        if splitsData is not None and len(splitsData) > 0:
             for splitEntry in splitsData:
                 self.splitsDataList.append(splitEntry)
         else:
