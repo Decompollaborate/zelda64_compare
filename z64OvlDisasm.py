@@ -98,11 +98,11 @@ def ovlDisassemblerMain():
 
     fileAddresses = getFileAddresses(args.file_addresses)
 
-    f = FileOverlay(array_of_bytes, input_name, context, splitsData=splitsData)
-
+    vramStart = -1
     if input_name in fileAddresses:
-        if f.vRamStart < 0:
-            f.setVRamStart(fileAddresses[input_name].vramStart)
+        vramStart = fileAddresses[input_name].vramStart
+
+    f = FileOverlay(array_of_bytes, input_name, context, splitsData=splitsData, vramStartParam=vramStart)
 
     f.analyze()
 

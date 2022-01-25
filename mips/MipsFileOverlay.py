@@ -21,8 +21,10 @@ from .ZeldaTables import OverlayTableEntry
 
 
 class FileOverlay(FileGeneric):
-    def __init__(self, array_of_bytes: bytearray, filename: str, context: Context, tableEntry: OverlayTableEntry=None, splitsData: FileSplitFormat | None = None):
+    def __init__(self, array_of_bytes: bytearray, filename: str, context: Context, tableEntry: OverlayTableEntry=None, splitsData: FileSplitFormat | None = None, vramStartParam: int = -1):
         super().__init__(array_of_bytes, filename, context)
+
+        self.vRamStart = vramStartParam
 
         self.initVarsAddress = -1
         if tableEntry is not None:
