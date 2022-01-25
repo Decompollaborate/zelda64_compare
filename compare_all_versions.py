@@ -125,11 +125,11 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
                                 tableEntry = entry
                                 break
 
-            f = FileOverlay(array_of_bytes, filename, version, contextPerVersion[version], tableEntry=tableEntry)
+            f = FileOverlay(array_of_bytes, filename, contextPerVersion[version], tableEntry=tableEntry)
         elif filename in ("code", "boot", "n64dd"):
-            f = FileSplits(array_of_bytes, filename, version, contextPerVersion[version], splitsData)
+            f = FileSplits(array_of_bytes, filename, contextPerVersion[version], splitsData)
         else:
-            f = Section(array_of_bytes, filename, version, contextPerVersion[version])
+            f = Section(array_of_bytes, filename, contextPerVersion[version])
 
         f.analyze()
 

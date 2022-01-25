@@ -54,10 +54,10 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
                             break
                         i += 1
 
-        f = FileOverlay(array_of_bytes, filename, version, context, tableEntry=tableEntry)
+        f = FileOverlay(array_of_bytes, filename, context, tableEntry=tableEntry)
     elif filename in ("code", "boot", "n64dd"):
         print(f"{filename} detected. Parsing...")
-        f = FileSplits(array_of_bytes, filename, version, context, splitsData)
+        f = FileSplits(array_of_bytes, filename, context, splitsData)
     else:
         print("Unknown file type. Assuming .text. Parsing...")
 
@@ -66,7 +66,7 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
             print(f"Parsing until offset {toHex(textend, 2)}")
             text_data = array_of_bytes[:textend]
 
-        f = Text(text_data, filename, version, context)
+        f = Text(text_data, filename, context)
 
     if vram >= 0:
         print(f"Using VRAM {toHex(vram, 8)[2:]}")
@@ -84,6 +84,7 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
     nBoundaries: int = 0
     if isinstance(f, FileGeneric):
         for name, text in f.sectionsDict[FileSectionType.Text].items():
+            assert(isinstance(text, Text))
             nBoundaries += len(text.fileBoundaries)
     else:
         nBoundaries += len(f.fileBoundaries)

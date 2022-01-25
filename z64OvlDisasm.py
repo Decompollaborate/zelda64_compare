@@ -98,7 +98,7 @@ def ovlDisassemblerMain():
 
     fileAddresses = getFileAddresses(args.file_addresses)
 
-    f = FileOverlay(array_of_bytes, input_name, "ver", context, splitsData=splitsData)
+    f = FileOverlay(array_of_bytes, input_name, context, splitsData=splitsData)
 
     if input_name in fileAddresses:
         if f.vRamStart < 0:

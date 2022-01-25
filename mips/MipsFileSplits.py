@@ -14,11 +14,11 @@ from .MipsFileGeneric import FileGeneric
 
 
 class FileSplits(FileGeneric):
-    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context, splitsData: FileSplitFormat | None = None):
-        super().__init__(array_of_bytes, filename, version, context)
+    def __init__(self, array_of_bytes: bytearray, filename: str, context: Context, splitsData: FileSplitFormat | None = None):
+        super().__init__(array_of_bytes, filename, context)
 
         if splitsData is None:
-            self.sectionsDict[FileSectionType.Text][filename] = Text(self.bytes, filename, version, context)
+            self.sectionsDict[FileSectionType.Text][filename] = Text(self.bytes, filename, context)
         else:
             for splitEntry in splitsData:
                 if self.vRamStart <= 0:

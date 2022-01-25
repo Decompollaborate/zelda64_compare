@@ -75,14 +75,14 @@ def compare_baseroms(args, filelist):
             splitsDataTwo = FileSplitFormat(tablePath)
 
         if filename.startswith("ovl_"):
-            file_one = FileOverlay(file_one_data, filename, args.version1, context_one)
-            file_two = FileOverlay(file_two_data, filename, args.version2, context_two)
+            file_one = FileOverlay(file_one_data, filename, context_one)
+            file_two = FileOverlay(file_two_data, filename, context_two)
         elif filename in ("code", "boot", "n64dd"):
-            file_one = FileSplits(file_one_data, filename, args.version1, context_one, splitsDataOne)
-            file_two = FileSplits(file_two_data, filename, args.version2, context_two, splitsDataTwo)
+            file_one = FileSplits(file_one_data, filename, context_one, splitsDataOne)
+            file_two = FileSplits(file_two_data, filename, context_two, splitsDataTwo)
         else:
-            file_one = Section(file_one_data, filename, args.version1, context_one)
-            file_two = Section(file_two_data, filename, args.version2, context_two)
+            file_one = Section(file_one_data, filename, context_one)
+            file_two = Section(file_two_data, filename, context_two)
 
         file_one.analyze()
         file_two.analyze()
@@ -221,14 +221,14 @@ def compare_to_csv(args, filelist):
                 splitsDataTwo = FileSplitFormat(tablePath)
 
             if not args.dont_split_files and filename.startswith("ovl_"):
-                file_one = FileOverlay(file_one_data, filename, args.version1, context_one)
-                file_two = FileOverlay(file_two_data, filename, args.version2, context_two)
+                file_one = FileOverlay(file_one_data, filename, context_one)
+                file_two = FileOverlay(file_two_data, filename, context_two)
             elif filename in ("code", "boot", "n64dd"):
-                file_one = FileSplits(file_one_data, filename, args.version1, context_one, splitsDataOne)
-                file_two = FileSplits(file_two_data, filename, args.version2, context_two, splitsDataTwo)
+                file_one = FileSplits(file_one_data, filename, context_one, splitsDataOne)
+                file_two = FileSplits(file_two_data, filename, context_two, splitsDataTwo)
             else:
-                file_one = Section(file_one_data, filename, args.version1, context_one)
-                file_two = Section(file_two_data, filename, args.version2, context_two)
+                file_one = Section(file_one_data, filename, context_one)
+                file_two = Section(file_two_data, filename, context_two)
 
             file_one.analyze()
             file_two.analyze()

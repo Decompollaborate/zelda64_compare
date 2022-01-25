@@ -21,8 +21,8 @@ from .ZeldaTables import OverlayTableEntry
 
 
 class FileOverlay(FileGeneric):
-    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context, tableEntry: OverlayTableEntry=None, splitsData: FileSplitFormat | None = None):
-        super().__init__(array_of_bytes, filename, version, context)
+    def __init__(self, array_of_bytes: bytearray, filename: str, context: Context, tableEntry: OverlayTableEntry=None, splitsData: FileSplitFormat | None = None):
+        super().__init__(array_of_bytes, filename, context)
 
         self.initVarsAddress = -1
         if tableEntry is not None:
@@ -93,7 +93,7 @@ class FileOverlay(FileGeneric):
 
 
         relocStart = text_size + data_size + rodata_size
-        self.reloc = Reloc(self.bytes[relocStart:], filename, version, context)
+        self.reloc = Reloc(self.bytes[relocStart:], filename, context)
         self.reloc.parent = self
         self.reloc.vRamStart = self.vRamStart
         if self.vRamStart >= 0:

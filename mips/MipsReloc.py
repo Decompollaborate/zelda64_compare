@@ -47,8 +47,8 @@ class RelocEntry:
         return self.__str__()
 
 class Reloc(Section):
-    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context):
-        super().__init__(array_of_bytes, filename, version, context)
+    def __init__(self, array_of_bytes: bytearray, filename: str, context: Context):
+        super().__init__(array_of_bytes, filename, context)
 
         self.textSize = self.words[0]
         self.dataSize = self.words[1]
