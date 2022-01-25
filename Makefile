@@ -2,8 +2,11 @@ MAKEFLAGS += --no-builtin-rules
 
 # Build options can either be changed by modifying the makefile, or by building with 'make SETTING=value'
 
-GAME     ?= oot
-VERSION  ?= ne0
+GAME             ?= oot
+VERSION          ?= ne0
+
+DISASM_VERBOSITY ?= -q
+
 
 MAKE = make
 
@@ -21,14 +24,17 @@ BASE_ROM       := $(GAME)/$(GAME)_$(VERSION).z64
 
 # S_FILES        := $(foreach dir,$(ASM_DIRS),$(wildcard $(dir)/*.s))
 
-BASEROM_FILES  := $(wildcard $(BASE_DIR)/baserom/*)
+BASEROM_FILES       := $(wildcard $(BASE_DIR)/baserom/*)
 
-DISASM_LIST    := $(shell cat $(GAME)/tables/disasm_list.txt) \
-                  $(shell [ -f $(BASE_DIR)/tables/disasm_list.txt ] && cat $(BASE_DIR)/tables/disasm_list.txt)
+DISASM_LIST    	    := $(shell cat $(GAME)/tables/disasm_list.txt) \
+                       $(shell [ -f $(BASE_DIR)/tables/disasm_list.txt ] && cat $(BASE_DIR)/tables/disasm_list.txt)
 
-CSV_FILES      := $(DISASM_LIST:%=$(BASE_DIR)/tables/files_%.csv) \
-                  $(BASE_DIR)/tables/functions.csv $(BASE_DIR)/tables/variables.csv
-DISASM_TARGETS := $(DISASM_LIST:%=$(BASE_DIR)/asm/text/%/.disasm)
+CSV_FILES_ORIGINAL  := $(wildcard $(GAME)/tables/*.text.csv)
+
+CSV_FILES           := $(CSV_FILES_ORIGINAL:$(GAME)/tables/%.text.csv=$(BASE_DIR)/tables/files_%.csv) \
+                       $(BASE_DIR)/tables/functions.csv $(BASE_DIR)/tables/variables.csv
+
+DISASM_TARGETS      := $(DISASM_LIST:%=$(BASE_DIR)/asm/text/%/.disasm)
 
 .PHONY: all splitcsvs disasm clean
 .DEFAULT_GOAL := all
@@ -70,7 +76,7 @@ $(BASE_DIR)/tables/files_%.csv: $(GAME)/tables/%.*.csv
 
 $(BASE_DIR)/asm/text/%/.disasm: $(BASE_DIR)/baserom/% $(BASE_DIR)/tables/variables.csv $(BASE_DIR)/tables/functions.csv $(BASE_DIR)/tables/files_%.csv
 	$(RM) -rf $(BASE_DIR)/asm/text/$* $(BASE_DIR)/asm/data/$* $(BASE_DIR)/context/$*.txt
-	$(DISASSEMBLER) $< $(BASE_DIR)/asm/text/$* -q --data-output $(BASE_DIR)/asm/data/$* \
+	$(DISASSEMBLER) $< $(BASE_DIR)/asm/text/$* $(DISASM_VERBOSITY) --data-output $(BASE_DIR)/asm/data/$* \
 		--file-splits $(BASE_DIR)/tables/files_$*.csv  \
 		--variables $(BASE_DIR)/tables/variables.csv \
 		--functions $(BASE_DIR)/tables/functions.csv \
@@ -82,7 +88,7 @@ $(BASE_DIR)/asm/text/%/.disasm: $(BASE_DIR)/baserom/% $(BASE_DIR)/tables/variabl
 
 $(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables/variables.csv $(BASE_DIR)/tables/functions.csv
 	$(RM) -rf $(BASE_DIR)/asm/text/ovl_$* $(BASE_DIR)/asm/data/ovl_$* $(BASE_DIR)/context/ovl_$*.txt
-	$(OVL_DISASSEMBLER) $< $(BASE_DIR)/asm/text/ovl_$* -v --data-output $(BASE_DIR)/asm/data/ovl_$* \
+	$(OVL_DISASSEMBLER) $< $(BASE_DIR)/asm/text/ovl_$* $(DISASM_VERBOSITY) --data-output $(BASE_DIR)/asm/data/ovl_$* \
 		--file-splits $(BASE_DIR)/tables/files_ovl_$*.csv \
 		--variables $(BASE_DIR)/tables/variables.csv \
 		--functions $(BASE_DIR)/tables/functions.csv \
