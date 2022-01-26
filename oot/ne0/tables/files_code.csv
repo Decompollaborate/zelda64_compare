@@ -69,7 +69,7 @@ DB80,8001EC20,z_actor.c (+z_cheap_proc.c)
 890D0,8009A170,z_play.c
 8F240,800A02E0,audioMgr.c
 8F660,800A0700,title_setup.c
-8F6D0,800A0770,file_08F6D0
+8F6D0,800A0770,game.c
 8FF50,800A0FF0,gamealloc.c
 90090,800A1130,graph.c
 90BB0,800A1C50,main.c
@@ -130,3 +130,11 @@ D6610,800E76B0,z_en_a_keep.c
 
 offset,vram,.rodata
 F4CC0,80105D60,z_en_a_keep.c
+F7CE0,80108D80,game.c
+F7D00,80108DA0,file_0F7D00
+
+offset,vram,.bss
+103D30,80114DD0,z_en_item00.c
+10C0D0,8011D170,game.c
+10C1B0,8011D250,file_10C1B0
+11AD90,8012BE30,.end
