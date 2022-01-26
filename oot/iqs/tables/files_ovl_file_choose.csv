@@ -1,20 +1,21 @@
 offset,vram,.text
 0,80803700,z_file_copy_erase
-3AE0,808071E0,file_003AE0
+3AE0,808071E0,z_file_nameset_NES
 8F30,8080C630,z_file_choose
 
 offset,vram,.data
 F6E0,80812DE0,z_file_nameset_data
 FDC0,808134C0,z_file_copy_erase
+FDF0,808134F0,z_file_nameset_NES
 FF90,80813690,z_file_choose
 
 offset,vram,.rodata
 10280,80813980,z_file_copy_erase
-102B0,808139B0,file_0102B0
+102B0,808139B0,z_file_nameset_NES
 102C0,808139C0,z_file_choose
 102E0,808139E0,file_0102E0
 
 offset,vram,.bss
 10AD0,808141D0,z_file_copy_erase
-10AE0,808141E0,file_010AE0
+10AE0,808141E0,z_file_nameset_NES
 10AF0,808141F0,.end

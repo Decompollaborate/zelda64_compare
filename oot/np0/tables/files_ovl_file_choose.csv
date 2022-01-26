@@ -6,6 +6,8 @@ offset,vram,.text
 offset,vram,.data
 EC50,808124D0,z_file_nameset_data
 F9B0,80813230,z_file_copy_erase
+F9F0,80813270,z_file_nameset_PAL
+FC00,80813480,z_file_choose
 
 offset,vram,.rodata
 10000,80813880,z_file_nameset_PAL
