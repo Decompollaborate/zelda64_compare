@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from py_mips_disasm.mips.Utils import *
-from py_mips_disasm.mips.GlobalConfig import GlobalConfig
+from py_mips_disasm.backend.common.Utils import *
+from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
+from py_mips_disasm.backend.common.Context import Context
+from py_mips_disasm.backend.common.FileSectionType import FileSectionType
+from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
 
-from py_mips_disasm.mips.MipsText import Text
-from py_mips_disasm.mips.MipsContext import Context
-from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat, FileSectionType
-from py_mips_disasm.mips.FilesHandlers import createSectionFromSplitEntry
+from py_mips_disasm.backend.mips.MipsText import Text
+from py_mips_disasm.backend.mips.FilesHandlers import createSectionFromSplitEntry
 
 from .MipsFileGeneric import FileGeneric
 

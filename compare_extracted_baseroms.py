@@ -5,11 +5,12 @@ from __future__ import annotations
 import argparse
 import os
 
-from py_mips_disasm.mips.Utils import *
-from py_mips_disasm.mips.GlobalConfig import GlobalConfig
-from py_mips_disasm.mips.MipsSection import Section
-from py_mips_disasm.mips.MipsContext import Context
-from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat
+from py_mips_disasm.backend.common.Utils import *
+from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
+from py_mips_disasm.backend.common.Context import Context
+from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
+
+from py_mips_disasm.backend.mips.MipsSection import Section
 
 from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileSplits import FileSplits
@@ -69,10 +70,12 @@ def compare_baseroms(args, filelist):
         splitsDataTwo = None
         tablePath = os.path.join(args.game, args.version1, "tables", f"files_{filename}.csv")
         if os.path.exists(tablePath):
-            splitsDataOne = FileSplitFormat(tablePath)
+            splitsDataOne = FileSplitFormat()
+            splitsDataOne.readCsvFile(tablePath)
         tablePath = os.path.join(args.game, args.version2, "tables", f"files_{filename}.csv")
         if os.path.exists(tablePath):
-            splitsDataTwo = FileSplitFormat(tablePath)
+            splitsDataTwo = FileSplitFormat()
+            splitsDataTwo.readCsvFile(tablePath)
 
         if filename.startswith("ovl_"):
             file_one = FileOverlay(file_one_data, filename, context_one)
@@ -215,10 +218,12 @@ def compare_to_csv(args, filelist):
             splitsDataTwo = None
             tablePath = os.path.join(args.game, args.version1, "tables", f"files_{filename}.csv")
             if os.path.exists(tablePath):
-                splitsDataOne = FileSplitFormat(tablePath)
+                splitsDataOne = FileSplitFormat()
+                splitsDataOne.readCsvFile(tablePath)
             tablePath = os.path.join(args.game, args.version2, "tables", f"files_{filename}.csv")
             if os.path.exists(tablePath):
-                splitsDataTwo = FileSplitFormat(tablePath)
+                splitsDataTwo = FileSplitFormat()
+                splitsDataTwo.readCsvFile(tablePath)
 
             if not args.dont_split_files and filename.startswith("ovl_"):
                 file_one = FileOverlay(file_one_data, filename, context_one)

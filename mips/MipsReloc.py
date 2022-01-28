@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from py_mips_disasm.mips.Utils import *
-from py_mips_disasm.mips.GlobalConfig import GlobalConfig
-from py_mips_disasm.mips.MipsFileBase import FileBase
-from py_mips_disasm.mips.MipsSection import Section
-from py_mips_disasm.mips.MipsContext import Context
+from py_mips_disasm.backend.common.Utils import *
+from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
+from py_mips_disasm.backend.common.Context import Context
+
+from py_mips_disasm.backend.mips.MipsFileBase import FileBase
+from py_mips_disasm.backend.mips.MipsSection import Section
 
 
 class RelocEntry:

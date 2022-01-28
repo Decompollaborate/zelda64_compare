@@ -5,13 +5,15 @@ from __future__ import annotations
 import argparse
 import os
 
-from py_mips_disasm.mips.Utils import *
-from py_mips_disasm.mips.GlobalConfig import GlobalConfig, printQuietless, printVerbose
-from py_mips_disasm.mips.MipsText import Text
-from py_mips_disasm.mips.MipsRodata import Rodata
-from py_mips_disasm.mips.MipsContext import Context
-from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat, FileSectionType
-from py_mips_disasm.mips.FilesHandlers import writeSection, writeSplitedFunction, writeOtherRodata
+from py_mips_disasm.backend.common.Utils import *
+from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig, printQuietless, printVerbose
+from py_mips_disasm.backend.common.Context import Context
+from py_mips_disasm.backend.common.FileSectionType import FileSectionType
+from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
+
+from py_mips_disasm.backend.mips.MipsText import Text
+from py_mips_disasm.backend.mips.MipsRodata import Rodata
+from py_mips_disasm.backend.mips.FilesHandlers import writeSplitedFunction, writeOtherRodata
 
 from mips.MipsFileOverlay import FileOverlay
 from mips.ZeldaTables import getFileAddresses
@@ -94,7 +96,8 @@ def ovlDisassemblerMain():
 
     splitsData = None
     if args.file_splits is not None and os.path.exists(args.file_splits):
-        splitsData = FileSplitFormat(args.file_splits)
+        splitsData = FileSplitFormat()
+        splitsData.readCsvFile(args.file_splits)
 
     fileAddresses = getFileAddresses(args.file_addresses)
 

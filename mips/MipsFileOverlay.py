@@ -2,17 +2,18 @@
 
 from __future__ import annotations
 
-from py_mips_disasm.mips.Utils import *
-from py_mips_disasm.mips.GlobalConfig import GlobalConfig
+from py_mips_disasm.backend.common.Utils import *
+from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
+from py_mips_disasm.backend.common.Context import Context
+from py_mips_disasm.backend.common.FileSectionType import FileSectionType
+from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat, FileSplitEntry
 
-from py_mips_disasm.mips.MipsFileBase import FileBase
-from py_mips_disasm.mips.MipsText import Text
-from py_mips_disasm.mips.MipsData import Data
-from py_mips_disasm.mips.MipsRodata import Rodata
-from py_mips_disasm.mips.MipsBss import Bss
-from py_mips_disasm.mips.MipsContext import Context
-from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat, FileSectionType, FileSplitEntry
-from py_mips_disasm.mips.FilesHandlers import createSectionFromSplitEntry
+from py_mips_disasm.backend.mips.MipsFileBase import FileBase
+from py_mips_disasm.backend.mips.MipsText import Text
+from py_mips_disasm.backend.mips.MipsData import Data
+from py_mips_disasm.backend.mips.MipsRodata import Rodata
+from py_mips_disasm.backend.mips.MipsBss import Bss
+from py_mips_disasm.backend.mips.FilesHandlers import createSectionFromSplitEntry
 
 from .MipsReloc import Reloc
 from .MipsFileGeneric import FileGeneric
@@ -122,18 +123,10 @@ class FileOverlay(FileGeneric):
             offset = entry.offset
             if entry.reloc == 0:
                 continue
-            if section == ".text":
-                for subFile in self.sectionsDict[FileSectionType.Text].values():
-                    subFile.pointersOffsets.append(offset)
-            elif section == ".data":
-                for subFile in self.sectionsDict[FileSectionType.Data].values():
-                    subFile.pointersOffsets.append(offset)
-            elif section == ".rodata":
-                for subFile in self.sectionsDict[FileSectionType.Rodata].values():
-                    subFile.pointersOffsets.append(offset)
-            elif section == ".bss":
-                for subFile in self.sectionsDict[FileSectionType.Bss].values():
-                    subFile.pointersOffsets.append(offset)
+
+            sectionType = FileSectionType.fromStr(section)
+            for subFile in self.sectionsDict[sectionType].values():
+                subFile.pointersOffsets[offset] = None
 
         # self.sectionsDict[FileSectionType.Text][self.filename].removeTrailingNops()
 

@@ -8,11 +8,13 @@ from typing import List, Dict
 from multiprocessing import Pool, cpu_count
 from functools import partial
 
-from py_mips_disasm.mips.Utils import *
-from py_mips_disasm.mips.GlobalConfig import GlobalConfig
-from py_mips_disasm.mips.MipsSection import Section
-from py_mips_disasm.mips.MipsContext import Context
-from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat, FileSectionType
+from py_mips_disasm.backend.common.Utils import *
+from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
+from py_mips_disasm.backend.common.Context import Context
+from py_mips_disasm.backend.common.FileSectionType import FileSectionType
+from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
+
+from py_mips_disasm.backend.mips.MipsSection import Section
 
 from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
@@ -104,7 +106,8 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
         tablePath = os.path.join(game, version, "tables", f"files_{filename}.csv")
         if os.path.exists(tablePath):
             # print(tablePath)
-            splitsData = FileSplitFormat(tablePath)
+            splitsData = FileSplitFormat()
+            splitsData.readCsvFile(tablePath)
 
         path = os.path.join(game, version, "baserom", filename)
 

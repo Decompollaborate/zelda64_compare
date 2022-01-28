@@ -2,23 +2,24 @@
 
 from __future__ import annotations
 
-from py_mips_disasm.mips.Utils import *
-from py_mips_disasm.mips.GlobalConfig import GlobalConfig
-from py_mips_disasm.mips.MipsFileBase import FileBase, createEmptyFile
-from py_mips_disasm.mips.MipsSection import Section
-from py_mips_disasm.mips.MipsText import Text
-from py_mips_disasm.mips.MipsData import Data
-from py_mips_disasm.mips.MipsRodata import Rodata
-from py_mips_disasm.mips.MipsBss import Bss
-from py_mips_disasm.mips.MipsContext import Context
-from py_mips_disasm.mips.FileSplitFormat import FileSectionType
+from py_mips_disasm.backend.common.Utils import *
+from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
+from py_mips_disasm.backend.common.Context import Context
+from py_mips_disasm.backend.common.FileSectionType import FileSectionType
+
+from py_mips_disasm.backend.mips.MipsFileBase import FileBase, createEmptyFile
+from py_mips_disasm.backend.mips.MipsSection import Section
+from py_mips_disasm.backend.mips.MipsText import Text
+from py_mips_disasm.backend.mips.MipsData import Data
+from py_mips_disasm.backend.mips.MipsRodata import Rodata
+from py_mips_disasm.backend.mips.MipsBss import Bss
 
 # Not intended to be instanced
 class FileGeneric(FileBase):
     def __init__(self, array_of_bytes: bytearray, filename: str, context: Context):
         super().__init__(array_of_bytes, filename, context)
 
-        self.sectionsDict: Dict[FileSectionType, Dict[str, Section]] = {
+        self.sectionsDict: dict[FileSectionType, dict[str, Section]] = {
             FileSectionType.Text: dict(),
             FileSectionType.Data: dict(),
             FileSectionType.Rodata: dict(),

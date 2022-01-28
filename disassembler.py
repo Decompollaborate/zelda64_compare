@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import argparse
 
-from py_mips_disasm.mips.Utils import *
-from py_mips_disasm.mips.GlobalConfig import GlobalConfig
-from py_mips_disasm.mips.MipsText import Text
-from py_mips_disasm.mips.MipsContext import Context
-from py_mips_disasm.mips.FileSplitFormat import FileSplitFormat, FileSectionType
+from py_mips_disasm.backend.common.Utils import *
+from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
+from py_mips_disasm.backend.common.Context import Context
+from py_mips_disasm.backend.common.FileSectionType import FileSectionType
+from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
+
+from py_mips_disasm.backend.mips.MipsText import Text
 
 from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
@@ -30,7 +32,8 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
     tablePath = os.path.join(game, version, "tables", f"files_{filename}.csv")
     if os.path.exists(tablePath):
         # print(tablePath)
-        splitsData = FileSplitFormat(tablePath)
+        splitsData = FileSplitFormat()
+        splitsData.readCsvFile(tablePath)
 
     if is_overlay:
         print("Overlay detected. Parsing...")
