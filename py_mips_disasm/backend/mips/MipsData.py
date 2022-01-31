@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from ..common.Utils import *
 from ..common.GlobalConfig import GlobalConfig
+from ..common.FileSectionType import FileSectionType
 
 from .MipsSection import Section
 
@@ -65,13 +66,13 @@ class Data(Section):
             label = ""
 
             # try to get the symbol name from the offset of the file (possibly from a .o elf file)
-            if inFileOffset in self.symbolNameOffsets:
-                possibleSymbolName = self.symbolNameOffsets[inFileOffset]
-                if possibleSymbolName is not None:
-                    if possibleSymbolName.startswith("."):
-                        label = f"\n/* static variable */\n{possibleSymbolName}\n"
-                    else:
-                        label = f"\nglabel {possibleSymbolName}\n"
+            possibleSymbolName = self.context.getOffsetSymbol(inFileOffset, FileSectionType.Data)
+            if possibleSymbolName is not None:
+                possibleSymbolName = possibleSymbolName.name
+                if possibleSymbolName.startswith("."):
+                    label = f"\n/* static variable */\n{possibleSymbolName}\n"
+                else:
+                    label = f"\nglabel {possibleSymbolName}\n"
 
             # if we have vram available, try to get the symbol name from the Context
             if self.vRamStart > -1:
@@ -88,16 +89,15 @@ class Data(Section):
 
             dataHex = toHex(w, 8)[2:]
             value = toHex(w, 8)
-            if inFileOffset in self.pointersOffsets:
-                possibleReference = self.pointersOffsets[inFileOffset]
-                if possibleReference is not None:
-                    value = possibleReference
+            possibleReference = self.context.getRelocSymbol(inFileOffset, FileSectionType.Data)
+            if possibleReference is not None:
+                value = possibleReference.getNamePlusOffset(w)
 
             symbol = self.context.getAnySymbol(w)
             if symbol is not None:
                 value = symbol.name
 
-            #comment = " "symbol
+            #comment = " "
             comment = ""
             if GlobalConfig.ASM_COMMENT:
                 #comment = f"/* {offsetHex} {vramHex} {dataHex} */"
