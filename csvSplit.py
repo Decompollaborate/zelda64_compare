@@ -106,58 +106,101 @@ def split_fileSplits(game: str, seg: str):
 def split_functions(game: str):
     csvPath = os.path.join(game, "tables", "functions.csv")
 
-    tablePerVersion = dict()
+    tablePerVersion: dict[str, dict[int, str]] = dict()
 
     functions = readCsv(csvPath)
     header = functions[0][2:]
     for i in range(2, len(functions)):
         funcName, _, *data = functions[i]
 
+        if funcName == "":
+            continue
+
         for headerIndex, version in enumerate(header):
             if version not in tablePerVersion:
-                tablePerVersion[version] = []
+                tablePerVersion[version] = dict()
 
-            vram = data[headerIndex]
-            if vram == "":
+            vramStr = data[headerIndex]
+            if vramStr == "":
+                continue
+            if vramStr == "-":
                 continue
 
-            tablePerVersion[version].append(f"{vram},{funcName}\n")
+            vram = int(vramStr, 16)
+            if vram in tablePerVersion[version]:
+                eprint(f"Warning: Duplicated function's VRAM found in version '{version}'")
+                oldFuncName = tablePerVersion[version][vram]
+                eprint(f"\t old: {vram:08X},{oldFuncName}")
+                eprint(f"\t new: {vram:08X},{funcName}")
+                eprint(f"\t Discarding old")
+            if funcName in tablePerVersion[version].values():
+                eprint(f"Warning: Duplicated function name found in version '{version}'")
+                oldVram = vram
+                for oldVram, oldFuncName in tablePerVersion[version].items():
+                    if funcName == oldFuncName:
+                        break
+                oldFuncName = tablePerVersion[version][vram]
+                eprint(f"\t old: {oldVram:08X},{oldFuncName}")
+                eprint(f"\t new: {vram:08X},{funcName}")
 
-    for version, lines in tablePerVersion.items():
+            tablePerVersion[version][vram] = funcName
+
+    for version, funcVramDict in tablePerVersion.items():
         dstFolder = os.path.join(game, version, "tables")
         os.makedirs(dstFolder, exist_ok=True)
         with open(os.path.join(dstFolder, "functions.csv"), "w") as f:
-            f.writelines(lines)
+            for vram, funcName in sorted(funcVramDict.items()):
+                f.writelines(f"{vram:08X},{funcName}\n")
 
 
 def split_variables(game: str):
     csvPath = os.path.join(game, "tables", "variables.csv")
 
-    tablePerVersion = dict()
+    tablePerVersion: dict[str, dict[int, tuple[str, str, str]]] = dict()
 
     variables = readCsv(csvPath)
     header = variables[0][3:]
     for i in range(2, len(variables)):
         varName, type, _, *data = variables[i]
 
+        if varName == "":
+            continue
+
         for headerIndex, version in enumerate(header[::2]):
             if version not in tablePerVersion:
-                tablePerVersion[version] = []
+                tablePerVersion[version] = dict()
 
             # print(varName, version, data)
-            vram, size = data[2*headerIndex : 2*headerIndex + 2]
-            if vram == "":
+            vramStr, size = data[2*headerIndex : 2*headerIndex + 2]
+            if vramStr == "":
+                continue
+            if vramStr == "-":
                 continue
             if size == "":
                 size = "4"
 
-            tablePerVersion[version].append(f"{vram},{varName},{type},0x{size}\n")
+            vram = int(vramStr, 16)
+            if vram in tablePerVersion[version]:
+                eprint(f"Warning: Duplicated variable's VRAM found in version '{version}'")
+                oldVarName, oldType, oldSize = tablePerVersion[version][vram]
+                eprint(f"\t old: {vram:08X},{oldVarName},{oldType},0x{oldSize}")
+                eprint(f"\t new: {vram:08X},{varName},{type},0x{size}")
+                eprint(f"\t Discarding old")
+            for oldVram, (oldVarName, oldType, oldSize) in tablePerVersion[version].items():
+                if varName == oldVarName:
+                    eprint(f"Warning: Duplicated variable name found in version '{version}'")
+                    eprint(f"\t old: {oldVram:08X},{oldVarName},{oldType},0x{oldSize}")
+                    eprint(f"\t new: {vram:08X},{varName},{type},0x{size}")
+                    break
 
-    for version, lines in tablePerVersion.items():
+            tablePerVersion[version][vram] = (varName, type, size)
+
+    for version, variablesVramDict in tablePerVersion.items():
         dstFolder = os.path.join(game, version, "tables")
         os.makedirs(dstFolder, exist_ok=True)
         with open(os.path.join(dstFolder, "variables.csv"), "w") as f:
-            f.writelines(lines)
+            for vram, (varName, type, size) in sorted(variablesVramDict.items()):
+                f.writelines(f"{vram:08X},{varName},{type},0x{size}\n")
 
 
 def main():
