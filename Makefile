@@ -2,10 +2,20 @@ MAKEFLAGS += --no-builtin-rules
 
 # Build options can either be changed by modifying the makefile, or by building with 'make SETTING=value'
 
-GAME             ?= oot
-VERSION          ?= ne0
+GAME                   ?= oot
+VERSION                ?= ne0
+# if SPLIT_FUNCTIONS is non-zero, the disassembler will try to split functions and rodata
+SPLIT_FUNCTIONS        ?= 0
 
-DISASM_VERBOSITY ?= -q
+
+DISASM_VERBOSITY       ?= -q
+DISASM_EXTRA_PARAMS    ?=
+
+DISASM_FUNC_SPLIT      = 
+ifneq ($(SPLIT_FUNCTIONS), 0)
+  DISASM_FUNC_SPLIT    = --split-functions $(BASE_DIR)/asm/functions/$*
+endif
+
 
 
 MAKE = make
@@ -75,25 +85,21 @@ $(BASE_DIR)/tables/files_%.csv: $(GAME)/tables/%.*.csv
 
 
 $(BASE_DIR)/asm/text/%/.disasm: $(BASE_DIR)/baserom/% $(BASE_DIR)/tables/variables.csv $(BASE_DIR)/tables/functions.csv $(BASE_DIR)/tables/files_%.csv
-	$(RM) -rf $(BASE_DIR)/asm/text/$* $(BASE_DIR)/asm/data/$* $(BASE_DIR)/context/$*.txt
-	$(DISASSEMBLER) $< $(BASE_DIR)/asm/text/$* $(DISASM_VERBOSITY) --data-output $(BASE_DIR)/asm/data/$* \
-		--file-splits $(BASE_DIR)/tables/files_$*.csv  \
-		--variables $(BASE_DIR)/tables/variables.csv \
-		--functions $(BASE_DIR)/tables/functions.csv \
-		--constants $(GAME)/tables/constants.csv \
-		--save-context $(BASE_DIR)/context/$*.txt \
-		--constants $(BASE_DIR)/tables/constants_$*.csv
+	$(RM) -rf $(BASE_DIR)/asm/text/$* $(BASE_DIR)/asm/data/$* $(BASE_DIR)/asm/functions/$* $(BASE_DIR)/context/$*.txt
+	$(DISASSEMBLER) $< $(BASE_DIR)/asm/text/$* $(DISASM_VERBOSITY) --data-output $(BASE_DIR)/asm/data/$* $(DISASM_FUNC_SPLIT) \
+		--file-splits $(BASE_DIR)/tables/files_$*.csv \
+		--variables $(BASE_DIR)/tables/variables.csv --functions $(BASE_DIR)/tables/functions.csv \
+		--constants $(GAME)/tables/constants.csv --constants $(BASE_DIR)/tables/constants_$*.csv \
+		--save-context $(BASE_DIR)/context/$*.txt $(DISASM_EXTRA_PARAMS)
 	@touch $@
 
 
 $(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables/variables.csv $(BASE_DIR)/tables/functions.csv
-	$(RM) -rf $(BASE_DIR)/asm/text/ovl_$* $(BASE_DIR)/asm/data/ovl_$* $(BASE_DIR)/context/ovl_$*.txt
-	$(OVL_DISASSEMBLER) $< $(BASE_DIR)/asm/text/ovl_$* $(DISASM_VERBOSITY) --data-output $(BASE_DIR)/asm/data/ovl_$* \
+	$(RM) -rf $(BASE_DIR)/asm/text/ovl_$* $(BASE_DIR)/asm/data/ovl_$* $(BASE_DIR)/asm/functions/ovl_$* $(BASE_DIR)/context/ovl_$*.txt
+	$(OVL_DISASSEMBLER) $< $(BASE_DIR)/asm/text/ovl_$* $(DISASM_VERBOSITY) --data-output $(BASE_DIR)/asm/data/ovl_$* $(DISASM_FUNC_SPLIT) \
 		--file-splits $(BASE_DIR)/tables/files_ovl_$*.csv \
-		--variables $(BASE_DIR)/tables/variables.csv \
-		--functions $(BASE_DIR)/tables/functions.csv \
-		--constants $(GAME)/tables/constants.csv \
-		--save-context $(BASE_DIR)/context/ovl_$*.txt \
-		--constants $(BASE_DIR)/tables/constants_ovl_$*.csv \
-		--file-addresses $(BASE_DIR)/tables/file_addresses.csv
+		--variables $(BASE_DIR)/tables/variables.csv --functions $(BASE_DIR)/tables/functions.csv \
+		--constants $(GAME)/tables/constants.csv --constants $(BASE_DIR)/tables/constants_ovl_$*.csv \
+		--file-addresses $(BASE_DIR)/tables/file_addresses.csv \
+		--save-context $(BASE_DIR)/context/ovl_$*.txt $(DISASM_EXTRA_PARAMS)
 	@touch $@
