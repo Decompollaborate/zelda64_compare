@@ -1,2 +1,12 @@
 offset,vram,.text
 0,80000450,boot_main.c
+
+offset,vram,.data
+98F0,80009D40,boot_main.c
+
+offset,vram,.rodata
+9D40,8000A190,boot_main.c
+
+offset,vram,.bss
+A750,8000ABA0,boot_main.c
+12BF0,80013040,.end

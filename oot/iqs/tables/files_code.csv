@@ -38,3 +38,7 @@ D6330,800EF2D0,z_en_a_keep.c
 
 offset,vram,.rodata
 F69A0,8010F940,z_en_a_keep.c
+
+offset,vram,.bss
+108FA0,80121F40,z_en_item00.c
+120440,801393E0,.end

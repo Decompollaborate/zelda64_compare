@@ -11,8 +11,8 @@ wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZ
 
 ## boot
 wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=10092675"   -O - | tr -d '\r' > "oot/tables/boot.text.csv"
-
-
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=141056684"  -O - | tr -d '\r' > "oot/tables/boot.data.csv"
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=85246168"   -O - | tr -d '\r' > "oot/tables/boot.rodata.csv"
 wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=34933535"   -O - | tr -d '\r' > "oot/tables/boot.bss.csv"
 
 ## code
