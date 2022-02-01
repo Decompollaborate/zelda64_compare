@@ -128,7 +128,7 @@ def ovlDisassemblerMain():
         for rodataName, rodataSection in f.sectionsDict[FileSectionType.Rodata].items():
             assert(isinstance(rodataSection, Rodata))
             rodataList.append((rodataName, rodataSection))
-        for path, subFile in f.sectionsDict[FileSectionType.Text]:
+        for path, subFile in f.sectionsDict[FileSectionType.Text].items():
             assert(isinstance(subFile, Text))
             for func in subFile.functions:
                 writeSplitedFunction(os.path.join(args.split_functions, subFile.filename), func, rodataList, context)
