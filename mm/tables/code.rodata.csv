@@ -1,6 +1,6 @@
 File,,Notes,nj0,,,nj1,,,ne0,,,np0,,,np1,,,nek,,,npd,,,cj0,,,ce0,,,cp0,,
 ,,,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
-z_en_item00,,Start of rodata,12EE80,801D6520,,,,,136330,801DBDF0,290,,,,,,,1354E0,801DB600,290,,,,,,,,,,,,
+z_en_item00,,Start of rodata,12EE80,801D6520,,12F150,801D6730,,136330,801DBDF0,290,12E620,801D4380,,12E740,801D4720,,1354E0,801DB600,290,1677A0,8021E260,,134C40,801DB060,,134C30,801DB070,,12C720,801D2CC0,
 z_eff_blure,,,,,,,,,1365C0,801DC080,30,,,,,,,135770,801DB890,30,,,,,,,,,,,,
 z_eff_shield_particle,,,,,,,,,1365F0,801DC0B0,10,,,,,,,1357A0,801DB8C0,10,,,,,,,,,,,,
 z_eff_spark,,,,,,,,,136600,801DC0C0,10,,,,,,,1357B0,801DB8D0,10,,,,,,,,,,,,
