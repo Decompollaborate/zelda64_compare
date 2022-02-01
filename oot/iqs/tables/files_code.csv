@@ -21,6 +21,8 @@ DB40,80026AE0,z_actor.c (+z_cheap_proc.c)
 97520,800B04C0,sys_matrix.c
 9D5F0,800B6590,code_800D71F0.s
 9E0D0,800B7070,file_09E0D0
+BC9B0,800D5950,sleep.c
+BCB50,800D5AF0,file_0BCB50
 BE790,800D7730,sqrtf
 BE7A0,800D7740,file_0BE7A0
 BFBC0,800D8B60,sins.c
@@ -38,6 +40,15 @@ D6330,800EF2D0,z_en_a_keep.c
 
 offset,vram,.rodata
 F69A0,8010F940,z_en_a_keep.c
+F77E0,80110780,z_bgcheck.c
+F9CF0,80112C90,z_room.c
+FA5B0,80113550,z_kaleido_manager.c
+FA5D0,80113570,z_play.c
+FA690,80113630,game.c
+FA6B0,80113650,graph.c
+FA700,801136A0,file_0FA700
+FA730,801136D0,padmgr.c
+FA740,801136E0,sys_cfb.c
 
 offset,vram,.bss
 108FA0,80121F40,z_en_item00.c

@@ -40,11 +40,11 @@ offset,vram,.text
 4AC0,80004F20,osGetThreadId.c
 4AE0,80004F40,osSetIntMask.s
 4B80,80004FE0,osViSetMode.c
-4BE0,80005040,__osProbeTLB.s
+4BE0,80005040,__osProbeTLB
 4CA0,80005100,osGetMemSize.c
 4DC0,80005220,osSetEventMesg.c
 4E80,800052E0,_Printf.c
-5B60,80005FC0,osUnmapTLBAll.s
+5B60,80005FC0,osUnmapTLBAll
 5BB0,80006010,epidma.c
 5C50,800060B0,string.c
 5CF0,80006150,osInvalICache.s
@@ -65,8 +65,8 @@ offset,vram,.text
 6AA0,80006F00,__osSetCompare.s
 6AB0,80006F10,bcopy.s
 6DC0,80007220,__osResetGlobalIntMask.c
-6E20,80007280,__osDisableInt.s
-6E90,800072F0,__osRestoreInt.s
+6E20,80007280,__osDisableInt
+6E90,800072F0,__osRestoreInt
 6EB0,80007310,osViModeMpalLan1.c
 6EB0,80007310,osViModeNtscLan1.c
 6EB0,80007310,__osViInit.c
@@ -79,16 +79,16 @@ offset,vram,.text
 7610,80007A70,__osSetFpcCsr.s
 7620,80007A80,__osGetFpcCsr.s
 7630,80007A90,osEPiWriteIo.c
-7680,80007AE0,osMapTLBRdb.s
+7680,80007AE0,osMapTLBRdb
 76E0,80007B40,osYieldThread.c
-7730,80007B90,__osGetCause.s
+7730,80007B90,__osGetCause
 7740,80007BA0,__osEPiRawWriteIo.c
 78A0,80007D00,_Litob.c
 7B40,80007FA0,ldiv.c
 7CD0,80008130,_Ldtob.c
 87E0,80008C40,build.c
 87E0,80008C40,__osSiRawWriteIo.c
-8830,80008C90,*fill*         0x0000000080008c90       0x10
+8830,80008C90,[PADDING]
 8840,80008CA0,vimgr.c
 8B50,80008FB0,__osViGetCurrentContext.c
 8B60,80008FC0,osStartThread.c
@@ -96,6 +96,6 @@ offset,vram,.text
 8D00,80009160,osViSetXScale.c
 8E10,80009270,__osSetHWIntrRoutine.c
 8E80,800092E0,__osGetHWIntrRoutine.c
-8EB0,80009310,__osSetWatchLo.s
+8EB0,80009310,__osSetWatchLo
 8EC0,80009320,rsp_boot.text.s
 8FD0,80009430,file_008FD0

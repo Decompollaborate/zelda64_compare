@@ -9,13 +9,13 @@ from py_mips_disasm.backend.common.Utils import *
 from mips.MipsSplitEntry import readSplitsFromCsv
 
 
-def split_fileSplits(game: str, seg: str):
+def _split_fileSplits_withPrefix(game: str, seg: str, categoryPrefix: str):
     sections = ["text", "data", "rodata", "bss"]
 
     tablePerVersion = dict()
 
     for section in sections:
-        csvPath = os.path.join(game, "tables", f"{seg}.{section}.csv")
+        csvPath = os.path.join(game, "tables", f"{categoryPrefix}{seg}.{section}.csv")
 
         if not os.path.exists(csvPath):
             continue
@@ -95,6 +95,12 @@ def split_fileSplits(game: str, seg: str):
                 for row in data:
                     offset, vram, filename = row
                     f.writelines(f"{offset:X},{vram:X},{filename}\n")
+
+def split_fileSplits(game: str, seg: str):
+    categoriesPrefixes = ["", "iQue."]
+
+    for catPrefix in categoriesPrefixes:
+        _split_fileSplits_withPrefix(game, seg, catPrefix)
 
 
 def split_functions(game: str):

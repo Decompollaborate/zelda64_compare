@@ -15,6 +15,12 @@ wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZ
 wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=85246168"   -O - | tr -d '\r' > "oot/tables/boot.rodata.csv"
 wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=34933535"   -O - | tr -d '\r' > "oot/tables/boot.bss.csv"
 
+## iQue boot (yes, this is necessary because of file reorderings and I hate it)
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=566575037"  -O - | tr -d '\r' > "oot/tables/iQue.boot.text.csv"
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=870131088"  -O - | tr -d '\r' > "oot/tables/iQue.boot.data.csv"
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=735109002"  -O - | tr -d '\r' > "oot/tables/iQue.boot.rodata.csv"
+wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=2062718156" -O - | tr -d '\r' > "oot/tables/iQue.boot.bss.csv"
+
 ## code
 wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=204902945"  -O - | tr -d '\r' > "oot/tables/code.text.csv"
 wget "https://docs.google.com/spreadsheets/d/17yPD3DqqH5lZeR7c_QmJfgxWgVyYkGgTLZoKcvLTwtw/export?format=csv&gid=428775213"  -O - | tr -d '\r' > "oot/tables/code.data.csv"

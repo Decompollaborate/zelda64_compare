@@ -107,18 +107,14 @@
 800F738C,Audio_PlaySoundGeneral
 800C5B14,Graph_InitTHGA
 800C5C2C,Graph_GetNextGameState
-80000460,cleararena
 80000A10,ViConfig_UpdateVi
 8000183C,DmaMgr_Init
 80001AA0,DmaMgr_SendRequest1
 80001E60,Locale_Init
 80002080,isPrintfInit
 800023D0,osDriveRomInit
-80002660,StackCheck_Init
 8000345C,__osInitialize_common
 80003708,__osInitialize_autodetect
-80004450,bzero
-80004550,osCreateThread
 800031B0,osStopThread
 80004780,osCreatePiManager
 80004E60,osViBlack
@@ -129,7 +125,6 @@
 800069E0,osGetTime
 80007910,osCartRomInit
 80008CA0,osCreateViManager
-80008FC0,osStartThread
 800025B0,Mio0_Decompress
 80007280,__osDisableInt
 800072f0,__osRestoreInt
@@ -170,7 +165,6 @@
 80007760,osEPiReadIo
 80007A90,osEPiWriteIo
 80009270,__osSetHWIntrRoutine
-80008FC0,osStartThread
 800D31A0,func_800D31A0_Freeze
 800636C0,GameInfo_Init
 80001E60,Locale_Init

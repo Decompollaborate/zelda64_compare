@@ -1,0 +1,5 @@
+,,,iqs,,,iqt,,
+Debug rom,,Notes,Offset,VRAM,Size,Offset,VRAM,Size
+boot_main.c,,,9D40,8000A190,10,,,
+idle.c,,,9D50,8000A1A0,250,,,
+z_std_dma.c,,,9FA0,8000A3F0,,,,

@@ -35,10 +35,10 @@ FC0,80001420,driverominit.c
 3480,800038E0,osGetThreadId.c
 34A0,80003900,osSetIntMask.s
 3540,800039A0,osViSetMode.c
-35A0,80003A00,__osProbeTLB.s
+35A0,80003A00,__osProbeTLB
 3660,80003AC0,osGetMemSize.c
 3780,80003BE0,osSetEventMesg.c
-3840,80003CA0,osUnmapTLBAll.s
+3840,80003CA0,osUnmapTLBAll
 3890,80003CF0,epidma.c
 3930,80003D90,osInvalICache.s
 39B0,80003E10,osCreateMesgQueue.c
@@ -58,8 +58,8 @@ FC0,80001420,driverominit.c
 46E0,80004B40,__osSetCompare.s
 46F0,80004B50,bcopy.s
 4A00,80004E60,__osResetGlobalIntMask.c
-4A60,80004EC0,__osDisableInt.s
-4AD0,80004F30,__osRestoreInt.s
+4A60,80004EC0,__osDisableInt
+4AD0,80004F30,__osRestoreInt
 4AF0,80004F50,__osViInit.c
 4C10,80005070,__osViSwapContext.c
 4F10,80005370,osPiGetCmdQueue.c
@@ -68,9 +68,9 @@ FC0,80001420,driverominit.c
 50F0,80005550,osCartRomInit.c
 5250,800056B0,__osSetFpcCsr.s
 5260,800056C0,__osGetFpcCsr.s
-5270,800056D0,osMapTLBRdb.s
+5270,800056D0,osMapTLBRdb
 52D0,80005730,osYieldThread.c
-5320,80005780,__osGetCause.s
+5320,80005780,__osGetCause
 5330,80005790,__osEPiRawWriteIo.c
 5490,800058F0,__osSiRawWriteIo.c
 54E0,80005940,vimgr.c
@@ -80,6 +80,6 @@ FC0,80001420,driverominit.c
 59A0,80005E00,osViSetXScale.c
 5AB0,80005F10,__osSetHWIntrRoutine.c
 5B20,80005F80,__osGetHWIntrRoutine.c
-5B50,80005FB0,__osSetWatchLo.s
+5B50,80005FB0,__osSetWatchLo
 5B60,80005FC0,rsp_boot.text.s
 5C70,800060D0,file_005C70

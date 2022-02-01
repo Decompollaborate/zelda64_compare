@@ -1,6 +1,7 @@
 80000460,cleararena
 80000498,bootproc
 80000E5C,DmaMgr_SendRequest1
+80002E10,bzero
 80010F00,EnAObj_SetupAction
 8006D3B0,Interface_ChangeAlpha
 8009FD58,GameState_Alloc
@@ -35,17 +36,13 @@
 800C8B1C,Audio_PlaySoundGeneral
 800A0BC0,Graph_InitTHGA
 800A0CD8,Graph_GetNextGameState
-80000460,cleararena
 80000830,ViConfig_UpdateVi
 80000ED8,DmaMgr_Init
 80000E5C,DmaMgr_SendRequest1
 80001300,Locale_Init
 80001420,osDriveRomInit
-800016B0,StackCheck_Init
 80001E1C,__osInitialize_common
 800020C8,__osInitialize_autodetect
-80002E10,bzero
-80002F10,osCreateThread
 80003140,osCreatePiManager
 80003820,osViBlack
 800039A0,osViSetMode
@@ -55,6 +52,5 @@
 80004620,osGetTime
 80005550,osCartRomInit
 80005940,osCreateViManager
-80005C60,osStartThread
 80004EC0,__osDisableInt
 80004F30,__osRestoreInt

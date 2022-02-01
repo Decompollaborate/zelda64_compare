@@ -75,6 +75,7 @@
 80004220,osCreateMesgQueue
 80004480,osSetThreadPri
 80004560,osGetThreadPri
+80005EC0,osStartThread
 800CD390,SystemHeap_Init
 800CDA20,SystemArena_Malloc
 800CDC14,SystemArena_Init
@@ -123,7 +124,6 @@
 80005630,osEPiReadIo
 80005800,osEPiWriteIo
 80006010,__osSetHWIntrRoutine
-80005EC0,osStartThread
 800AF734,Fault_AddHungupAndCrash
 800CE810,PrintUtils_VPrintf
 800CE844,PrintUtils_Printf

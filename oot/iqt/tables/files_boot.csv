@@ -1,2 +1,2 @@
 offset,vram,.text
-0,80000450,boot_main.c
+0,80000450,boot_main
