@@ -126,7 +126,7 @@ class FileOverlay(FileGeneric):
 
             sectionType = FileSectionType.fromStr(section)
             for subFile in self.sectionsDict[sectionType].values():
-                subFile.pointersOffsets[offset] = None
+                subFile.pointersOffsets.add(offset)
 
         # self.sectionsDict[FileSectionType.Text][self.filename].removeTrailingNops()
 
