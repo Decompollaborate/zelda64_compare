@@ -150,6 +150,7 @@
 800D6484,Fault_Init
 800F738C,Audio_PlaySoundGeneral
 800FBFD8,func_800FBFD8
+800FC2C0,Overlay_Relocate
 800FCB24,SystemHeap_Init
 800FD570,SystemArena_Malloc
 800FD5C0,SystemArena_MallocDebug

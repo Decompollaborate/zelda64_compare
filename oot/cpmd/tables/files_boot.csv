@@ -97,5 +97,5 @@ offset,vram,.text
 8E10,80009270,__osSetHWIntrRoutine.c
 8E80,800092E0,__osGetHWIntrRoutine.c
 8EB0,80009310,__osSetWatchLo
-8EC0,80009320,rsp_boot.text.s
+8EC0,80009320,rsp_boot.text
 8FD0,80009430,file_008FD0

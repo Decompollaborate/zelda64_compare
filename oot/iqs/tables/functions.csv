@@ -13,6 +13,7 @@
 80007430,__osGetCause
 800A7BE0,Main
 800CEFDC,Audio_PlaySoundGeneral
+800D3A40,Overlay_Relocate
 800D5950,Sleep_Cycles
 800D59BC,Sleep_Nsec
 800D5A0C,Sleep_Usec

@@ -81,5 +81,5 @@ FC0,80001420,driverominit.c
 5AB0,80005F10,__osSetHWIntrRoutine.c
 5B20,80005F80,__osGetHWIntrRoutine.c
 5B50,80005FB0,__osSetWatchLo
-5B60,80005FC0,rsp_boot.text.s
+5B60,80005FC0,rsp_boot.text
 5C70,800060D0,file_005C70
