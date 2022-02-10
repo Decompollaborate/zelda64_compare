@@ -1,6 +1,10 @@
 8000AC60,gCurrentRegion,u32,0x4
 8000AD7C,__osPiTable,OSPiHandle*,0x4
+80014520,__DriveRomHandle,OSPiHandle,0x74
 8015E660,gSaveContext,SaveContext,0x1428
 8015FA90,gGameInfo,GameInfo*,0x4
+8015FF80,sZeldaArena,Arena,0x24
+8016B680,sFaultDrawer,FaultDrawer,0x3C
 80175610,gSystemArena,Arena,0x24
+80175650,sArenaLockMsg,OSMesg,0x4
 801759C0,gZBuffer,u16,0x25800

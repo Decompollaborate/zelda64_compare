@@ -38,7 +38,7 @@ E380,8002B1E0,z_actor.c (+z_cheap_proc.c)
 5A980,800777E0,z_lib.c
 5BB00,80078960,z_lifemeter.c
 5CED0,80079D30,z_lights.c
-5DFB0,8007AE10,z_malloc.c
+5DFB0,8007AE10,z_malloc
 5E430,8007B290,z_map_mark.c
 5EAB0,8007B910,z_moji.c
 5F000,8007BE60,z_prenmi_buff.c
@@ -59,9 +59,9 @@ E380,8002B1E0,z_actor.c (+z_cheap_proc.c)
 7ADA0,80097C00,z_scene.c
 7C640,800994A0,z_scene_table.c
 83A60,800A08C0,z_skelanime.c
-88980,800A57E0,z_skin.c
-89620,800A6480,z_skin_awb.c
-89FD0,800A6E30,z_skin_matrix.c
+88980,800A57E0,z_skin
+89620,800A6480,z_skin_awb
+89FD0,800A6E30,z_skin_matrix
 8B360,800A81C0,z_sram.c
 8CF00,800A9D60,z_ssram.c
 8D0F0,800A9F50,code_800A9F30.c
@@ -103,13 +103,13 @@ AD700,800CA560,sys_math.c
 AD990,800CA7F0,sys_math3d.c
 B37B0,800D0610,sys_math_atan.c
 B39D0,800D0830,sys_matrix.c
-B5FB0,800D2E10,sys_ucode.c
+B5FB0,800D2E10,sys_ucode
 B5FF0,800D2E50,code_800D2E30.c
 B6360,800D31C0,code_800D31A0.c
 B63E0,800D3240,irqmgr.c
 B6C50,800D3AB0,debug_malloc.c
 B70E0,800D3F40,fault.c
-B9930,800D6790,fault_drawer.c
+B9930,800D6790,fault_drawer
 BA3B0,800D7210,code_800D71F0.s
 BAE90,800D7CF0,ucode_disas.c
 BDE80,800DACE0,audio_synthesis.c
@@ -126,7 +126,7 @@ DA420,800F7280,code_800F7260.c
 DC440,800F92A0,code_800F9280.c
 DE120,800FAF80,gfxprint.c
 DEEA0,800FBD00,code_800FBCE0.c
-DF1D0,800FC030,loadfragment2.c
+DF1D0,800FC030,loadfragment2
 DF280,800FC0E0,mtxuty-cvt.c
 DF480,800FC2E0,relocation.c
 DF7E0,800FC640,code_800FC620.c
@@ -134,9 +134,9 @@ DFD10,800FCB70,padutils.c
 DFF00,800FCD60,padsetup.c
 E0040,800FCEA0,code_800FCE80.c
 E0550,800FD3B0,fp.s
-E06B0,800FD510,system_malloc.c
+E06B0,800FD510,system_malloc
 E0B30,800FD990,code_800FD970.c
-E0CF0,800FDB50,__osMalloc.c
+E0CF0,800FDB50,__osMalloc
 E2500,800FF360,printutils.c
 E2560,800FF3C0,sleep.c
 E2700,800FF560,jpegutils.c
@@ -180,7 +180,7 @@ E7390,801041F0,osDpSetStatus.c
 E73A0,80104200,osPfsDeleteFile.c
 E7610,80104470,ortho.c
 E77D0,80104630,cosf.c
-E7940,801047A0,coss.c
+E7940,801047A0,coss
 E7970,801047D0,osViSetEvent.c
 E79D0,80104830,osPfsIsPlug.c
 E7CC0,80104B20,guS2DInitBg.c
@@ -189,7 +189,7 @@ E7EC0,80104D20,osContSetCh.c
 E7F20,80104D80,osPfsFileState.c
 E8100,80104F60,pfsinitpak.c
 E8410,80105270,pfschecker.c
-E8DC0,80105C20,osAiGetLength.c
+E8DC0,80105C20,aigetlen
 E8DE0,80105C40,guTranslate.s
 E8EB0,80105D10,__osContRamWrite.c
 E9100,80105F60,__osContRamRead.c

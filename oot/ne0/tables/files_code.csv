@@ -34,7 +34,7 @@ DB80,8001EC20,z_actor.c (+z_cheap_proc.c)
 52590,80063630,z_lib.c
 53730,800647D0,z_lifemeter.c
 54AD0,80065B70,z_lights.c
-55B70,80066C10,z_malloc.c
+55B70,80066C10,z_malloc
 55D50,80066DF0,z_map_mark.c
 563A0,80067440,z_prenmi_buff.c
 56460,80067500,z_msgevent.c
@@ -53,9 +53,9 @@ DB80,8001EC20,z_actor.c (+z_cheap_proc.c)
 70090,80081130,code_80097A00.c
 70250,800812F0,z_scene.c
 77D50,80088DF0,z_skelanime.c
-7C6D0,8008D770,z_skin.c
-7D270,8008E310,z_skin_awb.c
-7DB80,8008EC20,z_skin_matrix.c
+7C6D0,8008D770,z_skin
+7D270,8008E310,z_skin_awb
+7DB80,8008EC20,z_skin_matrix
 7EF20,8008FFC0,z_sram.c
 80270,80091310,z_ssram.c
 81E10,80092EB0,z_vimode.c
@@ -102,7 +102,7 @@ B8D00,800C9DA0,code_800F9280.c
 BA920,800CB9C0,file_0BA920
 BB520,800CC5C0,code_800FBCE0.c
 BB850,800CC8F0,relocation.c
-BBF10,800CCFB0,system_malloc.c
+BBF10,800CCFB0,system_malloc
 BCBF0,800CDC90,file_0BCBF0
 BD770,800CE810,printutils.c
 BD7D0,800CE870,jpegutils.c

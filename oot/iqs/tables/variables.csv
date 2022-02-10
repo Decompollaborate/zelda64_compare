@@ -1,0 +1,8 @@
+80009D60,gCartHandle,OSPiHandle*,0x4
+80009F00,gCurrentRegion,u32,0x4
+80010760,__DriveRomHandle,OSPiHandle,0x74
+80127C50,sZeldaArena,Arena,0x24
+8012E030,sFaultDrawer,FaultDrawer,0x3C
+80137E40,sArenaLockMsg,OSMesg,0x4
+80137E50,gSystemArena,Arena,0x24
+80137F40,gSaveContext,SaveContext,0x1428

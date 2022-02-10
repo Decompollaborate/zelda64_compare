@@ -14,7 +14,7 @@ FC0,80001420,driverominit.c
 1710,80001B70,osStopThread.c
 17D0,80001C30,osViExtendVStart.c
 17E0,80001C40,recvmesg.c
-1920,80001D80,initialize.c
+1920,80001D80,initialize
 1C70,800020D0,ll.c
 1F30,80002390,exceptasm.s
 2860,80002CC0,__osDequeueThread.c
@@ -23,7 +23,7 @@ FC0,80001420,driverominit.c
 2AB0,80002F10,osCreateThread.c
 2C00,80003060,__osSetSR.s
 2C10,80003070,__osGetSR.s
-2C20,80003080,osWritebackDCache.s
+2C20,80003080,osWritebackDCache
 2CA0,80003100,osViGetNextFramebuffer.c
 2CE0,80003140,pimgr.c
 2E50,800032B0,[PADDING]

@@ -39,7 +39,7 @@ E380,8002B1E0,z_actor.c (+z_cheap_proc.c)
 5A980,800777E0,z_lib.c
 5BB00,80078960,z_lifemeter.c
 5CED0,80079D30,z_lights.c
-5DFB0,8007AE10,z_malloc.c
+5DFB0,8007AE10,z_malloc
 5E430,8007B290,z_map_mark.c
 5EAB0,8007B910,z_moji.c
 5F000,8007BE60,z_prenmi_buff.c
@@ -60,9 +60,9 @@ E380,8002B1E0,z_actor.c (+z_cheap_proc.c)
 7ADA0,80097C00,z_scene.c
 7C640,800994A0,z_scene_table.c
 83A40,800A08A0,z_skelanime.c
-88960,800A57C0,z_skin.c
-89600,800A6460,z_skin_awb.c
-89FB0,800A6E10,z_skin_matrix.c
+88960,800A57C0,z_skin
+89600,800A6460,z_skin_awb
+89FB0,800A6E10,z_skin_matrix
 8B340,800A81A0,z_sram.c
 8CEE0,800A9D40,z_ssram.c
 8D0D0,800A9F30,code_800A9F30.c
@@ -104,13 +104,13 @@ AD6E0,800CA540,sys_math.c
 AD970,800CA7D0,sys_math3d.c
 B3790,800D05F0,sys_math_atan.c
 B39B0,800D0810,sys_matrix.c
-B5F90,800D2DF0,sys_ucode.c
+B5F90,800D2DF0,sys_ucode
 B5FD0,800D2E30,code_800D2E30.c
 B6340,800D31A0,code_800D31A0.c
 B63C0,800D3220,irqmgr.c
 B6C30,800D3A90,debug_malloc.c
 B70C0,800D3F20,fault.c
-B9910,800D6770,fault_drawer.c
+B9910,800D6770,fault_drawer
 BA390,800D71F0,code_800D71F0.s
 BAE70,800D7CD0,ucode_disas.c
 BDE60,800DACC0,audio_synthesis.c
@@ -128,7 +128,7 @@ DC420,800F9280,code_800F9280.c
 DE100,800FAF60,logseverity.c
 DE100,800FAF60,gfxprint.c
 DEE80,800FBCE0,code_800FBCE0.c
-DF1B0,800FC010,loadfragment2.c
+DF1B0,800FC010,loadfragment2
 DF260,800FC0C0,mtxuty-cvt.c
 DF460,800FC2C0,relocation.c
 DF7C0,800FC620,code_800FC620.c
@@ -136,9 +136,9 @@ DFCF0,800FCB50,padutils.c
 DFEE0,800FCD40,padsetup.c
 E0020,800FCE80,code_800FCE80.c
 E0530,800FD390,fp.s
-E0690,800FD4F0,system_malloc.c
+E0690,800FD4F0,system_malloc
 E0B10,800FD970,code_800FD970.c
-E0CD0,800FDB30,__osMalloc.c
+E0CD0,800FDB30,__osMalloc
 E24E0,800FF340,printutils.c
 E2540,800FF3A0,sleep.c
 E26E0,800FF540,jpegutils.c
@@ -182,7 +182,7 @@ E7370,801041D0,osDpSetStatus.c
 E7380,801041E0,osPfsDeleteFile.c
 E75F0,80104450,ortho.c
 E77B0,80104610,cosf.c
-E7920,80104780,coss.c
+E7920,80104780,coss
 E7950,801047B0,osViSetEvent.c
 E79B0,80104810,osPfsIsPlug.c
 E7CA0,80104B00,guS2DInitBg.c
@@ -191,7 +191,7 @@ E7EA0,80104D00,osContSetCh.c
 E7F00,80104D60,osPfsFileState.c
 E80E0,80104F40,pfsinitpak.c
 E83F0,80105250,pfschecker.c
-E8DA0,80105C00,osAiGetLength.c
+E8DA0,80105C00,aigetlen
 E8DC0,80105C20,guTranslate.s
 E8E90,80105CF0,__osContRamWrite.c
 E90E0,80105F40,__osContRamRead.c
@@ -220,3 +220,7 @@ F85C0,80115420,z_en_a_keep.c
 
 offset,vram,.rodata
 F1880,8010E6E0,z_en_a_keep.c
+
+offset,vram,.bss
+13AF30,80157D90,z_en_item00.c
+158B60,801759C0,.end

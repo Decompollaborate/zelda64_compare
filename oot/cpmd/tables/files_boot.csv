@@ -19,7 +19,7 @@ offset,vram,.text
 2E10,80003270,osViExtendVStart.c
 2E20,80003280,osViModePalLan1.c
 2E20,80003280,recvmesg.c
-2F60,800033C0,initialize.c
+2F60,800033C0,initialize
 32B0,80003710,ll.c
 3570,800039D0,exceptasm.s
 3EA0,80004300,__osDequeueThread.c
@@ -28,7 +28,7 @@ offset,vram,.text
 40F0,80004550,osCreateThread.c
 4240,800046A0,__osSetSR.s
 4250,800046B0,__osGetSR.s
-4260,800046C0,osWritebackDCache.s
+4260,800046C0,osWritebackDCache
 42E0,80004740,osViGetNextFramebuffer.c
 4320,80004780,pimgr.c
 4490,800048F0,[PADDING]

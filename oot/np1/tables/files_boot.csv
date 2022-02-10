@@ -21,7 +21,7 @@ F80,800013E0,z_locale.c
 2C30,80003090,osCreateThread.c
 3130,80003590,__osSetSR.s
 3140,800035A0,__osGetSR.s
-3150,800035B0,osWritebackDCache.s
+3150,800035B0,osWritebackDCache
 31D0,80003630,file_0031D0
 3210,80003670,pimgr.c
 3380,800037E0,__osDevMgrMain.c
