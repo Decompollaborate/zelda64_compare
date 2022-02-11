@@ -47,6 +47,10 @@ FILE_TABLE_OFFSET = {
         "CP0":    0x1AE90,
         "CJ0":    0x1AE90,
     },
+
+    "DNM": {
+        "JP": 0x19D40,
+    }
 }
 FILE_TABLE_OFFSET["OOT"]["NJR"]   = FILE_TABLE_OFFSET["OOT"]["NER"]
 FILE_TABLE_OFFSET["OOT"]["NJ0"]   = FILE_TABLE_OFFSET["OOT"]["NE0"]
@@ -88,6 +92,10 @@ FILE_NAMES: Dict[str, Dict[str, List[str] | None]] = {
         "CE0":    None,
         "CP0":    None,
         "CJ0":    None,
+    },
+
+    "DNM": {
+        "JP": None,
     },
 }
 FILE_NAMES["OOT"]["NJR"]  = FILE_NAMES["OOT"]["NER"]
@@ -153,6 +161,9 @@ def readFilelists():
     FILE_NAMES["MM"]["NJ1"]  = FILE_NAMES["MM"]["NJ0"]
     FILE_NAMES["MM"]["NP0"] = FILE_NAMES["MM"]["NPD"]
     FILE_NAMES["MM"]["NP1"] = FILE_NAMES["MM"]["NP0"]
+
+    # DNM
+    FILE_NAMES["DNM"]["JP"] = readFile("dnm/filelist.txt")
 
 def initialize_worker(rom_data: bytes, dmaTable: dict):
     global romData
@@ -360,16 +371,18 @@ def main():
     edition_choices = {
         "oot": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["OOT"]),
         "mm": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["MM"]),
+        "dnm": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["DNM"]),
     }
     epilog = f"""\
 Each `game` has different versions, and hence different edition options.
     For oot: {edition_choices["oot"]}
     For mm:  {edition_choices["mm"]}
+    For oot: {edition_choices["dnm"]}
 
 For details on what these abbreviations mean, see the README.md.
     """
     parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
-    choices = ["oot", "mm"]
+    choices = ["oot", "mm", "dnm"]
     parser.add_argument("game", help="Game to extract.", choices=choices)
     parser.add_argument("edition", help="Version of the game to extract.")
     parser.add_argument("-j", help="Enables multiprocessing.", action="store_true")
