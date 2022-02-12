@@ -160,6 +160,49 @@ def findTextTablesReverse(file):
 
         # print(checks)
 
+def findTextTables3(file):
+    with open(file, "r+b") as f:
+        mm = mmap.mmap(f.fileno(), 0)
+
+        # Look backwards for nes_message_table
+        nes_message_table_offset = mm.rfind(NES_FIRST_MESSAGE)
+        if nes_message_table_offset == -1:
+            return -1
+
+        # Look forwards for end of nes_message_table
+        nes_message_table_end = mm.find(MAIN_LAST_MESSAGE, nes_message_table_offset)
+        if nes_message_table_end == 0:
+            return -1
+        nes_message_table_end += 8
+
+        # Look forwards for staff
+        staff_message_table_offset = mm.find(STAFF_FIRST_MESSAGE, nes_message_table_end)
+        # Look forwards for staff end
+        staff_message_table_end = mm.find(MAIN_LAST_MESSAGE, staff_message_table_offset)
+        staff_message_table_end += 8
+
+        if nes_message_table_end == staff_message_table_offset:
+            # NTSC, look backwards for jpn_message_table
+            jpn_message_table_offset = mm.rfind(JPN_FIRST_MESSAGE, nes_message_table_offset)
+            
+            print(f"nes_message_table_offset: {nes_message_table_offset:X}")
+            print(f"jpn_message_table_offset: {jpn_message_table_offset:X}")
+            # print(f"{nes_message_table_offset:X},{jpn_message_table_offset:X},", end="")
+
+        else:
+            # PAL, determine remaining offsets using arithmetic
+            ger_message_table_offset = nes_message_table_end
+            fra_message_table_offset = (nes_message_table_end + staff_message_table_offset) // 2
+
+            print(f"nes_message_table_offset: {nes_message_table_offset:X}")
+            print(f"ger_message_table_offset: {ger_message_table_offset:X}")
+            print(f"fra_message_table_offset: {fra_message_table_offset:X}")
+            # print(f"{nes_message_table_offset:X},{ger_message_table_offset:X},{fra_message_table_offset:X},", end="")
+
+        print(f"staff_message_table_offset: {staff_message_table_offset:X}")
+        print(f"staff_message_table_end: {staff_message_table_end:X}")
+        # print(f"{staff_message_table_offset:X},{staff_message_table_end:X}")
+
 
 def main():
     description = "Find the text tables from a provided `code` file"
@@ -169,7 +212,8 @@ def main():
     parser.add_argument("code", help="`code` file to search.")
     args = parser.parse_args()
 
-    findTextTables(args.code)
+    # findTextTables(args.code)
+    findTextTables3(args.code)
     # findTextTablesReverse(args.code)
 
 if __name__ == "__main__":
