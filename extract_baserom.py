@@ -50,6 +50,7 @@ FILE_TABLE_OFFSET = {
 
     "DNM": {
         "JP": 0x19D40,
+        "CN": 0x21D80,
     }
 }
 FILE_TABLE_OFFSET["OOT"]["NJR"]   = FILE_TABLE_OFFSET["OOT"]["NER"]
@@ -96,6 +97,7 @@ FILE_NAMES: Dict[str, Dict[str, List[str] | None]] = {
 
     "DNM": {
         "JP": None,
+        "CN": None,
     },
 }
 FILE_NAMES["OOT"]["NJR"]  = FILE_NAMES["OOT"]["NER"]
@@ -164,7 +166,8 @@ def readFilelists():
 
     # DNM
     FILE_NAMES["DNM"]["JP"] = readFile("dnm/filelist.txt")
-
+    FILE_NAMES["DNM"]["CN"] = FILE_NAMES["DNM"]["JP"] # for now
+    
 def initialize_worker(rom_data: bytes, dmaTable: dict):
     global romData
     global globalDmaTable
@@ -260,7 +263,7 @@ def ExtractFunc(i):
 
     if compressed:
         # print(f"decompressing {filename}")
-        if Edition in ("iqt", "iqs"):
+        if Edition in ("iqt", "iqs", "cn"):
             data = readFileAsBytearray(filename)
             decompressed = decompressZlib(data)
             writeBytearrayToFile(filename, decompressed)
