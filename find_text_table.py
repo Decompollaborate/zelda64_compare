@@ -3,8 +3,52 @@
 import argparse
 import mmap
 import os
-from re import search
 import struct
+import sys
+
+# ===================================================
+#   Util
+# ===================================================
+
+def as_hword_list(b):
+    if len(b) % 2 != 0:
+        return []
+    return [h[0] for h in struct.iter_unpack(">H", b)]
+
+def as_word_list(b):
+    if len(b) % 4 != 0:
+        return []
+    return [i[0] for i in struct.iter_unpack(">I", b)]
+
+def as_main_message_table(b):
+    if len(b) % 8 != 0:
+        return []
+    return [(e[0], (e[1] >> 4) & 0xF, e[1] & 0xF, e[2]) for e in [i for i in struct.iter_unpack(">HBxI", b)]]
+
+def segmented_to_offset(address):
+    return address & 0x00FFFFFF
+
+
+# ===================================================
+#   message entry tables
+# ===================================================
+
+textbox_type = {
+    0: "TEXTBOX_TYPE_BLACK",
+    1: "TEXTBOX_TYPE_WOODEN",
+    2: "TEXTBOX_TYPE_BLUE",
+    3: "TEXTBOX_TYPE_OCARINA",
+    4: "TEXTBOX_TYPE_NONE_BOTTOM",
+    5: "TEXTBOX_TYPE_NONE_NO_SHADOW",
+    0xB: "TEXTBOX_TYPE_CREDITS",
+}
+
+textbox_ypos = {
+    0: "TEXTBOX_POS_VARIABLE",
+    1: "TEXTBOX_POS_TOP",
+    2: "TEXTBOX_POS_BOTTOM",
+    3: "TEXTBOX_POS_MIDDLE",
+}
 
 # First message entry in JPN text table
 JPN_FIRST_MESSAGE = bytes.fromhex("0001230008000000")
@@ -17,191 +61,321 @@ MAIN_LAST_MESSAGE = bytes.fromhex("FFFF000000000000")
 # Terminator for sub text tables (FRA/GER on PAL)
 SUB_LAST_MESSAGE  = bytes.fromhex("00000000")
 
+regionIsPAL = True
+
+jpn_message_entry_table_offset   = 0
+nes_message_entry_table_offset   = 0
+nes_message_entry_table_end      = 0
+ger_message_entry_table_offset   = 0
+fra_message_entry_table_offset   = 0
+staff_message_entry_table_offset = 0
+staff_message_entry_table_end    = 0
+
+jpn_message_entry_table = []
+nes_message_entry_table = []
+ger_message_entry_table = []
+fra_message_entry_table = []
+
+pal_combined_message_entry_table = []
+
+staff_message_entry_table = []
+
 def findTextTables(file):
     with open(file, "rb") as f:
         s = f.read()
-        jpn_message_table_offset = s.find(JPN_FIRST_MESSAGE)
-        if jpn_message_table_offset == -1:
-            jpn_message_table_offset = 0
-            print("jpn_message_table not found")
-        else:
-            print(f"jpn_message_table_offset: {jpn_message_table_offset:X}")
-
-        f.seek(jpn_message_table_offset, os.SEEK_SET)
-        cur_pos = f.tell()
-        s = f.read()
-        nes_message_table_offset = s.find(NES_FIRST_MESSAGE)
-        if nes_message_table_offset == -1:
-            nes_message_table_offset = 0
-            print("nes_message_table not found")
-        else:
-            nes_message_table_offset += cur_pos
-            print(f"nes_message_table_offset: {nes_message_table_offset:X}")
+        jpn_message_entry_table_offset = ger_message_entry_table_offset = fra_message_entry_table_offset = 0
         
-        f.seek(nes_message_table_offset, os.SEEK_SET)
-        cur_pos = f.tell()
-        s = f.read()
-
-        if jpn_message_table_offset == 0:
-            ger_message_table_offset = s.find(MAIN_LAST_MESSAGE)
-            ger_message_table_offset += cur_pos + 8
-            print(f"ger_message_table_offset: {ger_message_table_offset:X}")
-
-            f.seek(ger_message_table_offset, os.SEEK_SET)
-            cur_pos = f.tell()
-            s = f.read()        
-
-            fra_message_table_offset = s.find(SUB_LAST_MESSAGE)
-            fra_message_table_offset += cur_pos + 4
-            print(f"fra_message_table_offset: {fra_message_table_offset:X}")
-
-            f.seek(fra_message_table_offset, os.SEEK_SET)
-            cur_pos = f.tell()
-            s = f.read()
-
-            staff_message_table_offset = s.find(SUB_LAST_MESSAGE) 
-            staff_message_table_offset += cur_pos + 4
+        nes_message_entry_table_offset = s.rfind(NES_FIRST_MESSAGE)
+        nes_message_entry_table_end = s.find(MAIN_LAST_MESSAGE, nes_message_entry_table_offset) + 8
         
+        staff_message_entry_table_offset = s.find(STAFF_FIRST_MESSAGE, nes_message_entry_table_end)
+        staff_message_entry_table_end = s.find(MAIN_LAST_MESSAGE, staff_message_entry_table_offset) + 8
+
+        if staff_message_entry_table_offset == nes_message_entry_table_end:
+            regionIsPAL = False
+            jpn_message_entry_table_offset = s.rfind(JPN_FIRST_MESSAGE, 0, nes_message_entry_table_offset)
         else:
-            staff_message_table_offset = s.find(MAIN_LAST_MESSAGE)
-            staff_message_table_offset += cur_pos + 8
+            regionIsPAL = True
+            ger_message_entry_table_offset = nes_message_entry_table_end
+            # German and French must have the same number of messages, so starts halfway between
+            fra_message_entry_table_offset = (ger_message_entry_table_offset + staff_message_entry_table_offset) // 2
 
-        print(f"staff_message_table_offset: {staff_message_table_offset:X}")
-        f.seek(staff_message_table_offset, os.SEEK_SET)
-        cur_pos = f.tell()
-        s = f.read()
+        if not regionIsPAL:
+            print(f"jpn_message_entry_table_offset: {jpn_message_entry_table_offset:X}")
 
-        staff_message_table_end = s.find(MAIN_LAST_MESSAGE) 
-        staff_message_table_end += cur_pos + 8
-        print(f"staff_message_table_end: {staff_message_table_end:X}")
+        print(f"nes_message_entry_table_offset: {nes_message_entry_table_offset:X}")
 
-def findTextTablesReverse(file):
+        if regionIsPAL:
+            print(f"ger_message_entry_table_offset: {ger_message_entry_table_offset:X}")
+            print(f"fra_message_entry_table_offset: {fra_message_entry_table_offset:X}")
+
+        print(f"staff_message_entry_table_offset: {staff_message_entry_table_offset:X}")
+        print(f"staff_message_entry_table_end: {staff_message_entry_table_end:X}")
+
+def findTextTablesManual(file):
     # checks = 0
 
     with open(file, "r+b") as f:
         mm = mmap.mmap(f.fileno(), 0)
 
-        # Look backwards for nes_message_table
-        nes_message_table_offset = 0
+        # Look backwards for nes_message_entry_table
+        nes_message_entry_table_offset = 0
         searchLength = len(NES_FIRST_MESSAGE)
         for i in range(len(mm) - searchLength, 0, -4):
             # checks += 1
             if bytes(mm[i:i+searchLength]) == NES_FIRST_MESSAGE:
-                nes_message_table_offset = i
+                nes_message_entry_table_offset = i
                 break
-        # print(f"nes_message_table_offset: {nes_message_table_offset:X}")
+        # print(f"nes_message_entry_table_offset: {nes_message_entry_table_offset:X}")
         
-        if nes_message_table_offset == 0:
+        if nes_message_entry_table_offset == 0:
             return -1
 
-        # Look forwards for end of nes_message_table
-        nes_message_table_end = 0
+        # Look forwards for end of nes_message_entry_table
+        nes_message_entry_table_end = 0
         searchLength = len(MAIN_LAST_MESSAGE)
-        for i in range(nes_message_table_offset, len(mm) - searchLength, 8):
+        for i in range(nes_message_entry_table_offset, len(mm) - searchLength, 8):
             # checks += 1
             if bytes(mm[i:i+searchLength]) == MAIN_LAST_MESSAGE:
-                nes_message_table_end = i + 8
+                nes_message_entry_table_end = i + 8
                 break
-        # print(f"nes_message_end: {nes_message_table_end:X}")
+        # print(f"nes_message_end: {nes_message_entry_table_end:X}")
 
-        if nes_message_table_end == 0:
+        if nes_message_entry_table_end == 0:
             return -1
 
         # Look forwards for staff
-        staff_message_table_offset = 0
+        staff_message_entry_table_offset = 0
         searchLength = len(STAFF_FIRST_MESSAGE)
-        for i in range(nes_message_table_end, len(mm) - searchLength, 4):
+        for i in range(nes_message_entry_table_end, len(mm) - searchLength, 4):
             # checks += 1
             if bytes(mm[i:i+searchLength]) == STAFF_FIRST_MESSAGE:
-                staff_message_table_offset = i
+                staff_message_entry_table_offset = i
                 break
-        # print(f"staff_message_table_offset: {staff_message_table_offset:X}")
+        # print(f"staff_message_entry_table_offset: {staff_message_entry_table_offset:X}")
 
         # Look forwards for staff end
-        staff_message_table_end = 0
+        staff_message_entry_table_end = 0
         searchLength = len(MAIN_LAST_MESSAGE)
-        for i in range(staff_message_table_offset, len(mm) - searchLength, 8):
+        for i in range(staff_message_entry_table_offset, len(mm) - searchLength, 8):
             # checks += 1
             if bytes(mm[i:i+searchLength]) == MAIN_LAST_MESSAGE:
-                staff_message_table_end = i + 8
+                staff_message_entry_table_end = i + 8
                 break
-        # print(f"staff_message_table_end: {staff_message_table_end:X}")
+        # print(f"staff_message_entry_table_end: {staff_message_entry_table_end:X}")
 
-        if nes_message_table_end == staff_message_table_offset:
-            # NTSC, look backwards for jpn_message_table
-            jpn_message_table_offset = 0
+        if nes_message_entry_table_end == staff_message_entry_table_offset:
+            # NTSC, look backwards for jpn_message_entry_table
+            jpn_message_entry_table_offset = 0
             searchLength = len(JPN_FIRST_MESSAGE)
-            for i in range(nes_message_table_offset - searchLength, 0, -8):
+            for i in range(nes_message_entry_table_offset - searchLength, 0, -8):
                 # checks += 1
                 if bytes(mm[i:i+searchLength]) == JPN_FIRST_MESSAGE:
-                    jpn_message_table_offset = i
+                    jpn_message_entry_table_offset = i
                     break
-            # print(f"jpn_message_table_offset: {jpn_message_table_offset:X}")
+            # print(f"jpn_message_entry_table_offset: {jpn_message_entry_table_offset:X}")
 
-            # print(f"nes_message_table_offset: {nes_message_table_offset:X}")
-            # print(f"jpn_message_table_offset: {jpn_message_table_offset:X}")
-            print(f"{nes_message_table_offset:X},{jpn_message_table_offset:X},", end="")
+            # print(f"nes_message_entry_table_offset: {nes_message_entry_table_offset:X}")
+            # print(f"jpn_message_entry_table_offset: {jpn_message_entry_table_offset:X}")
+            print(f"{nes_message_entry_table_offset:X},{jpn_message_entry_table_offset:X},", end="")
 
         else:
             # PAL, determine remaining offsets using arithmetic
-            ger_message_table_offset = nes_message_table_end
-            # print(f"ger_message_table_offset: {ger_message_table_offset:X}")
-            fra_message_table_offset = (nes_message_table_end + staff_message_table_offset) // 2
-            # print(f"fra_message_table_offset: {fra_message_table_offset:X}")
+            ger_message_entry_table_offset = nes_message_entry_table_end
+            # print(f"ger_message_entry_table_offset: {ger_message_entry_table_offset:X}")
+            fra_message_entry_table_offset = (nes_message_entry_table_end + staff_message_entry_table_offset) // 2
+            # print(f"fra_message_entry_table_offset: {fra_message_entry_table_offset:X}")
 
-            # print(f"nes_message_table_offset: {nes_message_table_offset:X}")
-            # print(f"ger_message_table_offset: {ger_message_table_offset:X}")
-            # print(f"fra_message_table_offset: {fra_message_table_offset:X}")
-            print(f"{nes_message_table_offset:X},{ger_message_table_offset:X},{fra_message_table_offset:X},", end="")
+            # print(f"nes_message_entry_table_offset: {nes_message_entry_table_offset:X}")
+            # print(f"ger_message_entry_table_offset: {ger_message_entry_table_offset:X}")
+            # print(f"fra_message_entry_table_offset: {fra_message_entry_table_offset:X}")
+            print(f"{nes_message_entry_table_offset:X},{ger_message_entry_table_offset:X},{fra_message_entry_table_offset:X},", end="")
 
-        # print(f"staff_message_table_offset: {staff_message_table_offset:X}")
-        # print(f"staff_message_table_end: {staff_message_table_end:X}")
-        print(f"{staff_message_table_offset:X},{staff_message_table_end:X}")
+        # print(f"staff_message_entry_table_offset: {staff_message_entry_table_offset:X}")
+        # print(f"staff_message_entry_table_end: {staff_message_entry_table_end:X}")
+        print(f"{staff_message_entry_table_offset:X},{staff_message_entry_table_end:X}")
 
         # print(checks)
 
-def findTextTables3(file):
+def findTextTablesMMap(file):
+    global jpn_message_entry_table_offset
+    global nes_message_entry_table_offset
+    global nes_message_entry_table_end
+    global ger_message_entry_table_offset
+    global fra_message_entry_table_offset
+    global staff_message_entry_table_offset
+    global staff_message_entry_table_end
+    global regionIsPAL
+
     with open(file, "r+b") as f:
         mm = mmap.mmap(f.fileno(), 0)
 
-        # Look backwards for nes_message_table
-        nes_message_table_offset = mm.rfind(NES_FIRST_MESSAGE)
-        if nes_message_table_offset == -1:
+        jpn_message_entry_table_offset = ger_message_entry_table_offset = fra_message_entry_table_offset = 0
+
+        # Look backwards for nes_message_entry_table
+        nes_message_entry_table_offset = mm.rfind(NES_FIRST_MESSAGE)
+        if nes_message_entry_table_offset == -1:
             return -1
 
-        # Look forwards for end of nes_message_table
-        nes_message_table_end = mm.find(MAIN_LAST_MESSAGE, nes_message_table_offset)
-        if nes_message_table_end == 0:
-            return -1
-        nes_message_table_end += 8
+        # Look forwards for end of nes_message_entry_table
+        nes_message_entry_table_end = mm.find(MAIN_LAST_MESSAGE, nes_message_entry_table_offset)
+        nes_message_entry_table_end += 8
 
         # Look forwards for staff
-        staff_message_table_offset = mm.find(STAFF_FIRST_MESSAGE, nes_message_table_end)
+        staff_message_entry_table_offset = mm.find(STAFF_FIRST_MESSAGE, nes_message_entry_table_end)
         # Look forwards for staff end
-        staff_message_table_end = mm.find(MAIN_LAST_MESSAGE, staff_message_table_offset)
-        staff_message_table_end += 8
+        staff_message_entry_table_end = mm.find(MAIN_LAST_MESSAGE, staff_message_entry_table_offset)
+        staff_message_entry_table_end += 8
 
-        if nes_message_table_end == staff_message_table_offset:
-            # NTSC, look backwards for jpn_message_table
-            jpn_message_table_offset = mm.rfind(JPN_FIRST_MESSAGE, nes_message_table_offset)
-            
-            print(f"nes_message_table_offset: {nes_message_table_offset:X}")
-            print(f"jpn_message_table_offset: {jpn_message_table_offset:X}")
-            # print(f"{nes_message_table_offset:X},{jpn_message_table_offset:X},", end="")
+        if nes_message_entry_table_end == staff_message_entry_table_offset:
+            regionIsPAL = False
+            # NTSC, look backwards for jpn_message_entry_table
+            jpn_message_entry_table_offset = mm.rfind(JPN_FIRST_MESSAGE, 0, nes_message_entry_table_offset)
+        else:
+            regionIsPAL = True
+            # PAL, determine remaining offsets using arithmetic
+            ger_message_entry_table_offset = nes_message_entry_table_end
+            fra_message_entry_table_offset = (nes_message_entry_table_end + staff_message_entry_table_offset) // 2
+
+        if not regionIsPAL:
+            print(f"jpn_message_entry_table_offset: {jpn_message_entry_table_offset:X}")
+            print(f"nes_message_entry_table_offset: {nes_message_entry_table_offset:X}")
+            # print(f"{nes_message_entry_table_offset:X},{jpn_message_entry_table_offset:X},", end="")
+        else:
+            print(f"nes_message_entry_table_offset: {nes_message_entry_table_offset:X}")
+            print(f"ger_message_entry_table_offset: {ger_message_entry_table_offset:X}")
+            print(f"fra_message_entry_table_offset: {fra_message_entry_table_offset:X}")
+            # print(f"{nes_message_entry_table_offset:X},{ger_message_entry_table_offset:X},{fra_message_entry_table_offset:X},", end="")
+
+        print(f"staff_message_entry_table_offset: {staff_message_entry_table_offset:X}")
+        print(f"staff_message_entry_table_end: {staff_message_entry_table_end:X}")
+        # print(f"{staff_message_entry_table_offset:X},{staff_message_entry_table_end:X}")
+    
+    return 0
+
+def read_tables(file):
+    global jpn_message_entry_table
+    global nes_message_entry_table
+    global ger_message_entry_table
+    global fra_message_entry_table
+
+    global pal_combined_message_entry_table
+    global staff_message_entry_table
+
+    with open(file, "r+b") as f:
+        mm = mmap.mmap(f.fileno(), 0)
+
+        nes_message_entry_table = as_main_message_table(mm[nes_message_entry_table_offset:nes_message_entry_table_end])
+        if len(nes_message_entry_table) == 0:
+            print("nes_message_entry_table not found", file=sys.stderr)
+            exit(1)
+
+        if regionIsPAL:
+            # For PAL, the same textIds are used for every table
+            ger_message_entry_table = as_word_list(mm[ger_message_entry_table_offset:  fra_message_entry_table_offset])
+            if len(ger_message_entry_table) == 0:
+                print("ger_message_entry_table not found", file=sys.stderr)
+                exit(1)
+
+            fra_message_entry_table = as_word_list(mm[fra_message_entry_table_offset:staff_message_entry_table_offset])
+            if len(fra_message_entry_table) == 0:
+                print("fra_message_entry_table not found", file=sys.stderr)
+                exit(1)
+
+            subIndex = 0
+            for mainIndex in range(len(nes_message_entry_table)):
+                entry = nes_message_entry_table[mainIndex]
+                if entry[0] != 0xFFFC:
+                    pal_combined_message_entry_table.append((*entry, ger_message_entry_table[subIndex], fra_message_entry_table[subIndex]))
+                    subIndex += 1
+                else:
+                    pal_combined_message_entry_table.append((*entry, None, None))
 
         else:
+            # For non-PAL, the textIds are distinct for jpn and nes
+            jpn_message_entry_table = as_main_message_table(mm[jpn_message_entry_table_offset:nes_message_entry_table_offset])
+            if len(jpn_message_entry_table) == 0:
+                print("jpn_message_entry_table not found", file=sys.stderr)
+                exit(1)
+
+            # for i in range(max(len(nes_message_entry_table),len(nes_message_entry_table))):
+            #     if i < len(jpn_message_entry_table):
+            #         msg = jpn_message_entry_table[i]
+            #         print(f"0x{msg[0]:X}, {msg[1]}, {msg[2]}, 0x{msg[3]:X}, ", end="")
+            #     else:
+            #         print(",,,,", end="")
+            #     if i < len(nes_message_entry_table):
+            #         msg = nes_message_entry_table[i]
+            #         print(f"0x{msg[0]:X}, {msg[1]}, {msg[2]}, 0x{msg[3]:X}")
+
+        staff_message_entry_table = as_main_message_table(mm[staff_message_entry_table_offset:staff_message_entry_table_end])
+
+
+
+
+
+
+
+
+
+def findAndExtractTextTables(file):
+    global regionIsPAL
+
+    with open(file, "r+b") as f:
+        mm = mmap.mmap(f.fileno(), 0)
+
+        jpn_message_entry_table_offset = ger_message_entry_table_offset = fra_message_entry_table_offset = 0
+
+        # Look backwards for nes_message_entry_table
+        nes_message_entry_table_offset = mm.rfind(NES_FIRST_MESSAGE)
+        if nes_message_entry_table_offset == -1:
+            return -1
+
+        # Look forwards for end of nes_message_entry_table
+        nes_message_entry_table_end = mm.find(MAIN_LAST_MESSAGE, nes_message_entry_table_offset)
+        nes_message_entry_table_end += 8
+
+        # Look forwards for staff
+        staff_message_entry_table_offset = mm.find(STAFF_FIRST_MESSAGE, nes_message_entry_table_end)
+        # Look forwards for staff end
+        staff_message_entry_table_end = mm.find(MAIN_LAST_MESSAGE, staff_message_entry_table_offset)
+        staff_message_entry_table_end += 8
+
+        if nes_message_entry_table_end == staff_message_entry_table_offset:
+            regionIsPAL = False
+            # NTSC, look backwards for jpn_message_entry_table
+            jpn_message_entry_table_offset = mm.rfind(JPN_FIRST_MESSAGE, 0, nes_message_entry_table_offset)
+        else:
+            regionIsPAL = True
             # PAL, determine remaining offsets using arithmetic
-            ger_message_table_offset = nes_message_table_end
-            fra_message_table_offset = (nes_message_table_end + staff_message_table_offset) // 2
+            ger_message_entry_table_offset = nes_message_entry_table_end
+            fra_message_entry_table_offset = (nes_message_entry_table_end + staff_message_entry_table_offset) // 2
 
-            print(f"nes_message_table_offset: {nes_message_table_offset:X}")
-            print(f"ger_message_table_offset: {ger_message_table_offset:X}")
-            print(f"fra_message_table_offset: {fra_message_table_offset:X}")
-            # print(f"{nes_message_table_offset:X},{ger_message_table_offset:X},{fra_message_table_offset:X},", end="")
+        if not regionIsPAL:
+            print(f"jpn_message_entry_table_offset: {jpn_message_entry_table_offset:X}")
+            print(f"nes_message_entry_table_offset: {nes_message_entry_table_offset:X}")
+            # print(f"{nes_message_entry_table_offset:X},{jpn_message_entry_table_offset:X},", end="")
+        else:
+            print(f"nes_message_entry_table_offset: {nes_message_entry_table_offset:X}")
+            print(f"ger_message_entry_table_offset: {ger_message_entry_table_offset:X}")
+            print(f"fra_message_entry_table_offset: {fra_message_entry_table_offset:X}")
+            # print(f"{nes_message_entry_table_offset:X},{ger_message_entry_table_offset:X},{fra_message_entry_table_offset:X},", end="")
 
-        print(f"staff_message_table_offset: {staff_message_table_offset:X}")
-        print(f"staff_message_table_end: {staff_message_table_end:X}")
-        # print(f"{staff_message_table_offset:X},{staff_message_table_end:X}")
+        print(f"staff_message_entry_table_offset: {staff_message_entry_table_offset:X}")
+        print(f"staff_message_entry_table_end: {staff_message_entry_table_end:X}")
+        # print(f"{staff_message_entry_table_offset:X},{staff_message_entry_table_end:X}")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def main():
@@ -210,11 +384,19 @@ def main():
 
     parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("code", help="`code` file to search.")
+    # parser.add_argument("-j", help="jpn_message_static")
     args = parser.parse_args()
 
     # findTextTables(args.code)
-    findTextTables3(args.code)
-    # findTextTablesReverse(args.code)
+    # findTextTablesManual(args.code)
+
+    findTextTablesMMap(args.code)
+    read_tables(args.code)
+
+    # if args.j:
+    #     read_jpn()
+
+    # findAndExtractTextTables(args.code)
 
 if __name__ == "__main__":
     main()
