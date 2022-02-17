@@ -4,16 +4,6 @@ import argparse
 import os
 import struct
 
-# def readFile(filepath):
-#     with open(filepath) as f:
-#         return [x.strip() for x in f.readlines()]
-
-# def readFileAsBytearray(filepath: str) -> bytearray:
-#     if not os.path.exists(filepath):
-#         return bytearray(0)
-#     with open(filepath, mode="rb") as f:
-#         return bytearray(f.read())
-
 def getLastWord(filepath):
     with open(filepath, "rb") as f:
         f.seek(-4, os.SEEK_END)
