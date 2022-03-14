@@ -380,7 +380,7 @@ def main():
 Each `game` has different versions, and hence different edition options.
     For oot: {edition_choices["oot"]}
     For mm:  {edition_choices["mm"]}
-    For oot: {edition_choices["dnm"]}
+    For dnm: {edition_choices["dnm"]}
 
 For details on what these abbreviations mean, see the README.md.
     """

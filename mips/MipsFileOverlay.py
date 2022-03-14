@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from py_mips_disasm.backend.common.Utils import *
+from typing import List
+import py_mips_disasm.backend.common.Utils as disasm_Utils
 from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
 from py_mips_disasm.backend.common.Context import Context
 from py_mips_disasm.backend.common.FileSectionType import FileSectionType
@@ -22,7 +23,7 @@ from .ZeldaTables import OverlayTableEntry
 
 
 class FileOverlay(FileGeneric):
-    def __init__(self, array_of_bytes: bytearray, filename: str, context: Context, tableEntry: OverlayTableEntry=None, splitsData: FileSplitFormat | None = None, vramStartParam: int = -1):
+    def __init__(self, array_of_bytes: bytearray, filename: str, context: Context, tableEntry: OverlayTableEntry | None = None, splitsData: FileSplitFormat | None = None, vramStartParam: int = -1):
         super().__init__(array_of_bytes, filename, context)
 
         self.vRamStart = vramStartParam
@@ -114,7 +115,7 @@ class FileOverlay(FileGeneric):
             for section in sectDict.values():
                 bytes += section.bytes
         bytes += self.reloc.bytes
-        return getStrHash(bytes)
+        return disasm_Utils.getStrHash(bytes)
 
     def analyze(self):
         for entry in self.reloc.entries:

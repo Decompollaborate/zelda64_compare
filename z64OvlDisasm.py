@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import argparse
 import os
+from typing import List, Tuple
 
-from py_mips_disasm.backend.common.Utils import *
+import py_mips_disasm.backend.common.Utils as disasm_Utils
 from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig, printQuietless, printVerbose
 from py_mips_disasm.backend.common.Context import Context
 from py_mips_disasm.backend.common.FileSectionType import FileSectionType
@@ -90,7 +91,7 @@ def ovlDisassemblerMain():
     context = Context()
     context.parseArgs(args)
 
-    array_of_bytes = readFileAsBytearray(args.binary)
+    array_of_bytes = disasm_Utils.readFileAsBytearray(args.binary)
     input_name = os.path.splitext(os.path.split(args.binary)[1])[0]
 
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from py_mips_disasm.backend.common.Utils import *
+import py_mips_disasm.backend.common.Utils as disasm_Utils
 from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
 from py_mips_disasm.backend.common.Context import Context
 from py_mips_disasm.backend.common.FileSectionType import FileSectionType
@@ -48,7 +48,7 @@ class FileGeneric(FileBase):
         for sectDict in self.sectionsDict.values():
             for section in sectDict.values():
                 bytes += section.bytes
-        return getStrHash(bytes)
+        return disasm_Utils.getStrHash(bytes)
 
     def analyze(self):
         for sectDict in self.sectionsDict.values():

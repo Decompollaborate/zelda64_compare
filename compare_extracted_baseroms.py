@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import os
 
-from py_mips_disasm.backend.common.Utils import *
+import py_mips_disasm.backend.common.Utils as disasm_Utils
 from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
 from py_mips_disasm.backend.common.Context import Context
 from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
@@ -63,8 +63,8 @@ def compare_baseroms(args, filelist):
                 print(f"File {filename} does not exists in other_baserom.")
             continue
 
-        file_one_data = readFileAsBytearray(filepath_one)
-        file_two_data = readFileAsBytearray(filepath_two)
+        file_one_data = disasm_Utils.readFileAsBytearray(filepath_one)
+        file_two_data = disasm_Utils.readFileAsBytearray(filepath_two)
 
         splitsDataOne = None
         splitsDataTwo = None
@@ -187,8 +187,8 @@ def compare_to_csv(args, filelist):
         #if args.filetype != "all" and args.filetype != filedata["type"]:
         #    continue
 
-        file_one_data = readFileAsBytearray(filepath_one)
-        file_two_data = readFileAsBytearray(filepath_two)
+        file_one_data = disasm_Utils.readFileAsBytearray(filepath_one)
+        file_two_data = disasm_Utils.readFileAsBytearray(filepath_two)
 
         equal = ""
         len_one = ""
@@ -294,7 +294,7 @@ def main():
     # GlobalConfig.VERBOSE = args.verbose
     # GlobalConfig.QUIET = args.quiet
 
-    filelist = readFile(args.filelist)
+    filelist = disasm_Utils.readFile(args.filelist)
 
     if not args.no_csv:
         compare_to_csv(args, filelist)

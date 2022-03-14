@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from py_mips_disasm.backend.common.Utils import *
+from typing import Dict, List, Tuple
+import py_mips_disasm.backend.common.Utils as disasm_Utils
 
 
 class SplitEntry:
@@ -30,24 +31,30 @@ class SplitEntry:
 
 
 def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, List[SplitEntry]]]:
-    code_splits_file = readCsv(csvfilename)
+    code_splits_file = disasm_Utils.readCsv(csvfilename)
 
     header = code_splits_file[0][3::3]
     splits: Dict[str, Dict[str, List[SplitEntry]]] = { h: dict() for h in header }
 
-    for i in range(2, len(code_splits_file)):
-        row = code_splits_file[i]
+    for row_num in range(2, len(code_splits_file)):
+        row = code_splits_file[row_num]
         filename1, filename2, _, *data = row
 
         name = filename1 or filename2
         if name == "":
             continue
 
-        for i in range(len(header)):
-            h = header[i]
+        for column_set_num in range(len(header)):
+            h = header[column_set_num]
             if h == "":
                 continue
-            offset, vram, size = data[i*3:(i+1)*3]
+            try:
+                offset, vram, size = data[ column_set_num * 3 : (column_set_num + 1) * 3 ]
+            except:
+                print("error when parsing {}, line {}: could not read row:".format(csvfilename, row_num))
+                print("    {}\n".format(row))
+                raise
+                # offset, vram, size = data[i*3:(i+1)*3] # Run it again to crash in the same place
             try:
                 offset = int(offset, 16)
             except:
@@ -88,7 +95,7 @@ def getFileStartsFromEntries(splits: Dict[str, SplitEntry], fileEndOffset: int) 
             starts[i] = (start, nextStart-start, filename)
 
         if end < nextStart:
-            starts.insert(i+1, (end, -1, f"file_{toHex(end, 6)}"))
+            starts.insert(i+1, (end, -1, f"file_{disasm_Utils.toHex(end, 6)}"))
 
         i += 1
 

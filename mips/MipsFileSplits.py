@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from py_mips_disasm.backend.common.Utils import *
 from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
 from py_mips_disasm.backend.common.Context import Context
 from py_mips_disasm.backend.common.FileSectionType import FileSectionType

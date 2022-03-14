@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import os
+from typing import Dict
 
-from py_mips_disasm.backend.common.Utils import *
+import py_mips_disasm.backend.common.Utils as disasm_Utils
 from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
 from py_mips_disasm.backend.common.Context import Context
 from py_mips_disasm.backend.common.FileSectionType import FileSectionType
@@ -23,9 +25,9 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
 
     path = os.path.join(game, version, "baserom", filename)
 
-    array_of_bytes = readFileAsBytearray(path)
+    array_of_bytes = disasm_Utils.readFileAsBytearray(path)
     if len(array_of_bytes) == 0:
-        eprint(f"File '{path}' not found!")
+        disasm_Utils.eprint(f"File '{path}' not found!")
         exit(-1)
 
     splitsData = None
@@ -48,7 +50,7 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
             if os.path.exists(codePath) and version in ZeldaOffsets.offset_ActorOverlayTable[game]:
                 tableOffset = ZeldaOffsets.offset_ActorOverlayTable[game][version]
                 if tableOffset != 0x0:
-                    codeData = readFileAsBytearray(codePath)
+                    codeData = disasm_Utils.readFileAsBytearray(codePath)
                     i = 0
                     while i < ZeldaOffsets.ActorIDMax[game]:
                         entry = OverlayTableEntry(codeData[tableOffset + i*0x20 : tableOffset + (i+1)*0x20])
@@ -66,13 +68,13 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
 
         text_data = array_of_bytes
         if textend >= 0:
-            print(f"Parsing until offset {toHex(textend, 2)}")
+            print(f"Parsing until offset {disasm_Utils.toHex(textend, 2)}")
             text_data = array_of_bytes[:textend]
 
         f = Text(text_data, filename, context)
 
     if vram >= 0:
-        print(f"Using VRAM {toHex(vram, 8)[2:]}")
+        print(f"Using VRAM {disasm_Utils.toHex(vram, 8)[2:]}")
         f.setVRamStart(vram)
 
     f.analyze()

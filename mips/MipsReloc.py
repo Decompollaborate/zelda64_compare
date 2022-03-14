@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from py_mips_disasm.backend.common.Utils import *
+from typing import List
+import py_mips_disasm.backend.common.Utils as disasm_Utils
 from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
 from py_mips_disasm.backend.common.Context import Context
 
@@ -125,12 +126,12 @@ class Reloc(Section):
 
             f.write(f"glabel {self.filename}OverlayRelocations\n")
             for r in self.entries:
-                offsetHex = toHex(offset + self.commentOffset, 5)[2:]
+                offsetHex = disasm_Utils.toHex(offset + self.commentOffset, 5)[2:]
                 vramHex = ""
                 if self.vRamStart != -1:
                     currentVram = self.getVramOffset(offset)
-                    vramHex = toHex(currentVram, 8)[2:]
-                relocHex = toHex(r.reloc, 8)[2:]
+                    vramHex = disasm_Utils.toHex(currentVram, 8)[2:]
+                relocHex = disasm_Utils.toHex(r.reloc, 8)[2:]
                 line = str(r)
 
                 f.write(f"/* {offsetHex} {vramHex} {relocHex} */  .word 0x{relocHex} # {line}\n")
@@ -138,12 +139,12 @@ class Reloc(Section):
 
             f.write("\n")
             for pad in self.tail:
-                offsetHex = toHex(offset + self.commentOffset, 5)[2:]
+                offsetHex = disasm_Utils.toHex(offset + self.commentOffset, 5)[2:]
                 vramHex = ""
                 if self.vRamStart != -1:
                     currentVram = self.getVramOffset(offset)
-                    vramHex = toHex(currentVram, 8)[2:]
-                padcHex = toHex(pad, 8)
+                    vramHex = disasm_Utils.toHex(currentVram, 8)[2:]
+                padcHex = disasm_Utils.toHex(pad, 8)
 
                 f.write(f"/* {offsetHex} {vramHex} {padcHex[2:]} */  .word {padcHex}\n")
                 offset += 4

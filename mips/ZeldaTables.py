@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from py_mips_disasm.backend.common.Utils import *
+import os
+from typing import Dict
+import py_mips_disasm.backend.common.Utils as disasm_Utils
 from py_mips_disasm.backend.common.Context import Context
 
 
@@ -71,7 +73,7 @@ def getFileAddresses(filePath: str | None) -> Dict[str, FileAddressesEntry]:
 
 class OverlayTableEntry:
     def __init__(self, array_of_bytes: bytearray):
-        wordsArray = bytesToBEWords(array_of_bytes)
+        wordsArray = disasm_Utils.bytesToBEWords(array_of_bytes)
         self.vromStart = wordsArray[0]
         self.vromEnd = wordsArray[1]
         self.vramStart = wordsArray[2]

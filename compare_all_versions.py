@@ -8,7 +8,7 @@ from typing import List, Dict
 from multiprocessing import Pool, cpu_count
 from functools import partial
 
-from py_mips_disasm.backend.common.Utils import *
+import py_mips_disasm.backend.common.Utils as disasm_Utils
 from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
 from py_mips_disasm.backend.common.Context import Context
 from py_mips_disasm.backend.common.FileSectionType import FileSectionType
@@ -36,21 +36,21 @@ def removePointers(args, filedata: bytearray) -> bytearray:
     if not args.ignore04: # This will probably grow...
         return filedata
 
-    words = bytesToBEWords(filedata)
+    words = disasm_Utils.bytesToBEWords(filedata)
     for i in range(len(words)):
         w = words[i]
         if args.ignore04:
             if ((w >> 24) & 0xFF) == 0x04:
                 words[i] = 0x04000000
-    return beWordsToBytes(words, filedata)
+    return disasm_Utils.beWordsToBytes(words, filedata)
 
 
 def getHashesOfFiles(args, filesPath: List[str]) -> List[str]:
     hashList = []
     for path in filesPath:
-        f = readFileAsBytearray(path)
+        f = disasm_Utils.readFileAsBytearray(path)
         if len(f) != 0:
-            fHash = getStrHash(removePointers(args, f))
+            fHash = disasm_Utils.getStrHash(removePointers(args, f))
             line = fHash + " " + path # To be consistent with runCommandGetOutput("md5sum", md5arglist)
             hashList.append(line)
     return hashList
@@ -71,7 +71,7 @@ def compareFileAcrossVersions(filename: str, game: str, versionsList: List[str],
     firstFilePerHash = dict() # "339614255f179a1e308d954d8f7ffc0a": "NN0"
 
     for line in output:
-        trimmed = removeExtraWhitespace(line)
+        trimmed = disasm_Utils.removeExtraWhitespace(line)
         filehash, filepath = trimmed.split(" ")
         version = filepath.split("/")[1]
 
@@ -111,7 +111,7 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
 
         path = os.path.join(game, version, "baserom", filename)
 
-        array_of_bytes = readFileAsBytearray(path)
+        array_of_bytes = disasm_Utils.readFileAsBytearray(path)
         if len(array_of_bytes) == 0:
             # print(f"Skipping {path}")
             continue
@@ -218,7 +218,7 @@ def main():
             if version.startswith("#"):
                 continue
             versionsList.append(version.strip())
-    filesList = readFile(args.filelist)
+    filesList = disasm_Utils.readFile(args.filelist)
 
     contextPerVersion: Dict[str, Context] = dict()
     for version in versionsList:
@@ -241,7 +241,7 @@ def main():
         if os.path.exists(codePath) and version in ZeldaOffsets.offset_ActorOverlayTable[args.game]:
             tableOffset = ZeldaOffsets.offset_ActorOverlayTable[args.game][version]
             if tableOffset != 0x0 and tableOffset != 0xFFFFFF:
-                codeData = readFileAsBytearray(codePath)
+                codeData = disasm_Utils.readFileAsBytearray(codePath)
                 i = 0
                 table = list()
                 while i < ZeldaOffsets.ActorIDMax[args.game]:
