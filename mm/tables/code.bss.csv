@@ -1,6 +1,6 @@
 File,,Notes,nj0,,,nj1,,,ne0,,,np0,,,np1,,,nek,,,npd,,,cj0,,,ce0,,,cp0,,
 ,,,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
-code_801E3FA0,,Start of bss,,,,,,,13E4E0,801E3FA0,10,,,,,,,13D690,801E37B0,,,,,,,,,,,,,
+code_801E3FA0,,Start of bss,,,,,,,13E4E0,801E3FA0,10,,,,135850,801DB830,,13D690,801E37B0,,,,,,,,,,,,,
 z_effect,,,,,,,,,13E4F0,801E3FB0,98E0,,,,,,,,,,,,,,,,,,,,,
 flg_set,,,,,,,,,147DD0,801ED890,10,,,,,,,,,,,,,,,,,,,,,
 z_actor,,,,,,,,,147DE0,801ED8A0,90,,,,,,,,,,,,,,,,,,,,,

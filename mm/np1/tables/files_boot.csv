@@ -206,6 +206,26 @@ FFF0,80090050,position
 16A70,80096AD0,__osMemcpy
 16B00,80096B60,file_016B00
 
+offset,vram,.data
+16C60,80096CC0,idle
+16C80,80096CE0,viconfig
+16C90,80096CF0,z_std_dma
+16CA0,80096D00,irqmgr
+16CC0,80096D20,fault
+16D20,80096D80,fault_drawer
+16D60,80096DC0,loadfragment
+16D70,80096DD0,loadfragment2
+16D80,80096DE0,stackcheck
+16D90,80096DF0,gfxprint
+17640,800976A0,boot_800862E0
+17660,800976C0,fp
+17670,800976D0,rand
+17680,800976E0,osViModeNtscHpf1
+176D0,80097730,file_0176D0
+
+offset,vram,.rodata
+183C0,80098420,boot_main
+
 offset,vram,.bss
 19870,800998D0,boot_main
 1FC20,800B94F0,.end

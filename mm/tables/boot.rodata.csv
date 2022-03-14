@@ -1,6 +1,6 @@
 File,,Notes,nj0,,,nj1,,,ne0,,,np0,,,np1,,,nek,,,npd,,,cj0,,,ce0,,,cp0,,
 ,,,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
-boot_main,,Start of rodata,,,,190A0,80099100,,18130,80098190,10,18280,800982E0,,,,,186A0,80098700,10,20EB0,,,,,,,,,,,
+boot_main,,Start of rodata,,,,190A0,80099100,,18130,80098190,10,18280,800982E0,,183C0,80098420,,186A0,80098700,10,20EB0,,,,,,,,,,,
 idle,,,,,,,,,18140,800981A0,20,,,,,,,186B0,80098710,20,,,,,,,,,,,,
 z_std_dma,,,,,,,,,18160,800981C0,50,,,,,,,186D0,80098730,50,,,,,,,,,,,,
 yaz0,,,,,,,,,181B0,80098210,50,,,,,,,18720,80098780,50,,,,,,,,,,,,
