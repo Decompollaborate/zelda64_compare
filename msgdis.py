@@ -20,50 +20,64 @@ def main():
     find_text_table.findTextTablesMMap(args.code)
     find_text_table.read_tables(args.code)
 
-    # start = int(args.start, 0) if args.start else 0
-    # end = int(args.end, 0) if args.end else 0
-
     jpn_message_data_static = os.path.join(os.path.split(args.code)[0], "jpn_message_data_static")
     nes_message_data_static = os.path.join(os.path.split(args.code)[0], "nes_message_data_static")
 
-    # i = 0
-    for i in range(len(find_text_table.jpn_message_entry_table)):
-        curEntry = find_text_table.jpn_message_entry_table[i]
-        if curEntry[0] == 0xFFFF:
-            continue
+    if not find_text_table.regionIsPAL:
+        for i in range(len(find_text_table.jpn_message_entry_table)):
+            curEntry = find_text_table.jpn_message_entry_table[i]
+            if curEntry[0] == 0xFFFF:
+                continue
 
-        start = find_text_table.segmented_to_offset(curEntry[3])
-        nextEntry = find_text_table.jpn_message_entry_table[i+1]
-        end = find_text_table.segmented_to_offset(nextEntry[3])
-        # print("{:X},{},{},{:X}".format(*curEntry))
-        # print("{:X},{},{},{:X}".format(*nextEntry))
-        # print(f"{start:X},{end:X}")
+            start = find_text_table.segmented_to_offset(curEntry[3])
+            nextEntry = find_text_table.jpn_message_entry_table[i+1]
+            end = find_text_table.segmented_to_offset(nextEntry[3])
+            # print("{:X},{},{},{:X}".format(*curEntry))
+            # print("{:X},{},{},{:X}".format(*nextEntry))
+            # print(f"{start:X},{end:X}")
+
+            print("char jpn_message_{:04X}[] = ".format(curEntry[0]))
+            data = msg_decode.read_data(jpn_message_data_static, start, end)
+            msg_decode.decode_msg(data, "jpn")
+            print(";\n")
+            # print("{:X}".format(len(data)))
+
+        for i in range(len(find_text_table.nes_message_entry_table)):
+            curEntry = find_text_table.nes_message_entry_table[i]
+            if curEntry[0] == 0xFFFF:
+                continue
+
+            start = find_text_table.segmented_to_offset(curEntry[3])
+            nextEntry = find_text_table.nes_message_entry_table[i+1]
+            end = find_text_table.segmented_to_offset(nextEntry[3])
+            # print("{:X},{},{},{:X}".format(*curEntry))
+            # print("{:X},{},{},{:X}".format(*nextEntry))
+            # print(f"{start:X},{end:X}")
+
+            print("char nes_message_{:04X}[] = ".format(curEntry[0]))
+            data = msg_decode.read_data(nes_message_data_static, start, end)
+            msg_decode.decode_msg(data, "nes")
+            print(";\n")
+            # print("{:X}".format(len(data)))
+
+    else:
+        for i,curEntry in enumerate(find_text_table.pal_combined_message_entry_table):
+            start = find_text_table.segmented_to_offset(curEntry[3])
+            nextEntry = find_text_table.pal_combined_message_entry_table[i+1]
+            end = find_text_table.segmented_to_offset(nextEntry[3])
+
+            if curEntry[0] == 0xFFFF:
+                continue
+            elif curEntry[0] == 0xFFFC:
+                print("#ifdef MESSAGE_FFFC")
+
+            
 
 
-        print("char jpn_message_{:04X}[] = ".format(curEntry[0]))
-        data = msg_decode.read_data(jpn_message_data_static, start, end)
-        msg_decode.decode_msg(data, "jpn")
-        print(";\n")
-        # print("{:X}".format(len(data)))
+            print(");\n")
 
-    for i in range(len(find_text_table.nes_message_entry_table)):
-        curEntry = find_text_table.nes_message_entry_table[i]
-        if curEntry[0] == 0xFFFF:
-            continue
+            
 
-        start = find_text_table.segmented_to_offset(curEntry[3])
-        nextEntry = find_text_table.nes_message_entry_table[i+1]
-        end = find_text_table.segmented_to_offset(nextEntry[3])
-        # print("{:X},{},{},{:X}".format(*curEntry))
-        # print("{:X},{},{},{:X}".format(*nextEntry))
-        # print(f"{start:X},{end:X}")
-
-
-        print("char nes_message_{:04X}[] = ".format(curEntry[0]))
-        data = msg_decode.read_data(nes_message_data_static, start, end)
-        msg_decode.decode_msg(data, "nes")
-        print(";\n")
-        # print("{:X}".format(len(data)))
 
 
 if __name__ == "__main__":
