@@ -1,3 +1,4 @@
 boot
 code
+ovl_title
 ovl_file_choose
