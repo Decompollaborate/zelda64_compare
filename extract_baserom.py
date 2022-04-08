@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from __future__ import annotations
 
@@ -9,6 +9,8 @@ import struct
 from multiprocessing import Pool, cpu_count, Manager
 from typing import Dict, List
 import zlib
+print(sys.path)
+import libyaz0
 
 
 ROM_FILE_NAME_V = '{}_{}.z64'
@@ -268,9 +270,13 @@ def ExtractFunc(i):
             decompressed = decompressZlib(data)
             writeBytearrayToFile(filename, decompressed)
         else:
-            exit_code = os.system('tools/yaz0 -d ' + filename + ' ' + filename)
-            if exit_code != 0:
-                pass
+            data = readFileAsBytearray(filename)
+            decompressed = libyaz0.decompress(data)
+            writeBytearrayToFile(filename, decompressed)
+
+            # exit_code = os.system('tools/yaz0 -d ' + filename + ' ' + filename)
+            # if exit_code != 0:
+            #     pass
                 #os.remove(filename)
                 # exit(exit_code)
 
