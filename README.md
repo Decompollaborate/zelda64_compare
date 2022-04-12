@@ -1,22 +1,35 @@
-# OoT versions comparisons scripts
+# Zelda64 version comparison scripts
 
 TODO: write description
 
+N.B. Support for Animal Forest is quite limited at present, but is being actively worked on.
+
 ## Setup
 
-- Each ROM should be named `baserom_{version}.z64`.
-- (Optional) Run `fixbaserom.py` for every version just to be sure.
-- Run `extract_baserom.py {version}` for every version you have.
+- Each ROM you wish to extract for comparison should be named `baserom_{version}.z64`.
+- (Optional) Run `fixbaserom.py` for every version just to be sure: the roms are expected to be big-endian.
+- Run `make setup GAME={game} VERSION={version}` for every version you wish to compare to extract the baseroms to separate decompressed files, e.g.
 
   ```bash
-  ./extract_baserom.py pal_mq_dbg -j
+  make GAME=MM VERSION=ne0
   ```
 
-  - `extract_every_baserom.sh` will try to extract every known version, and ignore the missing ones (This will take a while...).
+  will extract MM's US N64 version (see the bottom of the README.md for the abbreviations this repository uses)
+
+  <!-- - `extract_every_baserom.sh` will try to extract every known version, and ignore the missing ones (This will take a while...). -->
+
+- Run `make GAME={game} VERSION={version}` to disassemble.
+
 
 ## Usage
 
-TODO
+- If you update a Google sheet, `download_csv.sh` will pull every sheet down.
+- Rerunning `make` with the appropriate variables set will re-disassemble with the new symbols.
+- To change the files that are extracted, edit the appropriate game's `disasm_list.txt`. By default only a few files are diassembled to save time.
+
+TODO: comparison scripts
+
+N.B. DnM overlays are not currently supported since the relocation section is separate.
 
 ## Version abbreviations
 
@@ -35,10 +48,12 @@ The following tables give the more common name/description of each version:
 
 ### OoT
 
+The Legend of Zelda: Ocarina of Time
+
 | Abbreviation | Description                                  |
 | ------------ | -------------------------------------------- |
 | njr          | ner with the language byte changed           |
-| ner          | "0.9" build found in early 2021              |
+| ner          | "0.9" prerelease build found in early 2021   |
 | nj0          | N64 Japanese 1.0                             |
 | ne0          | N64 American 1.0                             |
 | nj1          | N64 Japanese 1.1                             |
@@ -65,6 +80,8 @@ The following tables give the more common name/description of each version:
 
 ### MM
 
+The Legend of Zelda: Majora's Mask
+
 | Abbreviation | Description                              |
 | ------------ | ---------------------------------------- |
 | nj0          | N64 Japanese 1.0                         |
@@ -78,3 +95,12 @@ The following tables give the more common name/description of each version:
 | ceo          | GC American                              |
 | cpo          | GC PAL                                   |
 | pal_wii_1.1  | Wii Virtual Console PAL. Romhack of np1. |
+
+### DnM
+
+Doubutsu no Mori AKA Animal Forest. (Not a Zelda title, but shares many systems with the Zelda64 games.)
+
+| Abbreviation | Description             |
+| ------------ | ----------------------- |
+| jp           | N64 Japanese            |
+| cn           | iQue Simplified Chinese |
