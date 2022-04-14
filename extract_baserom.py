@@ -166,9 +166,9 @@ def readFilelists():
     FILE_NAMES["MM"]["NP1"] = FILE_NAMES["MM"]["NP0"]
 
     # DNM
-    FILE_NAMES["DNM"]["JP"] = readFile("dnm/filelist.txt")
+    FILE_NAMES["DNM"]["JP"] = readFile("dnm/filelists/filelist_dnm_jp.txt")
     FILE_NAMES["DNM"]["CN"] = FILE_NAMES["DNM"]["JP"] # for now
-    
+
 def initialize_worker(rom_data: bytes, dmaTable: dict):
     global romData
     global globalDmaTable
