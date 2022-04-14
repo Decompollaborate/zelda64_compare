@@ -110,9 +110,15 @@ def split_functions(game: str):
     tablePerVersion: dict[str, dict[int, str]] = dict()
 
     functions = disasm_Utils.readCsv(csvPath)
-    header = functions[0][2:]
-    for i in range(2, len(functions)):
-        funcName, _, *data = functions[i]
+
+    columnsToDiscard = 1
+    if functions[0][1] != "":
+        columnsToDiscard = int(functions[0][1])
+
+    header = functions[0][columnsToDiscard+1:]
+    for i in range(columnsToDiscard+1, len(functions)):
+        funcName = functions[i][0]
+        data = functions[i][columnsToDiscard+1:]
 
         if funcName == "":
             continue
@@ -140,8 +146,7 @@ def split_functions(game: str):
                 for oldVram, oldFuncName in tablePerVersion[version].items():
                     if funcName == oldFuncName:
                         break
-                oldFuncName = tablePerVersion[version][vram]
-                disasm_Utils.eprint(f"\t old: {oldVram:08X},{oldFuncName}")
+                disasm_Utils.eprint(f"\t old: {oldVram:08X},{funcName}")
                 disasm_Utils.eprint(f"\t new: {vram:08X},{funcName}")
 
             tablePerVersion[version][vram] = funcName
@@ -210,7 +215,7 @@ def main():
     epilog = f"""\
     """
     parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
-    choices = ["oot", "mm"]
+    choices = ["oot", "mm", "dnm"]
     parser.add_argument("game", help="", choices=choices)
     parser.add_argument("csv", help="") # TODO
     args = parser.parse_args()
@@ -219,7 +224,7 @@ def main():
 
     if seg == "functions":
         split_functions(args.game)
-    if seg == "variables":
+    elif seg == "variables":
         split_variables(args.game)
     else:
         split_fileSplits(args.game, seg)

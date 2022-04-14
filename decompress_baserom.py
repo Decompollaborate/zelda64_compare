@@ -2,24 +2,49 @@
 
 import hashlib, io, struct, sys
 from os import path
+import argparse
 
 from libyaz0 import decompress
-
-# UNCOMPRESSED_SIZE = 0x2F00000
-
-from extract_baserom import FILE_TABLE_OFFSET as FILE_TABLE_OFFSETS
+from extract_baserom import FILE_TABLE_OFFSET
 from fixbaserom import VERSIONS_MD5S
-FILE_TABLE_OFFSET = FILE_TABLE_OFFSETS["MM"]["NP1"]
-# 0x1A500 # 0x1C110 for JP1.0, 0x1C050 for JP1.1, 0x24F60 for debug
-correct_str_hash = VERSIONS_MD5S["MM"]["NP1"]
-BASEROM_PATH = path.join("mm", "mm_np1.z64")
-UNCOMPRESSED_PATH = path.join("mm", "mm_np1_uncompressed.z64")
 
-# FILE_TABLE_OFFSET = FILE_TABLE_OFFSETS["OOT"]["NE0"]
-# # 0x1A500 # 0x1C110 for JP1.0, 0x1C050 for JP1.1, 0x24F60 for debug
-# correct_str_hash = VERSIONS_MD5S["OOT"]["NE0"]
-# BASEROM_PATH = path.join("oot", "oot_ne0.z64")
-# UNCOMPRESSED_PATH = path.join("oot", "oot_ne0_uncompressed.z64")
+
+description = "Convert a rom that uses dmadata to an uncompressed one."
+
+edition_choices = {
+    "oot": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["OOT"]),
+    "mm": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["MM"]),
+    "dnm": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["DNM"]),
+}
+epilog = f"""\
+Each `game` has different versions, and hence different edition options.
+For oot: {edition_choices["oot"]}
+For mm:  {edition_choices["mm"]}
+For dnm: {edition_choices["dnm"]}
+
+For details on what these abbreviations mean, see the README.md.
+"""
+parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
+choices = ["oot", "mm", "dnm"]
+parser.add_argument("game", help="Game to extract.", choices=choices)
+parser.add_argument("edition", help="Version of the game to extract.")
+
+args = parser.parse_args()
+
+BASEROM_PATH = path.join(args.game, args.game + "_" + args.edition + ".z64")
+UNCOMPRESSED_PATH = path.join(args.game, args.game + "_" + args.edition + "_uncompressed.z64")
+
+
+Game      = args.game.upper()
+Edition   = args.edition
+Version   = Edition.upper().replace("_", " ")
+
+file_table_offset = FILE_TABLE_OFFSET[Game][Version]
+correct_str_hash = VERSIONS_MD5S[Game][Version]
+
+
+# UNCOMPRESSED_SIZE = 0x2F00000 # OoT debug
+
 
 
 def round_up(n,shift):
@@ -198,11 +223,11 @@ elif fileContent[0] == 0x37:
 
     print("Byte swapping done.")
 
-dmadata = read_dmadata(FILE_TABLE_OFFSET)
+dmadata = read_dmadata(file_table_offset)
 # Decompress
-if any([b != 0 for b in fileContent[FILE_TABLE_OFFSET + 0xAC:FILE_TABLE_OFFSET + 0xAC + 0x4]]):
+if any([b != 0 for b in fileContent[file_table_offset + 0xAC:file_table_offset + 0xAC + 0x4]]):
     print("Decompressing rom...")
-    fileContent = decompress_rom(FILE_TABLE_OFFSET, dmadata).getbuffer()
+    fileContent = decompress_rom(file_table_offset, dmadata).getbuffer()
     print(f"{len(fileContent):X}")
 
 padding_start = round_up(dmadata[-1][1], 12)

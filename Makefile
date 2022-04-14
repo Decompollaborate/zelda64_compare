@@ -11,6 +11,11 @@ SPLIT_FUNCTIONS        ?= 0
 DISASM_VERBOSITY       ?= -q
 DISASM_EXTRA_PARAMS    ?=
 
+OVL_DIS_EXTRA_PARAMS   ?=
+ifeq ($(GAME), dnm)
+  OVL_DIS_EXTRA_PARAMS += --reloc-separate
+endif
+
 DISASM_FUNC_SPLIT      = 
 ifneq ($(SPLIT_FUNCTIONS), 0)
   DISASM_FUNC_SPLIT    = --split-functions $(BASE_DIR)/asm/functions/$*
@@ -46,7 +51,7 @@ CSV_FILES           := $(CSV_FILES_ORIGINAL:$(GAME)/tables/%.text.csv=$(BASE_DIR
 
 DISASM_TARGETS      := $(DISASM_LIST:%=$(BASE_DIR)/asm/text/%/.disasm)
 
-.PHONY: all splitcsvs disasm clean
+.PHONY: all splitcsvs disasm clean downloadcsvs csvs
 .DEFAULT_GOAL := all
 
 
@@ -75,6 +80,13 @@ disasm: splitcsvs
 
 splitcsvs: $(CSV_FILES)
 
+downloadcsvs:
+	./tools/csvhelpers/download_csv_$(GAME).sh
+
+csvs:
+	$(MAKE) downloadcsvs
+	$(MAKE) splitcsvs
+
 #### Various Recipes ####
 $(BASE_DIR)/tables/%.csv: $(GAME)/tables/%.csv
 	./csvSplit.py $(GAME) $<
@@ -100,5 +112,5 @@ $(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables
 		--variables $(BASE_DIR)/tables/variables.csv --functions $(BASE_DIR)/tables/functions.csv \
 		--constants $(GAME)/tables/constants.csv --constants $(BASE_DIR)/tables/constants_ovl_$*.csv \
 		--file-addresses $(BASE_DIR)/tables/file_addresses.csv \
-		--save-context $(BASE_DIR)/context/ovl_$*.txt $(DISASM_EXTRA_PARAMS)
+		--save-context $(BASE_DIR)/context/ovl_$*.txt $(DISASM_EXTRA_PARAMS) $(OVL_DIS_EXTRA_PARAMS)
 	@touch $@

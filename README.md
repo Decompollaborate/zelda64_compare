@@ -20,16 +20,17 @@ N.B. Support for Animal Forest is quite limited at present, but is being activel
 
 - Run `make GAME={game} VERSION={version}` to disassemble.
 
-
 ## Usage
 
-- If you update a Google sheet, `download_csv.sh` will pull every sheet down.
+- If you update a Google sheet, `make downloadcsvs` will pull the sheets for the corresponding game (specify it with `GAME=`).
 - Rerunning `make` with the appropriate variables set will re-disassemble with the new symbols.
 - To change the files that are extracted, edit the appropriate game's `disasm_list.txt`. By default only a few files are diassembled to save time.
 
-TODO: comparison scripts
-
 N.B. DnM overlays are not currently supported since the relocation section is separate.
+
+## Comparison scripts
+
+TODO
 
 ## Version abbreviations
 

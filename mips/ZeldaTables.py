@@ -29,7 +29,7 @@ def getDmaAddresses(game: str, version: str) -> Dict[str, DmaEntry]:
 
 
 class FileAddressesEntry:
-    def __init__(self, filename, vromStart, vromEnd, romStart, romEnd, sizeVrom, compressed, vramStart, vramEnd, sizeVram, bss, type, number):
+    def __init__(self, filename, vromStart, vromEnd, romStart, romEnd, sizeVrom, compressed, vramStart, vramEnd, sizeVram, bss, type, number, *discard):
         self.filename = filename
 
         self.vromStart = int(vromStart, 16)

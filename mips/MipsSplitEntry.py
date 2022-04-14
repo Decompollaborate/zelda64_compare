@@ -33,7 +33,14 @@ class SplitEntry:
 def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, List[SplitEntry]]]:
     code_splits_file = disasm_Utils.readCsv(csvfilename)
 
-    header = code_splits_file[0][3::3]
+    columnsPerVersion = 3
+    if code_splits_file[0][2] != "":
+        try:
+            columnsPerVersion = int(code_splits_file[0][2])
+        except:
+            pass
+
+    header = code_splits_file[0][3::columnsPerVersion]
     splits: Dict[str, Dict[str, List[SplitEntry]]] = { h: dict() for h in header }
 
     for row_num in range(2, len(code_splits_file)):
@@ -49,12 +56,15 @@ def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, List[SplitEntry]]
             if h == "":
                 continue
             try:
-                offset, vram, size = data[ column_set_num * 3 : (column_set_num + 1) * 3 ]
+                subrow = data[ column_set_num * columnsPerVersion : (column_set_num + 1) * columnsPerVersion ]
+                offset = subrow[0]
+                vram = subrow[1]
+                size = subrow[2]
             except:
                 print("error when parsing {}, line {}: could not read row:".format(csvfilename, row_num))
                 print("    {}\n".format(row))
                 raise
-                # offset, vram, size = data[i*3:(i+1)*3] # Run it again to crash in the same place
+
             try:
                 offset = int(offset, 16)
             except:
