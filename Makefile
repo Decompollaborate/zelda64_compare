@@ -51,7 +51,7 @@ CSV_FILES           := $(CSV_FILES_ORIGINAL:$(GAME)/tables/%.text.csv=$(BASE_DIR
 
 DISASM_TARGETS      := $(DISASM_LIST:%=$(BASE_DIR)/asm/text/%/.disasm)
 
-.PHONY: all splitcsvs disasm clean
+.PHONY: all splitcsvs disasm clean downloadcsvs csvs
 .DEFAULT_GOAL := all
 
 
@@ -79,6 +79,13 @@ all: disasm
 disasm: splitcsvs
 
 splitcsvs: $(CSV_FILES)
+
+downloadcsvs:
+	./tools/csvhelpers/download_csv_$(GAME).sh
+
+csvs:
+	$(MAKE) downloadcsvs
+	$(MAKE) splitcsvs
 
 #### Various Recipes ####
 $(BASE_DIR)/tables/%.csv: $(GAME)/tables/%.csv
