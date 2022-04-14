@@ -7,6 +7,10 @@ DIR="$(dirname "$(readlink -f "$0")")"
 cd "$DIR/.."
 
 
+## File adresses
+# jp
+wget "https://docs.google.com/spreadsheets/d/17WZXsAATDgXXSBBVEOc_zT-QJDkD72vaGjZ5YyG1a_Y/export?format=csv&gid=0"         -O - | tr -d '\r' > "dnm/jp/tables/file_addresses.csv"
+
 ## Variables
 wget "https://docs.google.com/spreadsheets/d/17WZXsAATDgXXSBBVEOc_zT-QJDkD72vaGjZ5YyG1a_Y/export?format=csv&gid=219617635" -O - | tr -d '\r' > "dnm/tables/variables.csv"
 

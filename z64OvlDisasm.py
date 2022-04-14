@@ -126,7 +126,7 @@ def ovlDisassemblerMain():
     if args.reloc_separate:
         reloc_filename = findRelocFile(input_name, args.file_addresses)
         reloc_path = os.path.join(os.path.split(args.binary)[0],reloc_filename)
-        print(reloc_path)
+        # print(reloc_path)
         array_of_bytes.extend(disasm_Utils.readFileAsBytearray(reloc_path))
 
 
