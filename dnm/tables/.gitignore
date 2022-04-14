@@ -1,0 +1,10 @@
+*.text.csv
+*.data.csv
+*.rodata.csv
+*.bss.csv
+
+functions.csv
+variables.csv
+
+boot_functions.csv
+code_functions.csv
