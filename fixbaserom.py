@@ -44,6 +44,7 @@ CRC_VERSION = {
 
         # DNM
         "bd8e206d98c35e1c": ["DNM", "JP", "Japanese"],
+        "916eb31bf47097a5": ["DNM", "CN", "iQue"],
 }
 
 VERSIONS_MD5S = {
@@ -88,6 +89,7 @@ VERSIONS_MD5S = {
 
     "DNM": {
         "JP":             "a4f7c57c180297b2e7ba5a5feb44fe0b",
+        "CN":             "af83e0cf36298e62e9eb2eb8c89aa710",
     }
 }
 
