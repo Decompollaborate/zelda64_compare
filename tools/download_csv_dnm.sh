@@ -22,6 +22,9 @@ wget "https://docs.google.com/spreadsheets/d/17WZXsAATDgXXSBBVEOc_zT-QJDkD72vaGj
 cat "dnm/tables/boot_functions.csv" > "dnm/tables/functions.csv"
 # TODO: include code
 
+## makerom
+wget "https://docs.google.com/spreadsheets/d/17WZXsAATDgXXSBBVEOc_zT-QJDkD72vaGjZ5YyG1a_Y/export?format=csv&gid=1355718882"  -O - | tr -d '\r' > "dnm/tables/makerom.text.csv"
+
 ## boot
 wget "https://docs.google.com/spreadsheets/d/17WZXsAATDgXXSBBVEOc_zT-QJDkD72vaGjZ5YyG1a_Y/export?format=csv&gid=725463820"  -O - | tr -d '\r' > "dnm/tables/boot.text.csv"
 # wget "https://docs.google.com/spreadsheets/d/17WZXsAATDgXXSBBVEOc_zT-QJDkD72vaGjZ5YyG1a_Y/export?format=csv&gid=" -O - | tr -d '\r' > "dnm/tables/boot.data.csv"
