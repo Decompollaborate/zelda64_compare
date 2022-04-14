@@ -274,12 +274,6 @@ def ExtractFunc(i):
             decompressed = libyaz0.decompress(data)
             writeBytearrayToFile(filename, decompressed)
 
-            # exit_code = os.system('tools/yaz0 -d ' + filename + ' ' + filename)
-            # if exit_code != 0:
-            #     pass
-                #os.remove(filename)
-                # exit(exit_code)
-
 #####################################################################
 
 def printBuildData(rom_data: bytes):

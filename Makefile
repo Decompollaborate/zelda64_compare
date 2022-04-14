@@ -61,7 +61,6 @@ asmclean:
 
 ## Extraction step
 setup:
-#	$(MAKE) -C tools
 	./extract_baserom.py $(GAME) $(VERSION)
 
 ## Assembly generation
