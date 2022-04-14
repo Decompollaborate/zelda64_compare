@@ -210,7 +210,7 @@ def main():
     epilog = f"""\
     """
     parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
-    choices = ["oot", "mm"]
+    choices = ["oot", "mm", "dnm"]
     parser.add_argument("game", help="", choices=choices)
     parser.add_argument("csv", help="") # TODO
     args = parser.parse_args()
@@ -219,7 +219,7 @@ def main():
 
     if seg == "functions":
         split_functions(args.game)
-    if seg == "variables":
+    elif seg == "variables":
         split_variables(args.game)
     else:
         split_fileSplits(args.game, seg)
