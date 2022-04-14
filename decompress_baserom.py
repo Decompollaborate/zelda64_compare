@@ -9,8 +9,7 @@ from extract_baserom import FILE_TABLE_OFFSET
 from fixbaserom import VERSIONS_MD5S
 
 
-description = "Convert a rom that uses dmadata to a ."
-epilog = ""
+description = "Convert a rom that uses dmadata to an uncompressed one."
 
 edition_choices = {
     "oot": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["OOT"]),
