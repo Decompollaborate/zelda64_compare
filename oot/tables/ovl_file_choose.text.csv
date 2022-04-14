@@ -1,0 +1,6 @@
+,,,ner,,,ne0,,,ne1,,,np0,,,ne2,,,np1,,,cjo,,,cjm,,,ceo,,,cem,,,cpo,,,cpod1,,,cpod2,,,cpm,,,cpmd,,,cjc,,,iqs,,,iqt,,
+Debug rom,,Notes,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
+z_file_copy_erase,,,,,,0,80803880,3040,,,,0,80803880,3040,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,80803D40,3070,,,,0,80803700,3AE0,,,
+z_file_nameset_PAL,,,,,,-,-,-,,,,3040,808068C0,44B0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,3070,80806DB0,41A0,,,,-,-,-,,,
+z_file_nameset_NES,,,,,,3040,808068C0,5400,,,,-,-,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,-,-,,,,3AE0,808071E0,5450,,,
+z_file_choose,,,,,,8440,8080BCC0,6810,,,,74F0,8080AD70,7760,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,7210,8080AF50,6C60,,,,8F30,8080C630,67B0,,,

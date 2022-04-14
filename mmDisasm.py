@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#! /usr/bin/env python3
 
 from __future__ import annotations
 
@@ -6,16 +6,10 @@ import argparse
 
 from py_mips_disasm.mips.Utils import *
 from py_mips_disasm.mips.GlobalConfig import GlobalConfig
-from py_mips_disasm.mips.MipsText import Text
 from py_mips_disasm.mips.MipsContext import Context
 
-from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
-from mips.MipsFileCode import FileCode
-from mips.MipsFileBoot import FileBoot
-from mips.MipsSplitEntry import readSplitsFromCsv
-from mips.ZeldaTables import DmaEntry, getDmaAddresses, OverlayTableEntry
-from mips import ZeldaOffsets
+from mips.MipsFileSplits import FileSplits
 
 
 def mmDisasmMain():
@@ -27,9 +21,6 @@ def mmDisasmMain():
 
     GlobalConfig.REMOVE_POINTERS = False
     GlobalConfig.IGNORE_BRANCHES = False
-    GlobalConfig.IGNORE_04 = False
-    GlobalConfig.IGNORE_06 = False
-    GlobalConfig.IGNORE_80 = False
     GlobalConfig.WRITE_BINARY = False
     GlobalConfig.ASM_COMMENT = True
     GlobalConfig.FUNCTION_ASM_COUNT = False
@@ -37,6 +28,9 @@ def mmDisasmMain():
     GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
 
     context = Context()
+    context.fillDefaultBannedSymbols()
+    context.fillLibultraSymbols()
+    context.fillHardwareRegs()
     context.readMMAddressMaps("../mm/tools/disasm/files.txt", "../mm/tools/disasm/functions.txt", "../mm/tools/disasm/variables.txt")
 
     path = args.filepath
@@ -54,18 +48,13 @@ def mmDisasmMain():
     if segment.type == "overlay":
         print("Overlay detected. Parsing...")
 
-        f = FileOverlay(array_of_bytes, filename, version, context)
+        f = FileOverlay(array_of_bytes, filename, version, context, "mm")
         subfolder = "overlays"
-    elif segment.type == "code":
-        print("code detected. Parsing...")
+    elif segment.type in ("code", "boot"):
+        print("code/boot detected. Parsing...")
         print("TODO. ABORTING")
         exit(-1)
-        f = FileCode(array_of_bytes, version, context)
-    elif segment.type == "boot":
-        print("boot detected. Parsing...")
-        print("TODO. ABORTING")
-        exit(-1)
-        f = FileBoot(array_of_bytes, version, context)
+        f = FileSplits(array_of_bytes, segment.type, version, context, "mm")
     else:
         print("Unknown file type. Assuming .text. Parsing...")
         print("TODO. ABORTING")

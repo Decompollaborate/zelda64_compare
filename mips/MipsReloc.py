@@ -1,12 +1,14 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from __future__ import annotations
 
-from py_mips_disasm.mips.Utils import *
-from py_mips_disasm.mips.GlobalConfig import GlobalConfig
-from py_mips_disasm.mips.MipsFileBase import FileBase
-from py_mips_disasm.mips.MipsSection import Section
-from py_mips_disasm.mips.MipsContext import Context
+from typing import List
+import py_mips_disasm.backend.common.Utils as disasm_Utils
+from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
+from py_mips_disasm.backend.common.Context import Context
+
+from py_mips_disasm.backend.mips.MipsFileBase import FileBase
+from py_mips_disasm.backend.mips.MipsSection import Section
 
 
 class RelocEntry:
@@ -47,8 +49,8 @@ class RelocEntry:
         return self.__str__()
 
 class Reloc(Section):
-    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context):
-        super().__init__(array_of_bytes, filename, version, context)
+    def __init__(self, array_of_bytes: bytearray, filename: str, context: Context):
+        super().__init__(array_of_bytes, filename, context)
 
         self.textSize = self.words[0]
         self.dataSize = self.words[1]
@@ -112,22 +114,24 @@ class Reloc(Section):
 
             f.write(f"glabel {self.filename}OverlayInfo\n")
 
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentTextSize # {self.textSize}\n" % (offset + 0x0, currentVram + 0x0, self.textSize))
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentDataSize # {self.dataSize}\n" % (offset + 0x4, currentVram + 0x4, self.dataSize))
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentRoDataSize # {self.rodataSize}\n" % (offset + 0x8, currentVram + 0x8, self.rodataSize))
-            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentBssSize # {self.bssSize}\n" % (offset + 0xC, currentVram + 0xC, self.bssSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentTextSize # 0x{self.textSize:02X}\n" % (offset + self.commentOffset + 0x0, currentVram + 0x0, self.textSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentDataSize # 0x{self.dataSize:02X}\n" % (offset + self.commentOffset + 0x4, currentVram + 0x4, self.dataSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentRoDataSize # 0x{self.rodataSize:02X}\n" % (offset + self.commentOffset + 0x8, currentVram + 0x8, self.rodataSize))
+            f.write(f"/* %05X %08X %08X */  .word _{self.filename}SegmentBssSize # 0x{self.bssSize:02X}\n" % (offset + self.commentOffset + 0xC, currentVram + 0xC, self.bssSize))
             f.write(f"\n")
-            f.write(f"/* %05X %08X %08X */  .word  {self.relocCount} # reloc_count\n" % (offset + 0x10, currentVram + 0x10, self.relocCount))
+            f.write(f"/* %05X %08X %08X */  .word  {self.relocCount} # reloc_count\n" % (offset + self.commentOffset + 0x10, currentVram + 0x10, self.relocCount))
             f.write(f"\n")
+
+            offset += 0x14
 
             f.write(f"glabel {self.filename}OverlayRelocations\n")
             for r in self.entries:
-                offsetHex = toHex(offset, 5)[2:]
+                offsetHex = disasm_Utils.toHex(offset + self.commentOffset, 5)[2:]
                 vramHex = ""
                 if self.vRamStart != -1:
                     currentVram = self.getVramOffset(offset)
-                    vramHex = toHex(currentVram, 8)[2:]
-                relocHex = toHex(r.reloc, 8)[2:]
+                    vramHex = disasm_Utils.toHex(currentVram, 8)[2:]
+                relocHex = disasm_Utils.toHex(r.reloc, 8)[2:]
                 line = str(r)
 
                 f.write(f"/* {offsetHex} {vramHex} {relocHex} */  .word 0x{relocHex} # {line}\n")
@@ -135,16 +139,16 @@ class Reloc(Section):
 
             f.write("\n")
             for pad in self.tail:
-                offsetHex = toHex(offset, 5)[2:]
+                offsetHex = disasm_Utils.toHex(offset + self.commentOffset, 5)[2:]
                 vramHex = ""
                 if self.vRamStart != -1:
                     currentVram = self.getVramOffset(offset)
-                    vramHex = toHex(currentVram, 8)[2:]
-                padcHex = toHex(pad, 8)
+                    vramHex = disasm_Utils.toHex(currentVram, 8)[2:]
+                padcHex = disasm_Utils.toHex(pad, 8)
 
                 f.write(f"/* {offsetHex} {vramHex} {padcHex[2:]} */  .word {padcHex}\n")
                 offset += 4
 
             f.write(f"glabel {self.filename}OverlayInfoOffset\n")
             currentVram = self.getVramOffset(offset)
-            f.write(f"/* %05X %08X %08X */  .word  {self.seekup}\n" % (offset + 0x0, currentVram + 0x0, self.seekup))
+            f.write(f"/* %05X %08X %08X */  .word  0x{self.seekup:02X}\n" % (offset + 0x0, currentVram + 0x0, self.seekup))

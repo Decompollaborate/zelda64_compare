@@ -1,274 +1,264 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from __future__ import annotations
 
 
-versions = {
-    "ntsc_0.9" : "NNR",
-    "ntsc_1.0" : "NN0",
-    "ntsc_1.1" : "NN1",
-    "pal_1.0" : "NP0",
-    "ntsc_1.2" : "NN2",
-    "pal_1.1" : "NP1",
-    "jp_gc" : "GJO",
-    "jp_mq" : "GJM",
-    "usa_gc" : "GUO",
-    "usa_mq" : "GUM",
-    "pal_gc" : "GPO",
-    "pal_gc_dbg1" : "GPOD1",
-    "pal_gc_dbg2" : "GPOD2",
-    "pal_mq" : "GPM",
-    "pal_mq_dbg" : "GPMD",
-    "jp_gc_ce" : "GJC",
-    "ique_cn" : "IC",
-    "ique_tw" : "IT",
-
-    "mm_jp_1.0" : "NJ0",
-    "mm_jp_1.1" : "NJ1",
-    "mm_usa_demo" : "NUK",
-    "mm_usa" : "NU0",
-    "mm_pal_1.0" : "NE0",
-    "mm_pal_dbg" : "NED",
-    "mm_pal_1.1" : "NE1",
-    "mm_usa_gc" : "GU",
-    "mm_pal_gc" : "GE",
-    "mm_jp_gc" : "GJ",
-}
-
-def getVersionAbbr(filename: str) -> str:
-    for ver in versions:
-        if "baserom_" + ver + "/" in filename:
-            return versions[ver]
-    # If the version wasn't found.
-    return filename
-
-
 ENTRYPOINT = 0x80000400
 
-ACTOR_ID_MAX    = 0x01D7
-ACTOR_ID_MAX_MM = 0x2B2
+ActorIDMax = {
+    "oot": 0x1D7,
+    "mm":  0x2B2,
+}
 
 # The offset of the overlay table in file `code`.
 offset_ActorOverlayTable = {
-    "ntsc_0.9" : 0x0D7280,
-    "ntsc_1.0" : 0x0D7490,
-    "ntsc_1.1" : 0x0D7650,
-    "pal_1.0" : 0xD4D80,
-    "ntsc_1.2" : 0x0D7490,
-    "pal_1.1" : 0x0D4DE0,
-    "jp_gc" : 0x0D6B60,
-    "jp_mq" : 0x0D6B40,
-    "usa_gc" : 0x0D6B40,
-    "usa_mq" : 0x0D6B20,
-    "pal_gc" : 0x0D44A0,
-    "pal_gc_dbg1" : 0x0F9460,
-    "pal_gc_dbg2" : 0x0F9460,
-    "pal_mq" : 0x0D4480,
-    "pal_mq_dbg" : 0x0F9440,
-    "jp_gc_ce" : 0x0D6B40,
-    "ique_cn" : 0x0D7180,
-    "ique_tw" : 0x0D6AA0,
+    "oot": {
+        "NER":      0x0D7280,
+        "NE0":      0x0D7490,
+        "NE1":      0x0D7650,
+        "NP0":      0x0D4D80,
+        "NE2":      0x0D7490,
+        "NP1":      0x0D4DE0,
+        "CJO":      0x0D6B60,
+        "CJM":      0x0D6B40,
+        "CEO":      0x0D6B40,
+        "CEM":      0x0D6B20,
+        "CPOD1":    0x0F9460,
+        "CPMD":     0x0F9440,
+        "CPOD2":    0x0F9460,
+        "CPO":      0x0D44A0,
+        "CPM":      0x0D4480,
+        "CJC":      0x0D6B40,
+        "IQS":      0x0D7180,
+        "IQT":      0x0D6AA0,
+    },
 
-    "mm_jp_1.0" : 0xFFFFFF, # TODO: FIX
-    "mm_jp_1.1" : 0xFFFFFF, # TODO: FIX
-    "mm_usa_demo" : 0xFFFFFF, # TODO: FIX
-    "mm_usa" : 0x109510,
-    "mm_pal_1.0" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_dbg" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.1" : 0xFFFFFF, # TODO: FIX
-    "mm_usa_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_jp_gc" : 0xFFFFFF, # TODO: FIX
+    "mm": {
+        "NJ0":      0xFFFFFF, # TODO: FIX
+        "NJ1":      0xFFFFFF, # TODO: FIX
+        "NEK":      0xFFFFFF, # TODO: FIX
+        "NE0":      0x109510,
+        "NP0":      0xFFFFFF, # TODO: FIX
+        "NPD":      0xFFFFFF, # TODO: FIX
+        "NP1":      0xFFFFFF, # TODO: FIX
+        "CE0":      0xFFFFFF, # TODO: FIX
+        "CP0":      0xFFFFFF, # TODO: FIX
+        "CJ0":      0xFFFFFF, # TODO: FIX
+    },
 }
 
 bootVramStart = {
-    "ntsc_0.9" : 0x80000460,
-    "ntsc_1.0" : 0x80000460,
-    "ntsc_1.1" : 0x80000460,
-    "pal_1.0" : 0x80000460,
-    "ntsc_1.2" : 0x80000460,
-    "pal_1.1" : 0x80000460,
-    "jp_gc" : 0x80000460,
-    "jp_mq" : 0x80000460,
-    "usa_gc" : 0x80000460,
-    "usa_mq" : 0x80000460,
-    "pal_gc" : 0x80000460,
-    "pal_gc_dbg1" : 0x80000460,
-    "pal_gc_dbg2" : 0x80000460,
-    "pal_mq" : 0x80000460,
-    "pal_mq_dbg" : 0x80000460,
-    "jp_gc_ce" : 0x80000460,
-    "ique_cn" : 0x80000450, # iQue likes to be special
-    "ique_tw" : 0x80000450,
+    "oot": {
+        "NER":      0x80000460,
+        "NE0":      0x80000460,
+        "NE1":      0x80000460,
+        "NP0":      0x80000460,
+        "NE2":      0x80000460,
+        "NP1":      0x80000460,
+        "CJO":      0x80000460,
+        "CJM":      0x80000460,
+        "CEO":      0x80000460,
+        "CEM":      0x80000460,
+        "CPOD1":    0x80000460,
+        "CPMD":     0x80000460,
+        "CPOD2":    0x80000460,
+        "CPO":      0x80000460,
+        "CPM":      0x80000460,
+        "CJC":      0x80000460,
+        "IQS":      0x80000450, # iQue likes to be special
+        "IQT":      0x80000450,
+    },
 
-    "mm_jp_1.0" : 0xFFFFFF, # TODO: FIX
-    "mm_jp_1.1" : 0xFFFFFF, # TODO: FIX
-    "mm_usa_demo" : 0xFFFFFF, # TODO: FIX
-    "mm_usa" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.0" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_dbg" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.1" : 0xFFFFFF, # TODO: FIX
-    "mm_usa_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_jp_gc" : 0xFFFFFF, # TODO: FIX
+    "mm": {
+        "NJ0":      0xFFFFFF, # TODO: FIX
+        "NJ1":      0xFFFFFF, # TODO: FIX
+        "NEK":      0xFFFFFF, # TODO: FIX
+        "NE0":      0xFFFFFF, # TODO: FIX
+        "NP0":      0xFFFFFF, # TODO: FIX
+        "NPD":      0xFFFFFF, # TODO: FIX
+        "NP1":      0xFFFFFF, # TODO: FIX
+        "CE0":      0xFFFFFF, # TODO: FIX
+        "CP0":      0xFFFFFF, # TODO: FIX
+        "CJ0":      0xFFFFFF, # TODO: FIX
+    },
 }
 
 bootDataStart = {
-    "ntsc_0.9" : -1,
-    "ntsc_1.0" : -1,
-    "ntsc_1.1" : -1,
-    "pal_1.0" : 0x62B0,
-    "ntsc_1.2" : 0x6310,
-    "pal_1.1" : 0x62B0,
-    "jp_gc" : 0x5C70,
-    "jp_mq" : 0x5C70,
-    "usa_gc" : 0x5C70,
-    "usa_mq" : 0x5C70,
-    "pal_gc" : 0x5C70,
-    "pal_gc_dbg1" : 0x8FD0,
-    "pal_gc_dbg2" : 0x8FD0,
-    "pal_mq" : 0x5C70,
-    "pal_mq_dbg" : 0x8FD0,
-    "jp_gc_ce" : 0x5C70,
-    "ique_cn" : 0x98F0,
-    "ique_tw" : 0x9380,
+    "oot": {
+        "NER":      -1,
+        "NE0":      -1,
+        "NE1":      -1,
+        "NP0":      0x62B0,
+        "NE2":      0x6310,
+        "NP1":      0x62B0,
+        "CJO":      0x5C70,
+        "CJM":      0x5C70,
+        "CEO":      0x5C70,
+        "CEM":      0x5C70,
+        "CPOD1":    0x8FD0,
+        "CPMD":     0x8FD0,
+        "CPOD2":    0x8FD0,
+        "CPO":      0x5C70,
+        "CPM":      0x5C70,
+        "CJC":      0x5C70,
+        "IQS":      0x98F0,
+        "IQT":      0x9380,
+    },
 
-    "mm_jp_1.0" : 0xFFFFFF, # TODO: FIX
-    "mm_jp_1.1" : 0xFFFFFF, # TODO: FIX
-    "mm_usa_demo" : 0xFFFFFF, # TODO: FIX
-    "mm_usa" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.0" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_dbg" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.1" : 0xFFFFFF, # TODO: FIX
-    "mm_usa_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_jp_gc" : 0xFFFFFF, # TODO: FIX
+    "mm": {
+        "NJ0":      0xFFFFFF, # TODO: FIX
+        "NJ1":      0xFFFFFF, # TODO: FIX
+        "NEK":      0xFFFFFF, # TODO: FIX
+        "NE0":      0xFFFFFF, # TODO: FIX
+        "NP0":      0xFFFFFF, # TODO: FIX
+        "NPD":      0xFFFFFF, # TODO: FIX
+        "NP1":      0xFFFFFF, # TODO: FIX
+        "CE0":      0xFFFFFF, # TODO: FIX
+        "CP0":      0xFFFFFF, # TODO: FIX
+        "CJ0":      0xFFFFFF, # TODO: FIX
+    },
 }
 
 bootRodataStart = {
-    "ntsc_0.9" : 0x60F0,
-    "ntsc_1.0" : 0x60F0,
-    "ntsc_1.1" : 0x60F0,
-    "pal_1.0" : 0x6610,
-    "ntsc_1.2" : 0x6620,
-    "pal_1.1" : 0x6610,
-    "jp_gc" : 0x5F40,
-    "jp_mq" : 0x5F40,
-    "usa_gc" : 0x5F40,
-    "usa_mq" : 0x5F40,
-    "pal_gc" : 0x5F40,
-    "pal_gc_dbg1" : 0xAB60,
-    "pal_gc_dbg2" : 0xAB60,
-    "pal_mq" : 0x5F40,
-    "pal_mq_dbg" : 0xAB60,
-    "jp_gc_ce" : 0x5F40,
-    "ique_cn" : 0x9D40,
-    "ique_tw" : 0x97F0,
+    "oot": {
+        "NER":      0x60F0,
+        "NE0":      0x60F0,
+        "NE1":      0x60F0,
+        "NP0":      0x6610,
+        "NE2":      0x6620,
+        "NP1":      0x6610,
+        "CJO":      0x5F40,
+        "CJM":      0x5F40,
+        "CEO":      0x5F40,
+        "CEM":      0x5F40,
+        "CPOD1":    0xAB60,
+        "CPMD":     0xAB60,
+        "CPOD2":    0xAB60,
+        "CPO":      0x5F40,
+        "CPM":      0x5F40,
+        "CJC":      0x5F40,
+        "IQS":      0x9D40,
+        "IQT":      0x97F0,
+    },
 
-    "mm_jp_1.0" : 0xFFFFFF, # TODO: FIX
-    "mm_jp_1.1" : 0xFFFFFF, # TODO: FIX
-    "mm_usa_demo" : 0xFFFFFF, # TODO: FIX
-    "mm_usa" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.0" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_dbg" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.1" : 0xFFFFFF, # TODO: FIX
-    "mm_usa_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_gc" : 0xFFFFFF, # TODO: FIX
-    "mm_jp_gc" : 0xFFFFFF, # TODO: FIX
+    "mm": {
+        "NJ0":      0xFFFFFF, # TODO: FIX
+        "NJ1":      0xFFFFFF, # TODO: FIX
+        "NEK":      0xFFFFFF, # TODO: FIX
+        "NE0":      0xFFFFFF, # TODO: FIX
+        "NP0":      0xFFFFFF, # TODO: FIX
+        "NPD":      0xFFFFFF, # TODO: FIX
+        "NP1":      0xFFFFFF, # TODO: FIX
+        "CE0":      0xFFFFFF, # TODO: FIX
+        "CP0":      0xFFFFFF, # TODO: FIX
+        "CJ0":      0xFFFFFF, # TODO: FIX
+    },
 }
 
 codeVramStart = {
-    "ntsc_0.9" : 0x800110A0,
-    "ntsc_1.0" : 0x800110A0,
-    "ntsc_1.1" : 0x800110A0,
-    "pal_1.0" : 0x800116E0,
-    "ntsc_1.2" : 0x800116E0,
-    "pal_1.1" : 0x800116E0,
-    "jp_gc" : 0x80010EE0,
-    "jp_mq" : 0x80010EE0,
-    "usa_gc" : 0x80010EE0,
-    "usa_mq" : 0x80010EE0,
-    "pal_gc" : 0x80010F00,
-    "pal_gc_dbg1" : 0x8001CE60,
-    "pal_gc_dbg2" : 0x8001CE60,
-    "pal_mq" : 0x80010F00,
-    "pal_mq_dbg" : 0x8001CE60,
-    "jp_gc_ce" : 0x80010EE0,
-    "ique_cn" : 0x80018FA0,
-    "ique_tw" : 0x80018A40,
+    "oot": {
+        "NER":      0x800110A0,
+        "NE0":      0x800110A0,
+        "NE1":      0x800110A0,
+        "NP0":      0x800116E0,
+        "NE2":      0x800116E0,
+        "NP1":      0x800116E0,
+        "CJO":      0x80010EE0,
+        "CJM":      0x80010EE0,
+        "CEO":      0x80010EE0,
+        "CEM":      0x80010EE0,
+        "CPOD1":    0x8001CE60,
+        "CPMD":     0x8001CE60,
+        "CPOD2":    0x8001CE60,
+        "CPO":      0x80010F00,
+        "CPM":      0x80010F00,
+        "CJC":      0x80010EE0,
+        "IQS":      0x80018FA0,
+        "IQT":      0x80018A40,
+    },
 
-    "mm_jp_1.0" : 0x800A76A0,
-    "mm_jp_1.1" : 0x800A75E0,
-    "mm_usa_demo" : 0xFFFFFF, # TODO: FIX
-    "mm_usa" : 0x800A5AC0,
-    "mm_pal_1.0" : 0x800A5D60,
-    "mm_pal_dbg" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.1" : 0x800A5FE0,
-    "mm_usa_gc" : 0x800A6440,
-    "mm_pal_gc" : 0x800A65A0,
-    "mm_jp_gc" : 0x800A6420,
+    "mm": {
+        "NJ0":      0x800A76A0,
+        "NJ1":      0x800A75E0,
+        "NEK":      0xFFFFFF, # TODO: FIX
+        "NE0":      0x800A5AC0,
+        "NP0":      0x800A5D60,
+        "NPD":      0xFFFFFF, # TODO: FIX
+        "NP1":      0x800A5FE0,
+        "CE0":      0x800A6440,
+        "CP0":      0x800A65A0,
+        "CJ0":      0x800A6420,
+    },
 }
 
 codeDataStart = {
-    "ntsc_0.9" : 0x0D6400,
-    "ntsc_1.0" : 0x0D6610,
-    "ntsc_1.1" : 0x0D67D0,
-    "pal_1.0" : 0x0D3F20,
-    "ntsc_1.2" : 0x0D6610,
-    "pal_1.1" : 0x0D3F60,
-    "jp_gc" : 0x0D5CE0,
-    "jp_mq" : 0x0D5CC0,
-    "usa_gc" : 0x0D5CC0,
-    "usa_mq" : 0x0D5CA0,
-    "pal_gc" : 0x0D3620,
-    "pal_gc_dbg1" : 0x0F85E0,
-    "pal_gc_dbg2" : 0x0F85E0,
-    "pal_mq" : 0x0D3600,
-    "pal_mq_dbg" : 0x0F85C0,
-    "jp_gc_ce" : 0x0D5CC0,
-    "ique_cn" : 0x0D6330,
-    "ique_tw" : 0x0D5C10,
+    "oot": {
+        "NER":      0x0D6400,
+        "NE0":      0x0D6610,
+        "NE1":      0x0D67D0,
+        "NP0":      0x0D3F20,
+        "NE2":      0x0D6610,
+        "NP1":      0x0D3F60,
+        "CJO":      0x0D5CE0,
+        "CJM":      0x0D5CC0,
+        "CEO":      0x0D5CC0,
+        "CEM":      0x0D5CA0,
+        "CPOD1":    0x0F85E0,
+        "CPMD":     0x0F85C0,
+        "CPOD2":    0x0F85E0,
+        "CPO":      0x0D3620,
+        "CPM":      0x0D3600,
+        "CJC":      0x0D5CC0,
+        "IQS":      0x0D6330,
+        "IQT":      0x0D5C10,
+    },
 
-    "mm_jp_1.0" : 0xFE2F0,
-    "mm_jp_1.1" : 0xFE5F0,
-    "mm_usa_demo" : 0xFFFFFF, # TODO: FIX
-    "mm_usa" : 0x104FF0,
-    "mm_pal_1.0" : 0x801AB5D0 - 0x800A5D60,
-    "mm_pal_dbg" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.1" : 0x801AB970 - 0x800A5FE0,
-    "mm_usa_gc" : 0x801A9510 - 0x800A6440,
-    "mm_pal_gc" : 0x801A9F30 - 0x800A65A0,
-    "mm_jp_gc" : 0x801A95B0 - 0x800A6420,
+    "mm": {
+        "NJ0":      0xFE2F0,
+        "NJ1":      0xFE5F0,
+        "NEK":      0xFFFFFF, # TODO: FIX
+        "NE0":      0x104FF0,
+        "NP0":      0x801AB5D0 - 0x800A5D60,
+        "NPD":      0xFFFFFF, # TODO: FIX
+        "NP1":      0x801AB970 - 0x800A5FE0,
+        "CE0":      0x801A9510 - 0x800A6440,
+        "CP0":      0x801A9F30 - 0x800A65A0,
+        "CJ0":      0x801A95B0 - 0x800A6420,
+    },
 }
 
 codeRodataStart = {
-    "ntsc_0.9" : 0x0F4A50,
-    "ntsc_1.0" : 0x0F4C60,
-    "ntsc_1.1" : 0x0F4E20,
-    "pal_1.0" : 0x0F2570,
-    "ntsc_1.2" : 0x0F4C60,
-    "pal_1.1" : 0x0F25B0,
-    "jp_gc" : 0x0F3E90,
-    "jp_mq" : 0x0F3E70,
-    "usa_gc" : 0x0F3E70,
-    "usa_mq" : 0x0F3E50,
-    "pal_gc" : 0x0F17D0,
-    "pal_gc_dbg1" : 0x117EF0,
-    "pal_gc_dbg2" : 0x117EF0,
-    "pal_mq" : 0x0F17B0,
-    "pal_mq_dbg" : 0x117ED0,
-    "jp_gc_ce" : 0x0F3E70,
-    "ique_cn" : 0x0F44C0,
-    "ique_tw" : 0x0F3DE0,
+    "oot": {
+        "NER":      0x0F4A50,
+        "NE0":      0x0F4C60,
+        "NE1":      0x0F4E20,
+        "NP0":      0x0F2570,
+        "NE2":      0x0F4C60,
+        "NP1":      0x0F25B0,
+        "CJO":      0x0F3E90,
+        "CJM":      0x0F3E70,
+        "CEO":      0x0F3E70,
+        "CEM":      0x0F3E50,
+        "CPOD1":    0x117EF0,
+        "CPMD":     0x117ED0,
+        "CPOD2":    0x117EF0,
+        "CPO":      0x0F17D0,
+        "CPM":      0x0F17B0,
+        "CJC":      0x0F3E70,
+        "IQS":      0x0F44C0,
+        "IQT":      0x0F3DE0,
+    },
 
-    "mm_jp_1.0" : 0x12EE80,
-    "mm_jp_1.1" : 0x801D6730 - 0x800A75E0,
-    "mm_usa_demo" : 0xFFFFFF, # TODO: FIX
-    "mm_usa" : 0x136330,
-    "mm_pal_1.0" : 0x801D4380 - 0x800A5D60,
-    "mm_pal_dbg" : 0xFFFFFF, # TODO: FIX
-    "mm_pal_1.1" : 0x801D4720 - 0x800A5FE0,
-    "mm_usa_gc" : 0x801DB070 - 0x800A6440,
-    "mm_pal_gc" : 0x801D2CC0 - 0x800A65A0,
-    "mm_jp_gc" : 0x801DB060 - 0x800A6420,
+    "mm": {
+        "NJ0":      0x12EE80,
+        "NJ1":      0x801D6730 - 0x800A75E0,
+        "NEK":      0xFFFFFF, # TODO: FIX
+        "NE0":      0x136330,
+        "NP0":      0x801D4380 - 0x800A5D60,
+        "NPD":      0xFFFFFF, # TODO: FIX
+        "NP1":      0x801D4720 - 0x800A5FE0,
+        "CE0":      0x801DB070 - 0x800A6440,
+        "CP0":      0x801D2CC0 - 0x800A65A0,
+        "CJ0":      0x801DB060 - 0x800A6420,
+    },
 }

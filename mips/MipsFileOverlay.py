@@ -1,17 +1,20 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from __future__ import annotations
 
-from py_mips_disasm.mips.Utils import *
-from py_mips_disasm.mips.GlobalConfig import GlobalConfig
+from typing import List
+import py_mips_disasm.backend.common.Utils as disasm_Utils
+from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
+from py_mips_disasm.backend.common.Context import Context
+from py_mips_disasm.backend.common.FileSectionType import FileSectionType
+from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat, FileSplitEntry
 
-from py_mips_disasm.mips.MipsFileBase import FileBase
-from py_mips_disasm.mips.MipsText import Text
-from py_mips_disasm.mips.MipsData import Data
-from py_mips_disasm.mips.MipsRodata import Rodata
-from py_mips_disasm.mips.MipsBss import Bss
-from py_mips_disasm.mips.MipsContext import Context
-from py_mips_disasm.mips.Instructions import wordToInstruction
+from py_mips_disasm.backend.mips.MipsFileBase import FileBase
+from py_mips_disasm.backend.mips.MipsText import Text
+from py_mips_disasm.backend.mips.MipsData import Data
+from py_mips_disasm.backend.mips.MipsRodata import Rodata
+from py_mips_disasm.backend.mips.MipsBss import Bss
+from py_mips_disasm.backend.mips.FilesHandlers import createSectionFromSplitEntry
 
 from .MipsReloc import Reloc
 from .MipsFileGeneric import FileGeneric
@@ -20,8 +23,10 @@ from .ZeldaTables import OverlayTableEntry
 
 
 class FileOverlay(FileGeneric):
-    def __init__(self, array_of_bytes: bytearray, filename: str, version: str, context: Context, tableEntry: OverlayTableEntry=None):
-        super().__init__(array_of_bytes, filename, version, context)
+    def __init__(self, array_of_bytes: bytearray, filename: str, context: Context, tableEntry: OverlayTableEntry | None = None, splitsData: FileSplitFormat | None = None, vramStartParam: int = -1):
+        super().__init__(array_of_bytes, filename, context)
+
+        self.vRamStart = vramStartParam
 
         self.initVarsAddress = -1
         if tableEntry is not None:
@@ -42,47 +47,62 @@ class FileOverlay(FileGeneric):
         data_size = self.words[headerWPos+1]
         rodata_size = self.words[headerWPos+2]
         bss_size = self.words[headerWPos+3]
-        reloc_size = 4*5 + 4*self.words[headerWPos+4]
+        reloc_size = self.size - (text_size + data_size + rodata_size)
 
-        start = 0
-        end = text_size
-        text = Text(self.bytes[start:end], filename, version, context)
-        text.parent = self
-        text.offset = start
-        text.vRamStart = self.vRamStart
-        self.textList[self.filename] = text
+        self.splitsDataList: List[FileSplitEntry] = []
+        if splitsData is not None and len(splitsData) > 0:
+            for splitEntry in splitsData:
+                self.splitsDataList.append(splitEntry)
+        else:
+            vram = self.vRamStart
 
-        start += text_size
-        end += data_size
-        data = Data(self.bytes[start:end], filename, version, context)
-        data.parent = self
-        data.offset = start
-        data.vRamStart = self.vRamStart
-        self.dataList[self.filename] = data
+            start = 0
+            end = text_size
+            if self.vRamStart > 0:
+                vram = self.vRamStart + start
+            splitEntry = FileSplitEntry(start, vram, filename, FileSectionType.Text, end, False, False)
+            self.splitsDataList.append(splitEntry)
 
-        start += data_size
-        end += rodata_size
-        rodata = Rodata(self.bytes[start:end], filename, version, context)
-        rodata.parent = self
-        rodata.offset = start
-        rodata.vRamStart = self.vRamStart
-        self.rodataList[self.filename] = rodata
+            start += text_size
+            end += data_size
+            if self.vRamStart > 0:
+                vram = self.vRamStart + start
+            splitEntry = FileSplitEntry(start, vram, filename, FileSectionType.Data, end, False, False)
+            self.splitsDataList.append(splitEntry)
 
-        #start += rodata_size
-        #end += bss_size
-        #self.bss = Bss(self.bytes[start:end], filename, version)
-        # TODO
-        #bss = Bss(self.bytes[0:0], filename, version, context)
-        #bss.parent = self
-        #bss.offset = start
-        #bss.vRamStart = self.vRamStart
-        #self.bssList[self.filename] = bss
+            start += data_size
+            end += rodata_size
+            if self.vRamStart > 0:
+                vram = self.vRamStart + start
+            splitEntry = FileSplitEntry(start, vram, filename, FileSectionType.Rodata, end, False, False)
+            self.splitsDataList.append(splitEntry)
 
-        start += rodata_size
-        self.reloc = Reloc(self.bytes[start:], filename, version, context)
+            start += rodata_size + reloc_size
+            end += bss_size + reloc_size
+            if self.vRamStart > 0:
+                vram = self.vRamStart + start
+            splitEntry = FileSplitEntry(start, vram, filename, FileSectionType.Bss, end, False, False)
+            self.splitsDataList.append(splitEntry)
+
+
+        for splitEntry in self.splitsDataList:
+            if self.vRamStart <= 0:
+                self.vRamStart = splitEntry.vram
+
+            f = createSectionFromSplitEntry(splitEntry, self.bytes, splitEntry.fileName, context)
+            f.parent = self
+            f.setCommentOffset(splitEntry.offset)
+
+            self.sectionsDict[splitEntry.section][splitEntry.fileName] = f
+
+
+        relocStart = text_size + data_size + rodata_size
+        self.reloc = Reloc(self.bytes[relocStart:], filename, context)
         self.reloc.parent = self
-        self.reloc.offset = start
         self.reloc.vRamStart = self.vRamStart
+        if self.vRamStart >= 0:
+            self.reloc.vRamStart = self.vRamStart + relocStart
+        self.reloc.setCommentOffset(relocStart)
 
 
     def setVRamStart(self, vRamStart: int):
@@ -91,16 +111,11 @@ class FileOverlay(FileGeneric):
 
     def getHash(self) -> str:
         bytes = bytearray(0)
-        for section in self.textList.values():
-            bytes += section.bytes
-        for section in self.dataList.values():
-            bytes += section.bytes
-        for section in self.rodataList.values():
-            bytes += section.bytes
-        for section in self.bssList.values():
-            bytes += section.bytes
+        for sectDict in self.sectionsDict.values():
+            for section in sectDict.values():
+                bytes += section.bytes
         bytes += self.reloc.bytes
-        return getStrHash(bytes)
+        return disasm_Utils.getStrHash(bytes)
 
     def analyze(self):
         for entry in self.reloc.entries:
@@ -109,16 +124,12 @@ class FileOverlay(FileGeneric):
             offset = entry.offset
             if entry.reloc == 0:
                 continue
-            if section == ".text":
-                self.textList[self.filename].pointersOffsets.append(offset)
-            elif section == ".data":
-                self.dataList[self.filename].pointersOffsets.append(offset)
-            elif section == ".rodata":
-                self.rodataList[self.filename].pointersOffsets.append(offset)
-            elif section == ".bss":
-                self.bssList[self.filename].pointersOffsets.append(offset)
 
-        # self.textList[self.filename].removeTrailingNops()
+            sectionType = FileSectionType.fromStr(section)
+            for subFile in self.sectionsDict[sectionType].values():
+                subFile.pointersOffsets.add(offset)
+
+        # self.sectionsDict[FileSectionType.Text][self.filename].removeTrailingNops()
 
         super().analyze()
         self.reloc.analyze()
@@ -212,4 +223,10 @@ class FileOverlay(FileGeneric):
 
     def saveToFile(self, filepath: str):
         super().saveToFile(filepath)
+
         self.reloc.saveToFile(filepath + self.reloc.filename)
+
+    def updateCommentOffset(self):
+        for sectDict in self.sectionsDict.values():
+            for section in sectDict.values():
+                section.setCommentOffset(section.commentOffset)

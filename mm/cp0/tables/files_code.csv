@@ -1,0 +1,10 @@
+offset,vram,.text
+0,800A65A0,z_en_a_keep
+DEE10,801853B0,code_80185F90
+DF8F0,80185E90,file_0DF8F0
+
+offset,vram,.data
+106D40,801AD2E0,z_en_a_keep
+
+offset,vram,.rodata
+12C720,801D2CC0,z_en_item00

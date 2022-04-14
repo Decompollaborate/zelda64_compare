@@ -1,0 +1,5 @@
+offset,vram,.text
+0,80000460,boot_main.c
+140,800005A0,idle.c
+3D0,80000830,viconfig.c
+33E0,80003840,__osDevMgrMain.c

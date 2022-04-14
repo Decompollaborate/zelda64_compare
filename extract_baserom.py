@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from __future__ import annotations
 
@@ -9,91 +9,110 @@ import struct
 from multiprocessing import Pool, cpu_count, Manager
 from typing import Dict, List
 import zlib
+print(sys.path)
+import libyaz0
 
 
-ROM_FILE_NAME = 'baserom.z64'
-ROM_FILE_NAME_V = 'baserom_{}.z64'
+ROM_FILE_NAME_V = '{}_{}.z64'
 FILE_TABLE_OFFSET = {
-    "NTSC 0.9":     0x07430, # a.k.a. NTSC 1.0 RC
-    "NTSC 1.0":     0x07430,
-    "NTSC 1.1":     0x07430,
-    "PAL 1.0":      0x07950,
-    "NTSC 1.2":     0x07960,
-    "PAL 1.1":      0x07950,
-    "JP GC":        0x07170,
-    "JP MQ":        0x07170,
-    "USA GC":       0x07170,
-    "USA MQ":       0x07170,
-    "PAL GC DBG1":  0x12F70,
-    "PAL MQ DBG":   0x12F70,
-    "PAL GC DBG2":  0x12F70,
-    "PAL GC":       0x07170,
-    "PAL MQ":       0x07170,
-    "JP GC CE":     0x07170, # Zelda collection
-    "IQUE CN":      0x0B7A0,
-    "IQUE TW":      0x0B240,
-    "GATEWAY":      0x0AC80, # fake
+    "OOT": {
+        "NER":        0x07430, # a.k.a. NN0 RC
+        "NE0":        0x07430,
+        "NE1":        0x07430,
+        "NP0":        0x07950,
+        "NE2":        0x07960,
+        "NP1":        0x07950,
+        "CJO":        0x07170,
+        "CJM":        0x07170,
+        "CEO":        0x07170,
+        "CEM":        0x07170,
+        "CPOD1":      0x12F70,
+        "CPMD":       0x12F70,
+        "CPOD2":      0x12F70,
+        "CPO":        0x07170,
+        "CPM":        0x07170,
+        "CJC":        0x07170, # Zelda collection
+        "IQS":        0x0B7A0,
+        "IQT":        0x0B240,
+        # "GATEWAY":    0x0AC80, # fake
+    },
 
-    # MM
-    "MM JP 1.0":    0x1C110,
-    "MM JP 1.1":    0x1C050,
-    "MM USA DEMO":  0x1AB50,
-    "MM USA":       0x1A500,
-    "MM PAL 1.0":   0x1A650,
-    "MM PAL DBG":   0x24F60,
-    "MM PAL 1.1":   0x1A8D0,
-    "MM USA GC":    0x1AE90,
-    "MM PAL GC":    0x1AE90,
-    "MM JP GC":     0x1AE90,
+    "MM": {
+        "NJ0":    0x1C110,
+        "NJ1":    0x1C050,
+        "NEK":    0x1AB50,
+        "NE0":    0x1A500,
+        "NP0":    0x1A650,
+        "NPD":    0x24F60,
+        "NP1":    0x1A8D0,
+        "CE0":    0x1AE90,
+        "CP0":    0x1AE90,
+        "CJ0":    0x1AE90,
+    },
+
+    "DNM": {
+        "JP": 0x19D40,
+        "CN": 0x21D80,
+    }
 }
-FILE_TABLE_OFFSET["NTSC J 0.9"]   = FILE_TABLE_OFFSET["NTSC 0.9"]
-FILE_TABLE_OFFSET["NTSC J 1.0"]   = FILE_TABLE_OFFSET["NTSC 1.0"]
-FILE_TABLE_OFFSET["NTSC J 1.1"]   = FILE_TABLE_OFFSET["NTSC 1.1"]
-FILE_TABLE_OFFSET["NTSC J 1.2"]   = FILE_TABLE_OFFSET["NTSC 1.2"]
-FILE_TABLE_OFFSET["PAL WII 1.1"]  = FILE_TABLE_OFFSET["PAL 1.1"]
+FILE_TABLE_OFFSET["OOT"]["NJR"]   = FILE_TABLE_OFFSET["OOT"]["NER"]
+FILE_TABLE_OFFSET["OOT"]["NJ0"]   = FILE_TABLE_OFFSET["OOT"]["NE0"]
+FILE_TABLE_OFFSET["OOT"]["NJ1"]   = FILE_TABLE_OFFSET["OOT"]["NE1"]
+FILE_TABLE_OFFSET["OOT"]["NJ2"]   = FILE_TABLE_OFFSET["OOT"]["NE2"]
+FILE_TABLE_OFFSET["OOT"]["PAL WII 1.1"]  = FILE_TABLE_OFFSET["OOT"]["NP1"]
 
-FILE_NAMES: Dict[str, List[str] | None] = {
-    "NTSC 0.9":     None,
-    "NTSC 1.0":     None,
-    "NTSC 1.1":     None,
-    "PAL 1.0":      None,
-    "NTSC 1.2":     None,
-    "PAL 1.1":      None,
-    "JP GC":        None,
-    "JP MQ":        None,
-    "USA GC":       None,
-    "USA MQ":       None,
-    "PAL GC DBG1":  None,
-    "PAL GC DBG2":  None,
-    "PAL MQ DBG":   None,
-    "PAL GC":       None,
-    "PAL MQ":       None,
-    "JP GC CE":     None, # Zelda collector's edition
-    "IQUE CN":      None,
-    "IQUE TW":      None,
-    "GATEWAY":      None, # fake
+FILE_NAMES: Dict[str, Dict[str, List[str] | None]] = {
+    "OOT": {
+        "NER":        None,
+        "NE0":        None,
+        "NE1":        None,
+        "NP0":        None,
+        "NE2":        None,
+        "NP1":        None,
+        "CJO":        None,
+        "CJM":        None,
+        "CEO":        None,
+        "CEM":        None,
+        "CPOD1":      None,
+        "CPMD":       None,
+        "CPOD2":      None,
+        "CPO":        None,
+        "CPM":        None,
+        "CJC":        None, # Zelda collector's edition
+        "IQS":        None,
+        "IQT":        None,
+        # "GATEWAY":    None, # fake
+    },
 
-    # MM
-    "MM JP 1.0":    None,
-    "MM JP 1.1":    None,
-    "MM USA DEMO":  None,
-    "MM USA":       None,
-    "MM PAL 1.0":   None,
-    "MM PAL DBG":   None,
-    "MM PAL 1.1":   None,
-    "MM USA GC":    None,
-    "MM PAL GC":    None,
-    "MM JP GC":     None,
+    "MM": {
+        "NJ0":    None,
+        "NJ1":    None,
+        "NEK":    None,
+        "NE0":    None,
+        "NP0":    None,
+        "NPD":    None,
+        "NP1":    None,
+        "CE0":    None,
+        "CP0":    None,
+        "CJ0":    None,
+    },
+
+    "DNM": {
+        "JP": None,
+        "CN": None,
+    },
 }
-FILE_NAMES["NTSC J 0.9"]  = FILE_NAMES["NTSC 0.9"]
-FILE_NAMES["NTSC J 1.0"]  = FILE_NAMES["NTSC 1.0"]
-FILE_NAMES["NTSC J 1.1"]  = FILE_NAMES["NTSC 1.1"]
-FILE_NAMES["NTSC J 1.2"]  = FILE_NAMES["NTSC 1.2"]
-FILE_NAMES["PAL WII 1.1"] = FILE_NAMES["PAL 1.1"]
+FILE_NAMES["OOT"]["NJR"]  = FILE_NAMES["OOT"]["NER"]
+FILE_NAMES["OOT"]["NJ0"]  = FILE_NAMES["OOT"]["NE0"]
+FILE_NAMES["OOT"]["NJ1"]  = FILE_NAMES["OOT"]["NE1"]
+FILE_NAMES["OOT"]["NJ2"]  = FILE_NAMES["OOT"]["NE2"]
+FILE_NAMES["OOT"]["PAL WII 1.1"] = FILE_NAMES["OOT"]["NP1"]
 
 romData: bytes = None
-Edition = "" # "pal_mq"
-Version = "" # "PAL MQ"
+Edition = "" # "cpm"
+Version = "" # "CPM"
+OnlyDma = False
+OnlyBuild = False
 
 
 def readFile(filepath):
@@ -101,52 +120,56 @@ def readFile(filepath):
         return [x.strip() for x in f.readlines()]
 
 def readFilelists():
-    FILE_NAMES["PAL MQ DBG"] = readFile("filelists/filelist_pal_mq_dbg.txt")
-    FILE_NAMES["PAL MQ"] = readFile("filelists/filelist_pal_mq.txt")
-    FILE_NAMES["USA MQ"] = readFile("filelists/filelist_usa_mq.txt")
-    FILE_NAMES["NTSC 1.0"] = readFile("filelists/filelist_ntsc_1.0.txt")
-    FILE_NAMES["PAL 1.0"] = readFile("filelists/filelist_pal_1.0.txt")
-    FILE_NAMES["JP GC CE"] = readFile("filelists/filelist_jp_gc_ce.txt")
-    FILE_NAMES["IQUE CN"] = readFile("filelists/filelist_ique_cn.txt")
+    FILE_NAMES["OOT"]["CPMD"] = readFile("oot/filelists/filelist_pal_mq_dbg.txt")
+    FILE_NAMES["OOT"]["CPM"]     = readFile("oot/filelists/filelist_pal_mq.txt")
+    FILE_NAMES["OOT"]["CEM"]     = readFile("oot/filelists/filelist_usa_mq.txt")
+    FILE_NAMES["OOT"]["NE0"]   = readFile("oot/filelists/filelist_ntsc_1.0.txt")
+    FILE_NAMES["OOT"]["NP0"]    = readFile("oot/filelists/filelist_pal_1.0.txt")
+    FILE_NAMES["OOT"]["CJC"]   = readFile("oot/filelists/filelist_jp_gc_ce.txt")
+    FILE_NAMES["OOT"]["IQS"]    = readFile("oot/filelists/filelist_ique_cn.txt")
 
-    FILE_NAMES["JP MQ"] = FILE_NAMES["USA MQ"]
+    FILE_NAMES["OOT"]["CJM"] = FILE_NAMES["OOT"]["CEM"]
 
-    FILE_NAMES["USA GC"] = FILE_NAMES["JP GC CE"]
-    FILE_NAMES["JP GC"] = FILE_NAMES["USA GC"]
-    FILE_NAMES["PAL GC"] = FILE_NAMES["PAL MQ"]
+    FILE_NAMES["OOT"]["CEO"] = FILE_NAMES["OOT"]["CJC"]
+    FILE_NAMES["OOT"]["CJO"]  = FILE_NAMES["OOT"]["CEO"]
+    FILE_NAMES["OOT"]["CPO"] = FILE_NAMES["OOT"]["CPM"]
 
-    FILE_NAMES["PAL 1.1"] = FILE_NAMES["PAL 1.0"]
+    FILE_NAMES["OOT"]["NP1"] = FILE_NAMES["OOT"]["NP0"]
 
-    FILE_NAMES["PAL GC DBG1"] = FILE_NAMES["PAL MQ DBG"]
-    FILE_NAMES["PAL GC DBG2"] = FILE_NAMES["PAL MQ DBG"]
+    FILE_NAMES["OOT"]["CPOD1"] = FILE_NAMES["OOT"]["CPMD"]
+    FILE_NAMES["OOT"]["CPOD2"] = FILE_NAMES["OOT"]["CPMD"]
 
-    FILE_NAMES["IQUE TW"] = FILE_NAMES["IQUE CN"]
+    FILE_NAMES["OOT"]["IQT"] = FILE_NAMES["OOT"]["IQS"]
 
-    FILE_NAMES["NTSC 0.9"] = FILE_NAMES["NTSC 1.0"]
-    FILE_NAMES["NTSC 1.1"] = FILE_NAMES["NTSC 1.0"]
-    FILE_NAMES["NTSC 1.2"] = FILE_NAMES["NTSC 1.0"]
+    FILE_NAMES["OOT"]["NER"] = FILE_NAMES["OOT"]["NE0"]
+    FILE_NAMES["OOT"]["NE1"] = FILE_NAMES["OOT"]["NE0"]
+    FILE_NAMES["OOT"]["NE2"] = FILE_NAMES["OOT"]["NE0"]
 
-    FILE_NAMES["NTSC J 0.9"]  = FILE_NAMES["NTSC 0.9"]
-    FILE_NAMES["NTSC J 1.0"]  = FILE_NAMES["NTSC 1.0"]
-    FILE_NAMES["NTSC J 1.1"]  = FILE_NAMES["NTSC 1.1"]
-    FILE_NAMES["NTSC J 1.2"]  = FILE_NAMES["NTSC 1.2"]
-    FILE_NAMES["PAL WII 1.1"] = FILE_NAMES["PAL 1.1"]
+    FILE_NAMES["OOT"]["NJR"]  = FILE_NAMES["OOT"]["NER"]
+    FILE_NAMES["OOT"]["NJ0"]  = FILE_NAMES["OOT"]["NE0"]
+    FILE_NAMES["OOT"]["NJ1"]  = FILE_NAMES["OOT"]["NE1"]
+    FILE_NAMES["OOT"]["NJ2"]  = FILE_NAMES["OOT"]["NE2"]
+    FILE_NAMES["OOT"]["PAL WII 1.1"] = FILE_NAMES["OOT"]["NP1"]
 
-    FILE_NAMES["GATEWAY"] = FILE_NAMES["IQUE CN"]
+    FILE_NAMES["OOT"]["GATEWAY"] = FILE_NAMES["OOT"]["IQS"]
 
     # MM
-    FILE_NAMES["MM JP 1.0"] = readFile("filelists/filelist_mm_jp_1.0.txt")
-    FILE_NAMES["MM USA DEMO"] = readFile("filelists/filelist_mm_usa_demo.txt")
-    FILE_NAMES["MM USA"] = readFile("filelists/filelist_mm_usa.txt")
-    FILE_NAMES["MM PAL DBG"] = readFile("filelists/filelist_mm_pal_dbg.txt")
-    FILE_NAMES["MM USA GC"] = readFile("filelists/filelist_mm_usa_gc.txt")
-    FILE_NAMES["MM PAL GC"] = readFile("filelists/filelist_mm_pal_gc.txt")
-    FILE_NAMES["MM JP GC"] = readFile("filelists/filelist_mm_jp_gc.txt")
+    FILE_NAMES["MM"]["NJ0"] = readFile("mm/filelists/filelist_mm_jp_1.0.txt")
+    FILE_NAMES["MM"]["NEK"] = readFile("mm/filelists/filelist_mm_usa_demo.txt")
+    FILE_NAMES["MM"]["NE0"] = readFile("mm/filelists/filelist_mm_usa.txt")
+    FILE_NAMES["MM"]["NPD"] = readFile("mm/filelists/filelist_mm_pal_dbg.txt")
+    FILE_NAMES["MM"]["CE0"] = readFile("mm/filelists/filelist_mm_usa_gc.txt")
+    FILE_NAMES["MM"]["CP0"] = readFile("mm/filelists/filelist_mm_pal_gc.txt")
+    FILE_NAMES["MM"]["CJ0"] = readFile("mm/filelists/filelist_mm_jp_gc.txt")
 
-    FILE_NAMES["MM JP 1.1"] = FILE_NAMES["MM JP 1.0"]
-    FILE_NAMES["MM PAL 1.0"] = FILE_NAMES["MM PAL DBG"]
-    FILE_NAMES["MM PAL 1.1"] = FILE_NAMES["MM PAL 1.0"]
+    FILE_NAMES["MM"]["NJ1"]  = FILE_NAMES["MM"]["NJ0"]
+    FILE_NAMES["MM"]["NP0"] = FILE_NAMES["MM"]["NPD"]
+    FILE_NAMES["MM"]["NP1"] = FILE_NAMES["MM"]["NP0"]
 
+    # DNM
+    FILE_NAMES["DNM"]["JP"] = readFile("dnm/filelist.txt")
+    FILE_NAMES["DNM"]["CN"] = FILE_NAMES["DNM"]["JP"] # for now
+    
 def initialize_worker(rom_data: bytes, dmaTable: dict):
     global romData
     global globalDmaTable
@@ -155,6 +178,16 @@ def initialize_worker(rom_data: bytes, dmaTable: dict):
 
 def read_uint32_be(offset):
     return struct.unpack('>I', romData[offset:offset+4])[0]
+
+def write_empty_output_file(name, size):
+    try:
+        with open(name, 'wb+') as f:
+            # Write a 0 to pad to the right size
+            f.seek(size-1)
+            f.write(bytearray([0]))
+    except IOError:
+        print('failed to write file ' + name)
+        sys.exit(1)
 
 def write_output_file(name, offset, size):
     try:
@@ -186,26 +219,29 @@ def readFileAsBytearray(filepath: str) -> bytearray:
 
 
 def ExtractFunc(i):
-    versionName = FILE_NAMES[Version][i]
+    versionName = FILE_NAMES[Game][Version][i]
     if versionName == "":
         print(f"Skipping {i} because it doesn't have a name.")
         return
-    filename = f'baserom_{Edition}/' + versionName
-    entryOffset = FILE_TABLE_OFFSET[Version] + 16 * i
+    filename = os.path.join(Basedir, Edition, "baserom", versionName)
+    entryOffset = FILE_TABLE_OFFSET[Game][Version] + 16 * i
 
     virtStart = read_uint32_be(entryOffset + 0)
     virtEnd   = read_uint32_be(entryOffset + 4)
     physStart = read_uint32_be(entryOffset + 8)
     physEnd   = read_uint32_be(entryOffset + 12)
 
+    deleted = False
     if physStart == 0xFFFFFFFF and physEnd == 0xFFFFFFFF: # file deleted
         if (virtEnd - virtStart) == 0:
             return
-        physStart = virtStart
-        physEnd = 0
+        # physStart = virtStart
+        # physEnd = 0
         compressed = False
+        deleted = True
         size = virtEnd - virtStart
-    if physEnd == 0:  # uncompressed
+
+    elif physEnd == 0:  # uncompressed
         compressed = False
         size = virtEnd - virtStart
     else:             # compressed
@@ -217,25 +253,37 @@ def ExtractFunc(i):
     globalDmaTable[versionName].append(physStart)
     globalDmaTable[versionName].append(physEnd)
 
-    print('extracting ' + filename + " (0x%08X, 0x%08X)" % (virtStart, virtEnd))
-    write_output_file(filename, physStart, size)
+    if OnlyDma:
+        return
+
+    print('Extracting ' + filename + " (0x%08X, 0x%08X)" % (virtStart, virtEnd))
+
+    if deleted:
+        write_empty_output_file(filename, size)
+    else:
+        write_output_file(filename, physStart, size)
+
     if compressed:
         # print(f"decompressing {filename}")
-        if Edition in ("ique_cn", "ique_tw"):
+        if Edition in ("iqt", "iqs", "cn"):
             data = readFileAsBytearray(filename)
             decompressed = decompressZlib(data)
             writeBytearrayToFile(filename, decompressed)
         else:
-            exit_code = os.system('tools/yaz0 -d ' + filename + ' ' + filename)
-            if exit_code != 0:
-                pass
+            data = readFileAsBytearray(filename)
+            decompressed = libyaz0.decompress(data)
+            writeBytearrayToFile(filename, decompressed)
+
+            # exit_code = os.system('tools/yaz0 -d ' + filename + ' ' + filename)
+            # if exit_code != 0:
+            #     pass
                 #os.remove(filename)
                 # exit(exit_code)
 
 #####################################################################
 
 def printBuildData(rom_data: bytes):
-    buildDataOffset = FILE_TABLE_OFFSET[Version] - 16*3
+    buildDataOffset = FILE_TABLE_OFFSET[Game][Version] - 16*3
     buildTeam = ""
     i = 0
     while rom_data[buildDataOffset + i] != 0:
@@ -263,24 +311,28 @@ def printBuildData(rom_data: bytes):
     #print(f"| Make Option:  {buildMakeOption}".ljust(39) + "|")
     print("========================================")
 
+def writeDma(dmaTable):
+    filetable = os.path.join(Basedir, Edition, "tables", "dma_addresses.csv")
+    print(f"Creating {filetable}")
+    with open(filetable, "w") as f:
+        for filename, data in dmaTable.items():
+            line = ",".join([filename] + list(map(lambda x: f"{x:X}", data)))
+            if OnlyDma:
+                print(line)
+            f.write(line + "\n")
+
 def extract_rom(j):
     print("Reading filelists...")
     readFilelists()
 
-    file_names_table = FILE_NAMES[Version]
+    file_names_table = FILE_NAMES[Game][Version]
     if file_names_table is None:
         print(f"'{Edition}' is not supported yet because the filelist is missing.")
         sys.exit(2)
 
-    try:
-        os.mkdir(f'baserom_{Edition}')
-    except:
-        pass
+    os.makedirs(os.path.join(Basedir, Edition, "baserom"), exist_ok=True)
 
-    filename = ROM_FILE_NAME_V.format(Edition)
-    if not os.path.exists(filename):
-        print(f"{filename} not found. Defaulting to {ROM_FILE_NAME}")
-        filename = ROM_FILE_NAME
+    filename = os.path.join(Basedir, ROM_FILE_NAME_V.format(Basedir, Edition))
 
     # read baserom data
     try:
@@ -290,15 +342,24 @@ def extract_rom(j):
         print('Failed to read file ' + filename)
         sys.exit(1)
 
-    manager = Manager()
-    dmaTable = manager.dict()
-    for name in file_names_table:
-        dmaTable[name] = manager.list()
+    if OnlyBuild:
+        printBuildData(rom_data)
+        sys.exit(0)
+
+    if j:
+        manager = Manager()
+        dmaTable = manager.dict()
+        for name in file_names_table:
+            dmaTable[name] = manager.list()
+    else:
+        dmaTable = dict()
+        for name in file_names_table:
+            dmaTable[name] = list()
 
     # extract files
     if j:
         num_cores = cpu_count()
-        print("Extracting baserom with " + str(num_cores) + " CPU cores.")
+        print("Extracting rom with " + str(num_cores) + " CPU cores.")
         with Pool(num_cores, initialize_worker, (rom_data, dmaTable)) as p:
             p.map(ExtractFunc, range(len(file_names_table)))
     else:
@@ -306,28 +367,55 @@ def extract_rom(j):
         for i in range(len(file_names_table)):
             ExtractFunc(i)
 
-    printBuildData(rom_data)
+    if not OnlyDma:
+        printBuildData(rom_data)
 
-    filetable = f'baserom_{Edition}/dma_addresses.txt'
-    print(f"Creating {filetable}")
-    with open(filetable, "w") as f:
-        for filename, data in dmaTable.items():
-            f.write(",".join([filename] + list(map(str, data))) + "\n")
+    os.makedirs(os.path.join(Basedir, Edition, "tables"), exist_ok= True)
+
+    writeDma(dmaTable)
 
 def main():
-    description = "Extracts files from the rom. Will try to read the rom 'baserom_version.z64', or 'baserom.z64' if that doesn't exists."
+    description = "Extracts files from the rom. Will try to read the rom 'version.z64', or 'baserom.z64' if that doesn't exist."
 
-    parser = argparse.ArgumentParser(description=description, formatter_class=argparse.RawTextHelpFormatter)
-    choices = [x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET]
-    parser.add_argument("edition", help="Select the version of the game to extract.", choices=choices, default="pal_mq_dbg", nargs='?')
+    edition_choices = {
+        "oot": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["OOT"]),
+        "mm": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["MM"]),
+        "dnm": ", ".join(x.lower().replace(" ", "_") for x in FILE_TABLE_OFFSET["DNM"]),
+    }
+    epilog = f"""\
+Each `game` has different versions, and hence different edition options.
+    For oot: {edition_choices["oot"]}
+    For mm:  {edition_choices["mm"]}
+    For dnm: {edition_choices["dnm"]}
+
+For details on what these abbreviations mean, see the README.md.
+    """
+    parser = argparse.ArgumentParser(description=description, epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
+    choices = ["oot", "mm", "dnm"]
+    parser.add_argument("game", help="Game to extract.", choices=choices)
+    parser.add_argument("edition", help="Version of the game to extract.")
     parser.add_argument("-j", help="Enables multiprocessing.", action="store_true")
+    parser.add_argument("--dma", help="Extract only the dma addresses", action="store_true")
+    parser.add_argument("--build", help="Only print the build data", action="store_true")
     args = parser.parse_args()
 
+    global Basedir
+    global Game
     global Edition
     global Version
+    global OnlyDma
+    global OnlyBuild
 
-    Edition = args.edition
-    Version = Edition.upper().replace("_", " ")
+    Basedir   = args.game
+    Game      = args.game.upper()
+    Edition   = args.edition
+    Version   = Edition.upper().replace("_", " ")
+    OnlyDma   = args.dma
+    OnlyBuild = args.build
+
+    if Edition not in edition_choices[args.game]:
+        print(f"The selected edition '{Edition}' is not a valid option for the game '{args.game}'")
+        exit(1)
 
     extract_rom(args.j)
 

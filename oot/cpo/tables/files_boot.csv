@@ -1,0 +1,3 @@
+offset,vram,.text
+0,80000460,boot_main.c
+40A0,80004500,bcmp.s
