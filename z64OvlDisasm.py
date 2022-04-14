@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#! /usr/bin/env python3
 
 from __future__ import annotations
 
@@ -52,12 +52,33 @@ def writeFiles(ovlSection: FileOverlay, textOutput: str, dataOutput: str|None):
     ovlSection.reloc.saveToFile(dataOutput + ovlSection.reloc.filename)
 
 
+# Return the name of the file after the overlay file, which is its reloc file in Animal Forest
+def findRelocFile(input_name: str, file_addresses: str) -> str:
+    if file_addresses is not None and os.path.exists(file_addresses):
+        with open(file_addresses) as f:
+            header = True
+            retNext = False
+            for line in f:
+                if header:
+                    # Skip csv header
+                    header = False
+                    continue
+                if retNext:
+                    return line.strip().split(",")[0]
+                filename = line.strip().split(",")[0]
+                if input_name == filename:
+                    retNext = True
+    raise RuntimeError("Relocation file not found.")
+
+
 def ovlDisassemblerMain():
     description = ""
     parser = argparse.ArgumentParser(description=description)
 
     parser.add_argument("binary", help="Path to input binary")
     parser.add_argument("output", help="Path to output. Use '-' to print to stdout instead")
+
+    parser.add_argument("-r", "--reloc-separate", help="Should look for separate relocation file", action="store_true")
 
     parser.add_argument("--data-output", help="Path to output the data and rodata disassembly")
 
@@ -101,6 +122,13 @@ def ovlDisassemblerMain():
         splitsData.readCsvFile(args.file_splits)
 
     fileAddresses = getFileAddresses(args.file_addresses)
+
+    if args.reloc_separate:
+        reloc_filename = findRelocFile(input_name, args.file_addresses)
+        reloc_path = os.path.join(os.path.split(args.binary)[0],reloc_filename)
+        print(reloc_path)
+        array_of_bytes.extend(disasm_Utils.readFileAsBytearray(reloc_path))
+
 
     vramStart = -1
     if input_name in fileAddresses:
