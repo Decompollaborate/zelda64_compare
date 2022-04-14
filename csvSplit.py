@@ -110,9 +110,15 @@ def split_functions(game: str):
     tablePerVersion: dict[str, dict[int, str]] = dict()
 
     functions = disasm_Utils.readCsv(csvPath)
-    header = functions[0][2:]
-    for i in range(2, len(functions)):
-        funcName, _, *data = functions[i]
+
+    columnsToDiscard = 1
+    if functions[0][1] != "":
+        columnsToDiscard = int(functions[0][1])
+
+    header = functions[0][columnsToDiscard+1:]
+    for i in range(columnsToDiscard+1, len(functions)):
+        funcName = functions[i][0]
+        data = functions[i][columnsToDiscard+1:]
 
         if funcName == "":
             continue

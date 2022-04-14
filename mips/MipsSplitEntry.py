@@ -35,7 +35,10 @@ def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, List[SplitEntry]]
 
     columnsPerVersion = 3
     if code_splits_file[0][2] != "":
-        columnsPerVersion = int(code_splits_file[0][2])
+        try:
+            columnsPerVersion = int(code_splits_file[0][2])
+        except:
+            pass
 
     header = code_splits_file[0][3::columnsPerVersion]
     splits: Dict[str, Dict[str, List[SplitEntry]]] = { h: dict() for h in header }
