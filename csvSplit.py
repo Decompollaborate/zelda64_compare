@@ -140,8 +140,7 @@ def split_functions(game: str):
                 for oldVram, oldFuncName in tablePerVersion[version].items():
                     if funcName == oldFuncName:
                         break
-                oldFuncName = tablePerVersion[version][vram]
-                disasm_Utils.eprint(f"\t old: {oldVram:08X},{oldFuncName}")
+                disasm_Utils.eprint(f"\t old: {oldVram:08X},{funcName}")
                 disasm_Utils.eprint(f"\t new: {vram:08X},{funcName}")
 
             tablePerVersion[version][vram] = funcName

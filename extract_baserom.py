@@ -9,7 +9,6 @@ import struct
 from multiprocessing import Pool, cpu_count, Manager
 from typing import Dict, List
 import zlib
-print(sys.path)
 import libyaz0
 
 
