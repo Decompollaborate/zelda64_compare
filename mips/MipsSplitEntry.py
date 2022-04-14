@@ -64,7 +64,7 @@ def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, List[SplitEntry]]
                 print("error when parsing {}, line {}: could not read row:".format(csvfilename, row_num))
                 print("    {}\n".format(row))
                 raise
-                # subrow = data[ column_set_num * columnsPerVersion : (column_set_num + 1) * columnsPerVersion ] # Run it again to crash in the same place
+
             try:
                 offset = int(offset, 16)
             except:
