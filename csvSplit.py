@@ -162,7 +162,7 @@ def split_functions(game: str):
 def split_variables(game: str):
     csvPath = os.path.join(game, "tables", "variables.csv")
 
-    tablePerVersion: dict[str, dict[int, tuple[str, str, str]]] = dict()
+    tablePerVersion: dict[str, dict[int, tuple[str, str, int]]] = dict()
 
     variables = disasm_Utils.readCsv(csvPath)
     header = variables[0][3:]
@@ -177,26 +177,27 @@ def split_variables(game: str):
                 tablePerVersion[version] = dict()
 
             # print(varName, version, data)
-            vramStr, size = data[2*headerIndex : 2*headerIndex + 2]
+            vramStr, sizeStr = data[2*headerIndex : 2*headerIndex + 2]
             if vramStr == "":
                 continue
             if vramStr == "-":
                 continue
-            if size == "":
-                size = "4"
+            if sizeStr == "":
+                sizeStr = "4"
 
             vram = int(vramStr, 16)
+            size = int(sizeStr, 16)
             if vram in tablePerVersion[version]:
                 disasm_Utils.eprint(f"Warning: Duplicated variable's VRAM found in version '{version}'")
                 oldVarName, oldType, oldSize = tablePerVersion[version][vram]
-                disasm_Utils.eprint(f"\t old: {vram:08X},{oldVarName},{oldType},0x{oldSize}")
-                disasm_Utils.eprint(f"\t new: {vram:08X},{varName},{type},0x{size}")
+                disasm_Utils.eprint(f"\t old: {vram:08X},{oldVarName},{oldType},0x{oldSize:X}")
+                disasm_Utils.eprint(f"\t new: {vram:08X},{varName},{type},0x{size:X}")
                 disasm_Utils.eprint(f"\t Discarding old")
             for oldVram, (oldVarName, oldType, oldSize) in tablePerVersion[version].items():
                 if varName == oldVarName:
                     disasm_Utils.eprint(f"Warning: Duplicated variable name found in version '{version}'")
-                    disasm_Utils.eprint(f"\t old: {oldVram:08X},{oldVarName},{oldType},0x{oldSize}")
-                    disasm_Utils.eprint(f"\t new: {vram:08X},{varName},{type},0x{size}")
+                    disasm_Utils.eprint(f"\t old: {oldVram:08X},{oldVarName},{oldType},0x{oldSize:X}")
+                    disasm_Utils.eprint(f"\t new: {vram:08X},{varName},{type},0x{size:X}")
                     break
 
             tablePerVersion[version][vram] = (varName, type, size)
@@ -206,7 +207,7 @@ def split_variables(game: str):
         os.makedirs(dstFolder, exist_ok=True)
         with open(os.path.join(dstFolder, "variables.csv"), "w") as f:
             for vram, (varName, type, size) in sorted(variablesVramDict.items()):
-                f.writelines(f"{vram:08X},{varName},{type},0x{size}\n")
+                f.writelines(f"{vram:08X},{varName},{type},0x{size:X}\n")
 
 
 def main():
