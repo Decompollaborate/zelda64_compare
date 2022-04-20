@@ -21,7 +21,7 @@ class FileSplits(FileGeneric):
             self.sectionsDict[FileSectionType.Text][filename] = Text(self.bytes, filename, context)
         else:
             for splitEntry in splitsData:
-                if self.vRamStart <= 0:
+                if self.vRamStart < 0:
                     self.vRamStart = splitEntry.vram
 
                 f = createSectionFromSplitEntry(splitEntry, self.bytes, splitEntry.fileName, context)
