@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from __future__ import annotations
 
@@ -100,6 +100,8 @@ def elfObjDisasmMain():
                 continue
 
             sectHeaderEntry = elfFile.sectionHeaders[symEntry.shndx]
+            if sectHeaderEntry is None:
+                continue
             sectName = elfFile.shstrtab[sectHeaderEntry.name]
             sectType = FileSectionType.fromStr(sectName)
             if sectType != FileSectionType.Invalid:

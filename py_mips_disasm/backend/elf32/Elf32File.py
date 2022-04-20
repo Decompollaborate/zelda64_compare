@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from __future__ import annotations
 
@@ -107,6 +107,9 @@ class Elf32File:
                 # ?
                 pass
             elif entry.type == Elf32SectionHeaderType.MIPS_OPTIONS.value:
+                # ?
+                pass
+            elif entry.type == Elf32SectionHeaderType.MIPS_ABIFLAGS.value:
                 # ?
                 pass
             else:

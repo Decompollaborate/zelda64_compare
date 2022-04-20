@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from __future__ import annotations
 
@@ -107,7 +107,7 @@ class Rodata(Section):
                         contextOffsetSym = ContextOffsetSymbol(w, relocName, sectType)
                         if sectType == FileSectionType.Text:
                             # jumptable
-                            relocName = f".L{w:06X}"
+                            relocName = f"L{w:06X}"
                             contextOffsetSym = self.context.addOffsetJumpTableLabel(w, relocName, FileSectionType.Text)
                             relocSymbol.type = contextOffsetSym.type
                             offsetSym = self.context.getOffsetSymbol(inFileOffset, FileSectionType.Rodata)
@@ -148,13 +148,11 @@ class Rodata(Section):
         value: Any = toHex(w, 8)
 
         # try to get the symbol name from the offset of the file (possibly from a .o elf file)
-        possibleSymbolName = self.context.getOffsetSymbol(inFileOffset, FileSectionType.Rodata)
+        possibleSymbolName = self.context.getOffsetGenericSymbol(inFileOffset, FileSectionType.Rodata)
         if possibleSymbolName is not None:
-            possibleSymbolName = possibleSymbolName.name
-            if possibleSymbolName.startswith("."):
-                label = f"\n/* static variable */\n{possibleSymbolName}\n"
-            else:
-                label = f"\nglabel {possibleSymbolName}\n"
+            if possibleSymbolName.isStatic:
+                label = "\n/* static variable */"
+            label += f"\nglabel {possibleSymbolName.name}\n"
 
         possibleReference = self.context.getRelocSymbol(inFileOffset, FileSectionType.Rodata)
         if possibleReference is not None:
@@ -173,11 +171,7 @@ class Rodata(Section):
             currentVram = self.getVramOffset(offset)
             vramHex = toHex(currentVram, 8)[2:]
 
-            auxLabel = self.context.getGenericLabel(currentVram)
-            if auxLabel is None:
-                auxLabel = self.context.getGenericSymbol(currentVram, tryPlusOffset=False)
-            if auxLabel is not None:
-                label = "\nglabel " + auxLabel.name + "\n"
+            label += self.getSymbolLabelAtVram(currentVram, label)
 
             contextVar = self.context.getSymbol(currentVram, True, False)
             if contextVar is not None:

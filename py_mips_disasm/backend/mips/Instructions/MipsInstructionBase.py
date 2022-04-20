@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from __future__ import annotations
 
@@ -356,6 +356,9 @@ class InstructionBase:
     def isIType(self) -> bool:
         return False
 
+    def isRType(self) -> bool:
+        return False
+
 
     def sameOpcode(self, other: InstructionBase) -> bool:
         if self.uniqueId in (InstructionId.INVALID, InstructionVectorId.INVALID):
@@ -449,8 +452,9 @@ class InstructionBase:
                 return "f64"
             else:
                 return "f32"
-        if self.uniqueId in (InstructionId.LW, InstructionId.SW):
-            return "s32"
+        # Way too general register to ensure the type
+        # if self.uniqueId in (InstructionId.LW, InstructionId.SW):
+        #     return "s32"
         if self.uniqueId in (InstructionId.LWU, ):
             return "u32"
         if self.uniqueId in (InstructionId.LH, InstructionId.SH):
