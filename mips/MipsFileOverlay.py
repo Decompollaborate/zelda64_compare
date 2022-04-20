@@ -10,28 +10,22 @@ from py_mips_disasm.backend.common.FileSectionType import FileSectionType
 from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat, FileSplitEntry
 
 from py_mips_disasm.backend.mips.MipsFileBase import FileBase
-from py_mips_disasm.backend.mips.MipsText import Text
-from py_mips_disasm.backend.mips.MipsData import Data
-from py_mips_disasm.backend.mips.MipsRodata import Rodata
-from py_mips_disasm.backend.mips.MipsBss import Bss
+from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
 from py_mips_disasm.backend.mips.FilesHandlers import createSectionFromSplitEntry
 
-from .MipsReloc import Reloc
 from .MipsFileGeneric import FileGeneric
 
 from .ZeldaTables import OverlayTableEntry
 
 
 class FileOverlay(FileGeneric):
-    def __init__(self, array_of_bytes: bytearray, filename: str, context: Context, tableEntry: OverlayTableEntry | None = None, splitsData: FileSplitFormat | None = None, vramStartParam: int = -1):
+    def __init__(self, array_of_bytes: bytearray, filename: str, context: Context, relocSection: RelocZ64, tableEntry: OverlayTableEntry | None = None, splitsData: FileSplitFormat | None = None, vramStartParam: int = -1):
         super().__init__(array_of_bytes, filename, context)
 
         self.vRamStart = vramStartParam
 
-        self.initVarsAddress = -1
         if tableEntry is not None:
             self.vRamStart = tableEntry.vramStart
-            self.initVarsAddress = tableEntry.initVars
 
         for subfileVram, subfileData in context.files.items():
             if filename == subfileData.name:
@@ -39,15 +33,16 @@ class FileOverlay(FileGeneric):
                 break
 
 
-        seekup = self.words[-1]
-        headerBPos = self.size - seekup
-        headerWPos = headerBPos//4
+        self.reloc = relocSection
+        self.reloc.parent = self
+        if self.reloc.vRamStart <= 0:
+            self.reloc.vRamStart = self.vRamStart
+            if self.vRamStart > -1:
+                relocStart = relocSection.textSize + relocSection.dataSize + relocSection.rodataSize
+                if relocSection.differentSegment:
+                    relocStart += relocSection.bssSize
+                self.reloc.vRamStart = self.vRamStart + relocStart
 
-        text_size = self.words[headerWPos]
-        data_size = self.words[headerWPos+1]
-        rodata_size = self.words[headerWPos+2]
-        bss_size = self.words[headerWPos+3]
-        reloc_size = self.size - (text_size + data_size + rodata_size)
 
         self.splitsDataList: List[FileSplitEntry] = []
         if splitsData is not None and len(splitsData) > 0:
@@ -57,28 +52,31 @@ class FileOverlay(FileGeneric):
             vram = self.vRamStart
 
             start = 0
-            end = text_size
+            end = relocSection.textSize
             if self.vRamStart > 0:
                 vram = self.vRamStart + start
             splitEntry = FileSplitEntry(start, vram, filename, FileSectionType.Text, end, False, False)
             self.splitsDataList.append(splitEntry)
 
-            start += text_size
-            end += data_size
+            start += relocSection.textSize
+            end += relocSection.dataSize
             if self.vRamStart > 0:
                 vram = self.vRamStart + start
             splitEntry = FileSplitEntry(start, vram, filename, FileSectionType.Data, end, False, False)
             self.splitsDataList.append(splitEntry)
 
-            start += data_size
-            end += rodata_size
+            start += relocSection.dataSize
+            end += relocSection.rodataSize
             if self.vRamStart > 0:
                 vram = self.vRamStart + start
             splitEntry = FileSplitEntry(start, vram, filename, FileSectionType.Rodata, end, False, False)
             self.splitsDataList.append(splitEntry)
 
-            start += rodata_size + reloc_size
-            end += bss_size + reloc_size
+            start += relocSection.rodataSize
+            end += relocSection.bssSize
+            if not self.reloc.differentSegment:
+                start += self.reloc.size
+                end += self.reloc.size
             if self.vRamStart > 0:
                 vram = self.vRamStart + start
             splitEntry = FileSplitEntry(start, vram, filename, FileSectionType.Bss, end, False, False)
@@ -96,18 +94,10 @@ class FileOverlay(FileGeneric):
             self.sectionsDict[splitEntry.section][splitEntry.fileName] = f
 
 
-        relocStart = text_size + data_size + rodata_size
-        self.reloc = Reloc(self.bytes[relocStart:], filename, context)
-        self.reloc.parent = self
-        self.reloc.vRamStart = self.vRamStart
-        if self.vRamStart >= 0:
-            self.reloc.vRamStart = self.vRamStart + relocStart
-        self.reloc.setCommentOffset(relocStart)
-
-
     def setVRamStart(self, vRamStart: int):
         super().setVRamStart(vRamStart)
-        self.reloc.vRamStart = vRamStart
+        if not self.reloc.differentSegment:
+            self.reloc.vRamStart = vRamStart
 
     def getHash(self) -> str:
         bytes = bytearray(0)

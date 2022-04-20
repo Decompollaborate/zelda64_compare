@@ -11,6 +11,7 @@ from py_mips_disasm.backend.common.Context import Context
 from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
 
 from py_mips_disasm.backend.mips.MipsSection import Section
+from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
 
 from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileSplits import FileSplits
@@ -78,8 +79,10 @@ def compare_baseroms(args, filelist):
             splitsDataTwo.readCsvFile(tablePath)
 
         if filename.startswith("ovl_"):
-            file_one = FileOverlay(file_one_data, filename, context_one)
-            file_two = FileOverlay(file_two_data, filename, context_two)
+            relocOne = RelocZ64(file_one_data, filename, context_one)
+            file_one = FileOverlay(file_one_data, filename, context_one, relocOne)
+            relocTwo = RelocZ64(file_two_data, filename, context_two)
+            file_two = FileOverlay(file_two_data, filename, context_two, relocTwo)
         elif filename in ("code", "boot", "n64dd"):
             file_one = FileSplits(file_one_data, filename, context_one, splitsDataOne)
             file_two = FileSplits(file_two_data, filename, context_two, splitsDataTwo)
@@ -226,8 +229,10 @@ def compare_to_csv(args, filelist):
                 splitsDataTwo.readCsvFile(tablePath)
 
             if not args.dont_split_files and filename.startswith("ovl_"):
-                file_one = FileOverlay(file_one_data, filename, context_one)
-                file_two = FileOverlay(file_two_data, filename, context_two)
+                relocOne = RelocZ64(file_one_data, filename, context_one)
+                file_one = FileOverlay(file_one_data, filename, context_one, relocOne)
+                relocTwo = RelocZ64(file_two_data, filename, context_two)
+                file_two = FileOverlay(file_two_data, filename, context_two, relocTwo)
             elif filename in ("code", "boot", "n64dd"):
                 file_one = FileSplits(file_one_data, filename, context_one, splitsDataOne)
                 file_two = FileSplits(file_two_data, filename, context_two, splitsDataTwo)

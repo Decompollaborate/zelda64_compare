@@ -14,6 +14,7 @@ from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
 
 from py_mips_disasm.backend.mips.MipsText import Text
 from py_mips_disasm.backend.mips.MipsRodata import Rodata
+from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
 from py_mips_disasm.backend.mips.FilesHandlers import writeSplitedFunction, writeOtherRodata
 
 from mips.MipsFileOverlay import FileOverlay
@@ -125,16 +126,22 @@ def ovlDisassemblerMain():
 
     if args.reloc_separate:
         reloc_filename = findRelocFile(input_name, args.file_addresses)
-        reloc_path = os.path.join(os.path.split(args.binary)[0],reloc_filename)
-        # print(reloc_path)
-        array_of_bytes.extend(disasm_Utils.readFileAsBytearray(reloc_path))
+        reloc_path = os.path.join(os.path.split(args.binary)[0], reloc_filename)
+
+        relocSection = RelocZ64(disasm_Utils.readFileAsBytearray(reloc_path), input_name, context)
+        relocSection.differentSegment = True
+        if reloc_filename in fileAddresses:
+            relocSection.setVRamStart(fileAddresses[reloc_filename].vramStart)
+    else:
+        relocSection = RelocZ64(array_of_bytes, input_name, context)
+        relocSection.differentSegment = False
 
 
     vramStart = -1
     if input_name in fileAddresses:
         vramStart = fileAddresses[input_name].vramStart
 
-    f = FileOverlay(array_of_bytes, input_name, context, splitsData=splitsData, vramStartParam=vramStart)
+    f = FileOverlay(array_of_bytes, input_name, context, relocSection, splitsData=splitsData, vramStartParam=vramStart)
 
     f.analyze()
 

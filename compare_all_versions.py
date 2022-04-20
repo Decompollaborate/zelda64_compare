@@ -15,6 +15,7 @@ from py_mips_disasm.backend.common.FileSectionType import FileSectionType
 from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
 
 from py_mips_disasm.backend.mips.MipsSection import Section
+from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
 
 from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
@@ -128,7 +129,8 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
                                 tableEntry = entry
                                 break
 
-            f = FileOverlay(array_of_bytes, filename, contextPerVersion[version], tableEntry=tableEntry)
+            relocSection = RelocZ64(array_of_bytes, filename, contextPerVersion[version])
+            f = FileOverlay(array_of_bytes, filename, contextPerVersion[version], relocSection, tableEntry=tableEntry)
         elif filename in ("code", "boot", "n64dd"):
             f = FileSplits(array_of_bytes, filename, contextPerVersion[version], splitsData)
         else:

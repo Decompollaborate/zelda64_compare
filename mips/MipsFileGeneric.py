@@ -26,8 +26,6 @@ class FileGeneric(FileBase):
             FileSectionType.Bss: dict(),
         }
 
-        self.initVarsAddress = -1
-
     @property
     def nFuncs(self) -> int:
         nFuncs = 0

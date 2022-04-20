@@ -13,6 +13,7 @@ from py_mips_disasm.backend.common.FileSectionType import FileSectionType
 from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
 
 from py_mips_disasm.backend.mips.MipsText import Text
+from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
 
 from mips.MipsFileGeneric import FileGeneric
 from mips.MipsFileOverlay import FileOverlay
@@ -59,7 +60,8 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
                             break
                         i += 1
 
-        f = FileOverlay(array_of_bytes, filename, context, tableEntry=tableEntry)
+        relocSection = RelocZ64(array_of_bytes, filename, context)
+        f = FileOverlay(array_of_bytes, filename, context, relocSection, tableEntry=tableEntry)
     elif filename in ("code", "boot", "n64dd"):
         print(f"{filename} detected. Parsing...")
         f = FileSplits(array_of_bytes, filename, context, splitsData)
