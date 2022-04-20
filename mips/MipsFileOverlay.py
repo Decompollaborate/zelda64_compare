@@ -61,6 +61,12 @@ class FileOverlay(FileGeneric):
                     start += relocSection.sectionSizes[FileSections_ListBasic[i-1]]
                 end += relocSection.sectionSizes[sectionType]
 
+                if sectionType == FileSectionType.Bss:
+                    # bss is after reloc when the relocation is on the same segment
+                    if not self.reloc.differentSegment:
+                        start += self.reloc.size
+                        end += self.reloc.size
+
                 if sectionSize == 0:
                     # There's no need to disassemble empty sections
                     continue
