@@ -33,15 +33,14 @@ class FileOverlay(FileGeneric):
                 break
 
 
-        self.reloc = relocSection
-        self.reloc.parent = self
-        if self.reloc.vRamStart <= 0:
-            self.reloc.vRamStart = self.vRamStart
+        relocSection.parent = self
+        if relocSection.vRamStart <= 0:
+            relocSection.vRamStart = self.vRamStart
             if self.vRamStart > -1:
                 relocStart = relocSection.textSize + relocSection.dataSize + relocSection.rodataSize
                 if relocSection.differentSegment:
                     relocStart += relocSection.bssSize
-                self.reloc.vRamStart = self.vRamStart + relocStart
+                relocSection.vRamStart = self.vRamStart + relocStart
 
 
         self.splitsDataList: List[FileSplitEntry] = []
@@ -63,9 +62,9 @@ class FileOverlay(FileGeneric):
 
                 if sectionType == FileSectionType.Bss:
                     # bss is after reloc when the relocation is on the same segment
-                    if not self.reloc.differentSegment:
-                        start += self.reloc.size
-                        end += self.reloc.size
+                    if not relocSection.differentSegment:
+                        start += relocSection.size
+                        end += relocSection.size
 
                 if sectionSize == 0:
                     # There's no need to disassemble empty sections
@@ -87,76 +86,18 @@ class FileOverlay(FileGeneric):
 
             self.sectionsDict[splitEntry.section][splitEntry.fileName] = f
 
+        self.sectionsDict[FileSectionType.Reloc][filename] = relocSection
 
-    def setVRamStart(self, vRamStart: int):
-        super().setVRamStart(vRamStart)
-        if not self.reloc.differentSegment:
-            self.reloc.vRamStart = vRamStart
-
-    def getHash(self) -> str:
-        bytes = bytearray(0)
-        for sectDict in self.sectionsDict.values():
-            for section in sectDict.values():
-                bytes += section.bytes
-        bytes += self.reloc.bytes
-        return disasm_Utils.getStrHash(bytes)
 
     def analyze(self):
-        for entry in self.reloc.entries:
-            section = entry.getSectionName()
-            # type_name = entry.getTypeName()
-            offset = entry.offset
-            if entry.reloc == 0:
-                continue
+        for filename, relocSection in self.sectionsDict[FileSectionType.Reloc].items():
+            assert isinstance(relocSection, RelocZ64)
+            for entry in relocSection.entries:
+                sectionType = entry.getSectionType()
+                if entry.reloc == 0:
+                    continue
 
-            sectionType = FileSectionType.fromStr(section)
-            for subFile in self.sectionsDict[sectionType].values():
-                subFile.pointersOffsets.add(offset)
-
-        # self.sectionsDict[FileSectionType.Text][self.filename].removeTrailingNops()
+                for subFile in self.sectionsDict[sectionType].values():
+                    subFile.pointersOffsets.add(entry.offset)
 
         super().analyze()
-        self.reloc.analyze()
-
-
-    def compareToFile(self, other_file: FileBase):
-        result = super().compareToFile(other_file)
-
-        if isinstance(other_file, FileOverlay):
-            result["filesections"]["reloc"] = {self.reloc.filename: self.reloc.compareToFile(other_file.reloc)}
-
-        return result
-
-    def blankOutDifferences(self, other_file: FileBase) -> bool:
-        if not GlobalConfig.REMOVE_POINTERS:
-            return False
-
-        was_updated = super().blankOutDifferences(other_file)
-        if isinstance(other_file, FileOverlay):
-            was_updated = self.reloc.blankOutDifferences(other_file.reloc) or was_updated
-
-        return was_updated
-
-    def removePointers(self) -> bool:
-        if not GlobalConfig.REMOVE_POINTERS:
-            return False
-
-        was_updated = self.reloc.nRelocs >= 0
-        was_updated = super().removePointers() or was_updated
-        was_updated = self.reloc.removePointers() or was_updated
-
-        return was_updated
-
-    def updateBytes(self):
-        super().updateBytes()
-        self.reloc.updateBytes()
-
-    def saveToFile(self, filepath: str):
-        super().saveToFile(filepath)
-
-        self.reloc.saveToFile(filepath + self.reloc.filename)
-
-    def updateCommentOffset(self):
-        for sectDict in self.sectionsDict.values():
-            for section in sectDict.values():
-                section.setCommentOffset(section.commentOffset)

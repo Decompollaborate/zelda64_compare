@@ -50,8 +50,6 @@ def writeFiles(ovlSection: FileOverlay, textOutput: str, dataOutput: str|None):
         for subFileName, section in filesinSection.items():
             section.saveToFile(os.path.join(dataOutput, subFileName))
 
-    ovlSection.reloc.saveToFile(dataOutput + ovlSection.reloc.filename)
-
 
 # Return the name of the file after the overlay file, which is its reloc file in Animal Forest
 def findRelocFile(input_name: str, file_addresses: str) -> str:
@@ -144,8 +142,6 @@ def ovlDisassemblerMain():
     f = FileOverlay(array_of_bytes, input_name, context, relocSection, splitsData=splitsData, vramStartParam=vramStart)
 
     f.analyze()
-
-    f.updateCommentOffset()
 
     if GlobalConfig.VERBOSE:
         for sectDict in f.sectionsDict.values():

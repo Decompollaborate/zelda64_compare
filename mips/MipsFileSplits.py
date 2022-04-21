@@ -26,5 +26,6 @@ class FileSplits(FileGeneric):
 
                 f = createSectionFromSplitEntry(splitEntry, self.bytes, splitEntry.fileName, context)
                 f.parent = self
+                f.setCommentOffset(splitEntry.offset)
 
                 self.sectionsDict[splitEntry.section][splitEntry.fileName] = f

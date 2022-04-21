@@ -24,6 +24,7 @@ class FileGeneric(FileBase):
             FileSectionType.Data: dict(),
             FileSectionType.Rodata: dict(),
             FileSectionType.Bss: dict(),
+            FileSectionType.Reloc: dict(),
         }
 
     @property
@@ -60,6 +61,7 @@ class FileGeneric(FileBase):
                 "data": dict(),
                 "rodata": dict(),
                 # "bss": dict(),
+                "reloc": dict(),
             }
 
             # TODO: avoid code duplication here
@@ -105,6 +107,20 @@ class FileGeneric(FileBase):
                         filesections["rodata"][section_name] = section.compareToFile(other_section)
                 else:
                     filesections["rodata"][section_name] = createEmptyFile().compareToFile(other_section)
+
+            for section_name, section in self.sectionsDict[FileSectionType.Reloc].items():
+                if section_name in other_file.sectionsDict[FileSectionType.Reloc]:
+                    other_section = other_file.sectionsDict[FileSectionType.Reloc][section_name]
+                    filesections["reloc"][section_name] = section.compareToFile(other_section)
+                else:
+                    filesections["reloc"][section_name] = section.compareToFile(createEmptyFile())
+            for section_name, other_section in other_file.sectionsDict[FileSectionType.Reloc].items():
+                if section_name in self.sectionsDict[FileSectionType.Reloc]:
+                    section = self.sectionsDict[FileSectionType.Reloc][section_name]
+                    if section_name not in filesections["reloc"]:
+                        filesections["reloc"][section_name] = section.compareToFile(other_section)
+                else:
+                    filesections["reloc"][section_name] = createEmptyFile().compareToFile(other_section)
 
             return {"filesections": filesections}
 
@@ -152,6 +168,15 @@ class FileGeneric(FileBase):
         for section_name, other_section in other_file.sectionsDict[FileSectionType.Bss].items():
             if section_name in self.sectionsDict[FileSectionType.Bss]:
                 section = self.sectionsDict[FileSectionType.Bss][section_name]
+                was_updated = section.blankOutDifferences(other_section) or was_updated
+
+        for section_name, section in self.sectionsDict[FileSectionType.Reloc].items():
+            if section_name in other_file.sectionsDict[FileSectionType.Reloc]:
+                other_section = other_file.sectionsDict[FileSectionType.Reloc][section_name]
+                was_updated = section.blankOutDifferences(other_section) or was_updated
+        for section_name, other_section in other_file.sectionsDict[FileSectionType.Reloc].items():
+            if section_name in self.sectionsDict[FileSectionType.Reloc]:
+                section = self.sectionsDict[FileSectionType.Reloc][section_name]
                 was_updated = section.blankOutDifferences(other_section) or was_updated
 
         return was_updated
