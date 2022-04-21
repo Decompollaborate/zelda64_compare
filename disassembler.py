@@ -15,13 +15,11 @@ from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
 from py_mips_disasm.backend.mips.MipsText import Text
 from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
 
-from mips.MipsFileGeneric import FileGeneric
-from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileSplits import FileSplits
-from mips.ZeldaTables import DmaEntry, contextReadVariablesCsv, contextReadFunctionsCsv, getDmaAddresses, OverlayTableEntry
-from mips import ZeldaOffsets
+from mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv, getFileAddresses
 
-def disassembleFile(version: str, filename: str, game: str, outputfolder: str, context: Context, dmaAddresses: Dict[str, DmaEntry], vram: int = -1, textend: int = -1):
+
+def disassembleFile(version: str, filename: str, game: str, outputfolder: str, context: Context, vram: int = -1, textend: int = -1):
     is_overlay = filename.startswith("ovl_")
 
     path = os.path.join(game, version, "baserom", filename)
@@ -41,30 +39,16 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
     if is_overlay:
         print("Overlay detected. Parsing...")
 
-        tableEntry = None
-        # TODO
-        if filename in dmaAddresses:
-            dmaEntry = dmaAddresses[filename]
-
-            codePath = os.path.join(game, version, "baserom", "code")
-
-            if os.path.exists(codePath) and version in ZeldaOffsets.offset_ActorOverlayTable[game]:
-                tableOffset = ZeldaOffsets.offset_ActorOverlayTable[game][version]
-                if tableOffset != 0x0:
-                    codeData = disasm_Utils.readFileAsBytearray(codePath)
-                    i = 0
-                    while i < ZeldaOffsets.ActorIDMax[game]:
-                        entry = OverlayTableEntry(codeData[tableOffset + i*0x20 : tableOffset + (i+1)*0x20])
-                        if entry.vromStart == dmaEntry.vromStart:
-                            tableEntry = entry
-                            break
-                        i += 1
+        vramStart = -1
+        fileAddresses = getFileAddresses(os.path.join(game, version, "tables", "file_addresses.csv"))
+        if filename in fileAddresses:
+            vramStart = fileAddresses[filename].vramStart
 
         relocSection = RelocZ64(array_of_bytes, filename, context)
-        f = FileOverlay(array_of_bytes, filename, context, relocSection, tableEntry=tableEntry)
+        f = FileSplits(array_of_bytes, filename, context, relocSection=relocSection, vramStartParam=vramStart)
     elif filename in ("code", "boot", "n64dd"):
         print(f"{filename} detected. Parsing...")
-        f = FileSplits(array_of_bytes, filename, context, splitsData)
+        f = FileSplits(array_of_bytes, filename, context, splitsData=splitsData)
     else:
         print("Unknown file type. Assuming .text. Parsing...")
 
@@ -89,7 +73,7 @@ def disassembleFile(version: str, filename: str, game: str, outputfolder: str, c
     new_file_path = os.path.join(new_file_folder, filename)
 
     nBoundaries: int = 0
-    if isinstance(f, FileGeneric):
+    if isinstance(f, FileSplits):
         for name, text in f.sectionsDict[FileSectionType.Text].items():
             assert(isinstance(text, Text))
             nBoundaries += len(text.fileBoundaries)
@@ -137,9 +121,8 @@ def disassemblerMain():
     context.readFunctionMap(args.version)
     contextReadVariablesCsv(context, args.game, args.version)
     contextReadFunctionsCsv(context, args.game, args.version)
-    dmaAddresses: Dict[str, DmaEntry] = getDmaAddresses(args.game, args.version)
 
-    disassembleFile(args.version, args.file, args.game, args.outputfolder, context, dmaAddresses, int(args.vram, 16), int(args.text_end_offset, 16))
+    disassembleFile(args.version, args.file, args.game, args.outputfolder, context, int(args.vram, 16), int(args.text_end_offset, 16))
 
     if args.save_context is not None:
         head, tail = os.path.split(args.save_context)

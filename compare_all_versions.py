@@ -17,11 +17,8 @@ from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
 from py_mips_disasm.backend.mips.MipsSection import Section
 from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
 
-from mips.MipsFileGeneric import FileGeneric
-from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileSplits import FileSplits
-from mips.ZeldaTables import OverlayTableEntry, contextReadVariablesCsv, contextReadFunctionsCsv, getDmaAddresses, DmaEntry
-from mips import ZeldaOffsets
+from mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv, getFileAddresses, FileAddressesEntry
 
 
 def countUnique(row: list) -> int:
@@ -56,7 +53,7 @@ def getHashesOfFiles(args, filesPath: List[str]) -> List[str]:
             hashList.append(line)
     return hashList
 
-def compareFileAcrossVersions(filename: str, game: str, versionsList: List[str], contextPerVersion: Dict[str, Context], dmaAddresses: dict, actorOverlayTable: dict, args) -> List[List[str]]:
+def compareFileAcrossVersions(filename: str, game: str, versionsList: List[str], contextPerVersion: Dict[str, Context], fileAddressesPerVersion: dict, args) -> List[List[str]]:
     md5arglist = list(map(lambda orig_string: game + "/" + orig_string + "/" + "baserom" + "/" + filename, versionsList))
     # os.system( "md5sum " + " ".join(filesPath) )
 
@@ -92,7 +89,7 @@ def compareFileAcrossVersions(filename: str, game: str, versionsList: List[str],
             row.append("")
     return [row]
 
-def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[str], contextPerVersion: Dict[str, Context], dmaAddresses: Dict[str, Dict[str, DmaEntry]], actorOverlayTable: Dict[str, List[OverlayTableEntry]], args) -> List[List[str]]:
+def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[str], contextPerVersion: Dict[str, Context], fileAddressesPerVersion: Dict[str, Dict[str, FileAddressesEntry]], args) -> List[List[str]]:
     column = []
     filesHashes = dict() # "filename": {"NN0": hash}
     firstFilePerHash = dict() # "filename": {hash: "NN0"}
@@ -118,21 +115,15 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
             continue
 
         if is_overlay:
-            tableEntry = None
-            if version in dmaAddresses:
-                versionData = dmaAddresses[version]
-                if filename in versionData:
-                    dmaData = versionData[filename]
-                    if version in actorOverlayTable:
-                        for entry in actorOverlayTable[version]:
-                            if entry.vromStart == dmaData.vromStart:
-                                tableEntry = entry
-                                break
+            vramStart = -1
+            if version in fileAddressesPerVersion:
+                if filename in fileAddressesPerVersion[version]:
+                    vramStart = fileAddressesPerVersion[version][filename].vramStart
 
             relocSection = RelocZ64(array_of_bytes, filename, contextPerVersion[version])
-            f = FileOverlay(array_of_bytes, filename, contextPerVersion[version], relocSection, tableEntry=tableEntry)
+            f = FileSplits(array_of_bytes, filename, contextPerVersion[version], relocSection=relocSection, vramStartParam=vramStart)
         elif filename in ("code", "boot", "n64dd"):
-            f = FileSplits(array_of_bytes, filename, contextPerVersion[version], splitsData)
+            f = FileSplits(array_of_bytes, filename, contextPerVersion[version], splitsData=splitsData)
         else:
             f = Section(array_of_bytes, filename, contextPerVersion[version])
 
@@ -143,7 +134,7 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
             if was_updated:
                 f.updateBytes()
 
-        if isinstance(f, FileGeneric):
+        if isinstance(f, FileSplits):
             subfiles = {
                 ".text" : f.sectionsDict[FileSectionType.Text],
                 ".data" : f.sectionsDict[FileSectionType.Data],
@@ -233,24 +224,9 @@ def main():
         contextReadFunctionsCsv(context, args.game, version)
         contextPerVersion[version] = context
 
-    dmaAddresses: Dict[str, Dict[str, DmaEntry]] = dict()
-    actorOverlayTable: Dict[str, List[OverlayTableEntry]] = dict()
+    fileAddressesPerVersion: Dict[str, Dict[str, FileAddressesEntry]] = dict()
     for version in versionsList:
-        dmaAddresses[version] = getDmaAddresses(args.game, version)
-
-        codePath = os.path.join(args.game, version, "baserom", "code")
-
-        if os.path.exists(codePath) and version in ZeldaOffsets.offset_ActorOverlayTable[args.game]:
-            tableOffset = ZeldaOffsets.offset_ActorOverlayTable[args.game][version]
-            if tableOffset != 0x0 and tableOffset != 0xFFFFFF:
-                codeData = disasm_Utils.readFileAsBytearray(codePath)
-                i = 0
-                table = list()
-                while i < ZeldaOffsets.ActorIDMax[args.game]:
-                    entry = OverlayTableEntry(codeData[tableOffset + i*0x20 : tableOffset + (i+1)*0x20])
-                    table.append(entry)
-                    i += 1
-                actorOverlayTable[version] = table
+        fileAddressesPerVersion[version] = getFileAddresses(os.path.join(args.game, version, "tables", "file_addresses.csv"))
 
     if not args.noheader:
         # Print csv header
@@ -267,7 +243,7 @@ def main():
 
     if args.disable_multiprocessing:
         for filename in filesList:
-            for row in compareFunction(filename, args.game, versionsList=versionsList, contextPerVersion=contextPerVersion, dmaAddresses=dmaAddresses, actorOverlayTable=actorOverlayTable, args=args):
+            for row in compareFunction(filename, args.game, versionsList=versionsList, contextPerVersion=contextPerVersion, fileAddressesPerVersion=fileAddressesPerVersion, args=args):
                 # Print csv row
                 for cell in row:
                     print(cell + ",", end="")
@@ -275,7 +251,7 @@ def main():
     else:
         numCores = cpu_count()
         p = Pool(numCores)
-        for column in p.imap(partial(compareFunction, game=args.game, versionsList=versionsList, contextPerVersion=contextPerVersion, dmaAddresses=dmaAddresses, actorOverlayTable=actorOverlayTable, args=args), filesList):
+        for column in p.imap(partial(compareFunction, game=args.game, versionsList=versionsList, contextPerVersion=contextPerVersion, fileAddressesPerVersion=fileAddressesPerVersion, args=args), filesList):
             for row in column:
                 # Print csv row
                 for cell in row:

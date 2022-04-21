@@ -13,7 +13,6 @@ from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
 from py_mips_disasm.backend.mips.MipsSection import Section
 from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
 
-from mips.MipsFileOverlay import FileOverlay
 from mips.MipsFileSplits import FileSplits
 from mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv
 
@@ -80,12 +79,12 @@ def compare_baseroms(args, filelist):
 
         if filename.startswith("ovl_"):
             relocOne = RelocZ64(file_one_data, filename, context_one)
-            file_one = FileOverlay(file_one_data, filename, context_one, relocOne)
+            file_one = FileSplits(file_one_data, filename, context_one, relocSection=relocOne)
             relocTwo = RelocZ64(file_two_data, filename, context_two)
-            file_two = FileOverlay(file_two_data, filename, context_two, relocTwo)
+            file_two = FileSplits(file_two_data, filename, context_two, relocSection=relocTwo)
         elif filename in ("code", "boot", "n64dd"):
-            file_one = FileSplits(file_one_data, filename, context_one, splitsDataOne)
-            file_two = FileSplits(file_two_data, filename, context_two, splitsDataTwo)
+            file_one = FileSplits(file_one_data, filename, context_one, splitsData=splitsDataOne)
+            file_two = FileSplits(file_two_data, filename, context_two, splitsData=splitsDataTwo)
         else:
             file_one = Section(file_one_data, filename, context_one)
             file_two = Section(file_two_data, filename, context_two)
@@ -230,12 +229,12 @@ def compare_to_csv(args, filelist):
 
             if not args.dont_split_files and filename.startswith("ovl_"):
                 relocOne = RelocZ64(file_one_data, filename, context_one)
-                file_one = FileOverlay(file_one_data, filename, context_one, relocOne)
+                file_one = FileSplits(file_one_data, filename, context_one, relocSection=relocOne)
                 relocTwo = RelocZ64(file_two_data, filename, context_two)
-                file_two = FileOverlay(file_two_data, filename, context_two, relocTwo)
+                file_two = FileSplits(file_two_data, filename, context_two, relocSection=relocTwo)
             elif filename in ("code", "boot", "n64dd"):
-                file_one = FileSplits(file_one_data, filename, context_one, splitsDataOne)
-                file_two = FileSplits(file_two_data, filename, context_two, splitsDataTwo)
+                file_one = FileSplits(file_one_data, filename, context_one, splitsData=splitsDataOne)
+                file_two = FileSplits(file_two_data, filename, context_two, splitsData=splitsDataTwo)
             else:
                 file_one = Section(file_one_data, filename, context_one)
                 file_two = Section(file_two_data, filename, context_two)

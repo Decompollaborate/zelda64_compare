@@ -17,10 +17,10 @@ from py_mips_disasm.backend.mips.MipsRodata import Rodata
 from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
 from py_mips_disasm.backend.mips.FilesHandlers import writeSplitedFunction, writeOtherRodata
 
-from mips.MipsFileOverlay import FileOverlay
+from mips.MipsFileSplits import FileSplits
 from mips.ZeldaTables import getFileAddresses
 
-def writeFiles(ovlSection: FileOverlay, textOutput: str, dataOutput: str|None):
+def writeFiles(ovlSection: FileSplits, textOutput: str, dataOutput: str|None):
     printVerbose("Writing files...")
 
     if dataOutput is None:
@@ -139,7 +139,7 @@ def ovlDisassemblerMain():
     if input_name in fileAddresses:
         vramStart = fileAddresses[input_name].vramStart
 
-    f = FileOverlay(array_of_bytes, input_name, context, relocSection, splitsData=splitsData, vramStartParam=vramStart)
+    f = FileSplits(array_of_bytes, input_name, context, splitsData=splitsData, relocSection=relocSection, vramStartParam=vramStart)
 
     f.analyze()
 
