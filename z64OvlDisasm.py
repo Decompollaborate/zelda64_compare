@@ -42,7 +42,7 @@ def writeFiles(ovlSection: spimdisasm.mips.FileSplits, textOutput: str, dataOutp
 
 
 # Return the name of the file after the overlay file, which is its reloc file in Animal Forest
-def findRelocFile(input_name: str, file_addresses: str) -> str:
+def findRelocFile(input_name: str, file_addresses: str|None) -> str:
     if file_addresses is not None and os.path.exists(file_addresses):
         with open(file_addresses) as f:
             header = True
@@ -101,19 +101,20 @@ def ovlDisassemblerMain():
     context = spimdisasm.common.Context()
     context.parseArgs(args)
 
-    array_of_bytes = spimdisasm.common.Utils.readFileAsBytearray(args.binary)
-    input_name = os.path.splitext(os.path.split(args.binary)[1])[0]
-
+    inputPath = Path(args.binary)
+    array_of_bytes = spimdisasm.common.Utils.readFileAsBytearray(inputPath)
 
     splitsData = None
-    if args.file_splits is not None and os.path.exists(args.file_splits):
-        splitsData = spimdisasm.common.FileSplitFormat()
-        splitsData.readCsvFile(args.file_splits)
+    if args.file_splits is not None:
+        fileSplitsPath = Path(args.file_splits)
+        if fileSplitsPath.exists():
+            splitsData = spimdisasm.common.FileSplitFormat()
+            splitsData.readCsvFile(fileSplitsPath)
 
     fileAddresses = getFileAddresses(args.file_addresses)
 
     if args.reloc_separate:
-        reloc_filename = findRelocFile(input_name, args.file_addresses)
+        reloc_filename = findRelocFile(inputPath.stem, args.file_addresses)
         relocPath = Path(args.binary).parent / reloc_filename
 
         reloc_array_of_bytes = spimdisasm.common.Utils.readFileAsBytearray(relocPath)
@@ -123,15 +124,15 @@ def ovlDisassemblerMain():
         if reloc_filename in fileAddresses:
             relocSection.setVram(fileAddresses[reloc_filename].vramStart)
     else:
-        relocSection = spimdisasm.mips.sections.SectionRelocZ64(context, 0, len(array_of_bytes), 0, input_name, array_of_bytes, 0, None)
+        relocSection = spimdisasm.mips.sections.SectionRelocZ64(context, 0, len(array_of_bytes), 0, inputPath.stem, array_of_bytes, 0, None)
         relocSection.differentSegment = False
 
 
     vramStart = -1
-    if input_name in fileAddresses:
-        vramStart = fileAddresses[input_name].vramStart
+    if inputPath.stem in fileAddresses:
+        vramStart = fileAddresses[inputPath.stem].vramStart
 
-    f = spimdisasm.mips.FileSplits(context, 0, len(array_of_bytes), vramStart, input_name, array_of_bytes, 0, None, splitsData=splitsData, relocSection=relocSection)
+    f = spimdisasm.mips.FileSplits(context, 0, len(array_of_bytes), vramStart, inputPath.stem, array_of_bytes, 0, None, splitsData=splitsData, relocSection=relocSection)
 
     f.analyze()
 
