@@ -53,6 +53,7 @@
 8006D920,ZeldaArena_IsInitalized
 80093998,SkelAnime_Free
 8009497C,Skin_Free
+800A09DC,Play_Init
 800A7BE0,Main
 800B5824,Fault_Init
 800B5B10,FaultDrawer_SetOsSyncPrintfEnabled

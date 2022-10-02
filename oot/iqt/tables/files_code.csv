@@ -15,6 +15,7 @@ DB40,80026580,z_actor.c (+z_cheap_proc.c)
 3F820,80058260,file_03F820
 47500,8005FF40,z_face_reaction.c
 47550,8005FF90,file_047550
+87630,800A0070,z_play.c
 8D970,800A63B0,title_setup.c
 8D9E0,800A6420,file_08D9E0
 974B0,800AFEF0,sys_math_atan.c

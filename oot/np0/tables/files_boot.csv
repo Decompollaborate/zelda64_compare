@@ -1,2 +1,11 @@
 offset,vram,.text
 0,80000460,boot_main.c
+6100,80006560,rsp_boot.text
+
+offset,vram,.data
+6280,800066E0,idle.c
+
+offset,vram,.rodata
+6610,80006A70,boot_main.c
+6620,80006A80,idle.c
+#68F0,80006D50,.bss
