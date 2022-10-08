@@ -5,19 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 import spimdisasm
-"""
-import os
 
-import py_mips_disasm.backend.common.Utils as spimdisasm.common.Utils
-from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
-from py_mips_disasm.backend.common.Context import Context
-from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
-
-from py_mips_disasm.backend.mips.MipsSection import Section
-from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
-"""
-
-from mips.MipsFileSplits import FileSplits
 from mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv
 
 

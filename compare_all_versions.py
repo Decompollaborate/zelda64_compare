@@ -3,25 +3,11 @@
 from __future__ import annotations
 
 import argparse
-# import os
-# from typing import list, dict
 from multiprocessing import Pool, cpu_count
 from functools import partial
 from pathlib import Path
 import spimdisasm
 
-"""
-import py_mips_disasm.backend.common.Utils as disasm_Utils
-from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
-from py_mips_disasm.backend.common.Context import Context
-from py_mips_disasm.backend.common.FileSectionType import FileSectionType
-from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
-
-from py_mips_disasm.backend.mips.MipsSection import Section
-from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
-"""
-
-# from mips.MipsFileSplits import FileSplits
 from mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv, getFileAddresses, FileAddressesEntry
 
 
