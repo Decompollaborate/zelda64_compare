@@ -21,6 +21,8 @@ def extract_dma(address):
     offset = address
 
     while True:
+        fileName = nameData[(offset - address) // 0x10] if len(nameData) > 0 else ""
+
         fileVROMStart = read_uint32_be(offset)
         offset += 4
         fileVROMEnd = read_uint32_be(offset)
@@ -35,7 +37,6 @@ def extract_dma(address):
         else:
             compressed = False
 
-        fileName = nameData[(offset - address) // 0x10] if len(nameData) > 0 else ""
         if fileName != "":
             print(f"{fileName},", end="")
         else:
