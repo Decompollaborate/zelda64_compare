@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-import os
-from typing import Dict
-from py_mips_disasm.backend.common.Context import Context
+from pathlib import Path
+import spimdisasm
 
 
 class FileAddressesEntry:
@@ -35,10 +34,10 @@ class FileAddressesEntry:
         self.number = number
 
 
-def getFileAddresses(filePath: str | None) -> Dict[str, FileAddressesEntry]:
-    table: Dict[str, FileAddressesEntry] = dict()
-    if filePath is not None and os.path.exists(filePath):
-        with open(filePath) as f:
+def getFileAddresses(filePath: Path | None) -> dict[str, FileAddressesEntry]:
+    table: dict[str, FileAddressesEntry] = dict()
+    if filePath is not None and filePath.exists():
+        with filePath.open() as f:
             header = True
             for line in f:
                 if header:
@@ -50,12 +49,12 @@ def getFileAddresses(filePath: str | None) -> Dict[str, FileAddressesEntry]:
     return table
 
 
-def contextReadVariablesCsv(context: Context, game: str, version: str):
-    variablesPath = os.path.join(game, version, "tables", f"variables.csv")
-    if os.path.exists(variablesPath):
-        context.readVariablesCsv(variablesPath)
+def contextReadVariablesCsv(context: spimdisasm.common.Context, game: str, version: str):
+    variablesPath = Path(game, version, "tables", "variables.csv")
+    if variablesPath.exists():
+        context.globalSegment.readVariablesCsv(variablesPath)
 
-def contextReadFunctionsCsv(context: Context, game: str, version: str):
-    functionsPath = os.path.join(game, version, "tables", f"functions.csv")
-    if os.path.exists(functionsPath):
-        context.readFunctionsCsv(functionsPath)
+def contextReadFunctionsCsv(context: spimdisasm.common.Context, game: str, version: str):
+    functionsPath = Path(game, version, "tables", "functions.csv")
+    if functionsPath.exists():
+        context.globalSegment.readFunctionsCsv(functionsPath)

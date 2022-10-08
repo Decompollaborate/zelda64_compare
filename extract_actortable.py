@@ -6,9 +6,6 @@ import argparse
 import os
 import sys
 import struct
-from multiprocessing import Pool, cpu_count, Manager
-from typing import Dict, List
-import zlib
 
 
 ROM_FILE_NAME = 'baserom.z64'
@@ -43,7 +40,7 @@ FILE_TABLE_OFFSET["NTSC J 1.1"]   = FILE_TABLE_OFFSET["NTSC 1.1"]
 FILE_TABLE_OFFSET["NTSC J 1.2"]   = FILE_TABLE_OFFSET["NTSC 1.2"]
 FILE_TABLE_OFFSET["PAL WII 1.1"]  = FILE_TABLE_OFFSET["PAL 1.1"]
 
-FILE_NAMES: Dict[str, List[str] | None] = {
+FILE_NAMES: dict[str, list[str] | None] = {
     "NTSC 0.9":     None, 
     "NTSC 1.0":     None,
     "NTSC 1.1":     None,

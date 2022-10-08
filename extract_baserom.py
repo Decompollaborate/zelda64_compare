@@ -7,7 +7,6 @@ import os
 import sys
 import struct
 from multiprocessing import Pool, cpu_count, Manager
-from typing import Dict, List
 import zlib
 import libyaz0
 
@@ -60,7 +59,7 @@ FILE_TABLE_OFFSET["OOT"]["NJ1"]   = FILE_TABLE_OFFSET["OOT"]["NE1"]
 FILE_TABLE_OFFSET["OOT"]["NJ2"]   = FILE_TABLE_OFFSET["OOT"]["NE2"]
 FILE_TABLE_OFFSET["OOT"]["PAL WII 1.1"]  = FILE_TABLE_OFFSET["OOT"]["NP1"]
 
-FILE_NAMES: Dict[str, Dict[str, List[str] | None]] = {
+FILE_NAMES: dict[str, dict[str, list[str] | None]] = {
     "OOT": {
         "NER":        None,
         "NE0":        None,

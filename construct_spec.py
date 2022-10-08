@@ -3,7 +3,6 @@
 import sys
 import csv
 import argparse
-import struct
 
 def printf(fmt, *args, **kwargs):
     print(fmt.format(*args), end="", **kwargs)
