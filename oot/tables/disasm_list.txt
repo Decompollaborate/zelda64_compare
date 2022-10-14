@@ -10,3 +10,4 @@ ovl_Boss_Sst
 ovl_En_Mag
 ovl_En_Arrow
 ovl_player_actor
+ovl_Mir_Ray

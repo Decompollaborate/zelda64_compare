@@ -111,7 +111,7 @@ def ovlDisassemblerMain():
             splitsData = spimdisasm.common.FileSplitFormat()
             splitsData.readCsvFile(fileSplitsPath)
 
-    fileAddresses = getFileAddresses(args.file_addresses)
+    fileAddresses = getFileAddresses(Path(args.file_addresses))
 
     if args.reloc_separate:
         reloc_filename = findRelocFile(inputPath.stem, args.file_addresses)
@@ -133,6 +133,8 @@ def ovlDisassemblerMain():
         vramStart = fileAddresses[inputPath.stem].vramStart
 
     f = spimdisasm.mips.FileSplits(context, 0, len(array_of_bytes), vramStart, inputPath.stem, array_of_bytes, 0, None, splitsData=splitsData, relocSection=relocSection)
+
+    spimdisasm.singleFileDisasm.changeGlobalSegmentRanges(context, {spimdisasm.common.FileSectionType.Text: [f]}, len(array_of_bytes), vramStart)
 
     f.analyze()
 
