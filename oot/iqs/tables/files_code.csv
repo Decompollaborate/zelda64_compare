@@ -27,6 +27,7 @@ DB40,80026AE0,z_actor.c (+z_cheap_proc.c)
 7BF40,80094EE0,z_skin_matrix
 7D2E0,80096280,file_07D2E0
 86F70,8009FF10,z_kaleido_manager.c
+87480,800A0420,z_play.c
 8D7C0,800A6760,title_setup.c
 8D830,800A67D0,file_08D830
 972F0,800B0290,sys_math_atan.c

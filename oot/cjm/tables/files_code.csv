@@ -7,6 +7,7 @@ AA0,80011980,z_en_item00.c
 485B0,80059490,file_0485B0
 6FF80,80080E60,z_scene.c
 77C10,80088AF0,z_skelanime.c
+88F80,80099E60,z_play.c
 8F300,800A01E0,title_setup.c
 8F370,800A0250,file_08F370
 98E30,800A9D10,sys_math_atan.c

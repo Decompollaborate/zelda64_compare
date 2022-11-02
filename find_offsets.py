@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
-import os
-import sys
 import argparse
 import struct
+import sys
 
 def bad_find(data, search, align):
     index = 0

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Tuple
-import py_mips_disasm.backend.common.Utils as disasm_Utils
+from pathlib import Path
+import spimdisasm
 
 
 class SplitEntry:
@@ -30,8 +30,8 @@ class SplitEntry:
         return self.__str__()
 
 
-def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, List[SplitEntry]]]:
-    code_splits_file = disasm_Utils.readCsv(csvfilename)
+def readSplitsFromCsv(csvfilename: Path) -> dict[str, dict[str, list[SplitEntry]]]:
+    code_splits_file = spimdisasm.common.Utils.readCsv(csvfilename)
 
     columnsPerVersion = 3
     if code_splits_file[0][2] != "":
@@ -41,7 +41,7 @@ def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, List[SplitEntry]]
             pass
 
     header = code_splits_file[0][3::columnsPerVersion]
-    splits: Dict[str, Dict[str, List[SplitEntry]]] = { h: dict() for h in header }
+    splits: dict[str, dict[str, list[SplitEntry]]] = { h: dict() for h in header }
 
     for row_num in range(2, len(code_splits_file)):
         row = code_splits_file[row_num]
@@ -61,8 +61,8 @@ def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, List[SplitEntry]]
                 vram = subrow[1]
                 size = subrow[2]
             except:
-                print("error when parsing {}, line {}: could not read row:".format(csvfilename, row_num))
-                print("    {}\n".format(row))
+                print(f"error when parsing {str(csvfilename)}, line {row_num}: could not read row:")
+                print(f"    {row}\n")
                 raise
 
             try:
@@ -86,7 +86,7 @@ def readSplitsFromCsv(csvfilename: str) -> Dict[str, Dict[str, List[SplitEntry]]
             splits[h][name].append(SplitEntry(h, name, offset, size, vram))
     return splits
 
-def getFileStartsFromEntries(splits: Dict[str, SplitEntry], fileEndOffset: int) -> List[Tuple[int, int, str]]:
+def getFileStartsFromEntries(splits: dict[str, SplitEntry], fileEndOffset: int) -> list[tuple[int, int, str]]:
     starts = list()
     for filename, entry in splits.items():
         starts.append((entry.offset, entry.size, filename))
@@ -105,7 +105,7 @@ def getFileStartsFromEntries(splits: Dict[str, SplitEntry], fileEndOffset: int) 
             starts[i] = (start, nextStart-start, filename)
 
         if end < nextStart:
-            starts.insert(i+1, (end, -1, f"file_{disasm_Utils.toHex(end, 6)}"))
+            starts.insert(i+1, (end, -1, f"file_{end:06X}"))
 
         i += 1
 

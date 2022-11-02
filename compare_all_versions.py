@@ -3,21 +3,11 @@
 from __future__ import annotations
 
 import argparse
-import os
-from typing import List, Dict
 from multiprocessing import Pool, cpu_count
 from functools import partial
+from pathlib import Path
+import spimdisasm
 
-import py_mips_disasm.backend.common.Utils as disasm_Utils
-from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig
-from py_mips_disasm.backend.common.Context import Context
-from py_mips_disasm.backend.common.FileSectionType import FileSectionType
-from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
-
-from py_mips_disasm.backend.mips.MipsSection import Section
-from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
-
-from mips.MipsFileSplits import FileSplits
 from mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv, getFileAddresses, FileAddressesEntry
 
 
@@ -34,27 +24,27 @@ def removePointers(args, filedata: bytearray) -> bytearray:
     if not args.ignore04: # This will probably grow...
         return filedata
 
-    words = disasm_Utils.bytesToBEWords(filedata)
+    words = spimdisasm.common.Utils.bytesToWords(filedata)
     for i in range(len(words)):
         w = words[i]
         if args.ignore04:
             if ((w >> 24) & 0xFF) == 0x04:
                 words[i] = 0x04000000
-    return disasm_Utils.beWordsToBytes(words, filedata)
+    return spimdisasm.common.Utils.wordsToBytes(words, filedata)
 
 
-def getHashesOfFiles(args, filesPath: List[str]) -> List[str]:
+def getHashesOfFiles(args, filesPath: list[Path]) -> list[str]:
     hashList = []
     for path in filesPath:
-        f = disasm_Utils.readFileAsBytearray(path)
+        f = spimdisasm.common.Utils.readFileAsBytearray(path)
         if len(f) != 0:
-            fHash = disasm_Utils.getStrHash(removePointers(args, f))
-            line = fHash + " " + path # To be consistent with runCommandGetOutput("md5sum", md5arglist)
+            fHash = spimdisasm.common.Utils.getStrHash(removePointers(args, f))
+            line = fHash + " " + str(path) # To be consistent with runCommandGetOutput("md5sum", md5arglist)
             hashList.append(line)
     return hashList
 
-def compareFileAcrossVersions(filename: str, game: str, versionsList: List[str], contextPerVersion: Dict[str, Context], fileAddressesPerVersion: dict, args) -> List[List[str]]:
-    md5arglist = list(map(lambda orig_string: game + "/" + orig_string + "/" + "baserom" + "/" + filename, versionsList))
+def compareFileAcrossVersions(filename: str, game: str, versionsList: list[str], contextPerVersion: dict[str, spimdisasm.common.Context], fileAddressesPerVersion: dict, args) -> list[list[str]]:
+    md5arglist = list(map(lambda orig_string: Path(game, orig_string, "baserom", filename), versionsList))
     # os.system( "md5sum " + " ".join(filesPath) )
 
     # Get hashes.
@@ -69,7 +59,7 @@ def compareFileAcrossVersions(filename: str, game: str, versionsList: List[str],
     firstFilePerHash = dict() # "339614255f179a1e308d954d8f7ffc0a": "NN0"
 
     for line in output:
-        trimmed = disasm_Utils.removeExtraWhitespace(line)
+        trimmed = spimdisasm.common.Utils.removeExtraWhitespace(line)
         filehash, filepath = trimmed.split(" ")
         version = filepath.split("/")[1]
 
@@ -89,7 +79,7 @@ def compareFileAcrossVersions(filename: str, game: str, versionsList: List[str],
             row.append("")
     return [row]
 
-def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[str], contextPerVersion: Dict[str, Context], fileAddressesPerVersion: Dict[str, Dict[str, FileAddressesEntry]], args) -> List[List[str]]:
+def compareOverlayAcrossVersions(filename: str, game: str, versionsList: list[str], contextPerVersion: dict[str, spimdisasm.common.Context], fileAddressesPerVersion: dict[str, dict[str, FileAddressesEntry]], args) -> list[list[str]]:
     column = []
     filesHashes = dict() # "filename": {"NN0": hash}
     firstFilePerHash = dict() # "filename": {hash: "NN0"}
@@ -101,15 +91,15 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
 
     for version in versionsList:
         splitsData = None
-        tablePath = os.path.join(game, version, "tables", f"files_{filename}.csv")
-        if os.path.exists(tablePath):
+        tablePath = Path(game, version, "tables", f"files_{filename}.csv")
+        if tablePath.exists():
             # print(tablePath)
-            splitsData = FileSplitFormat()
+            splitsData = spimdisasm.common.FileSplitFormat()
             splitsData.readCsvFile(tablePath)
 
-        path = os.path.join(game, version, "baserom", filename)
+        path = Path(game, version, "baserom", filename)
 
-        array_of_bytes = disasm_Utils.readFileAsBytearray(path)
+        array_of_bytes = spimdisasm.common.Utils.readFileAsBytearray(path)
         if len(array_of_bytes) == 0:
             # print(f"Skipping {path}")
             continue
@@ -120,25 +110,23 @@ def compareOverlayAcrossVersions(filename: str, game: str, versionsList: List[st
                 if filename in fileAddressesPerVersion[version]:
                     vramStart = fileAddressesPerVersion[version][filename].vramStart
 
-            relocSection = RelocZ64(array_of_bytes, filename, contextPerVersion[version])
-            f = FileSplits(array_of_bytes, filename, contextPerVersion[version], relocSection=relocSection, vramStartParam=vramStart)
+            relocSection = spimdisasm.mips.sections.SectionRelocZ64(contextPerVersion[version], 0, len(array_of_bytes), vramStart, filename, array_of_bytes, 0, None)
+            f = spimdisasm.mips.FileSplits(contextPerVersion[version], 0, len(array_of_bytes), vramStart, filename, array_of_bytes, 0, None, relocSection=relocSection)
         elif filename in ("code", "boot", "n64dd"):
-            f = FileSplits(array_of_bytes, filename, contextPerVersion[version], splitsData=splitsData)
+            f = spimdisasm.mips.FileSplits(contextPerVersion[version], 0, len(array_of_bytes), -1, filename, array_of_bytes, 0, None, splitsData=splitsData)
         else:
-            f = Section(array_of_bytes, filename, contextPerVersion[version])
+            f = spimdisasm.mips.sections.SectionData(contextPerVersion[version], 0, len(array_of_bytes), 0, filename, array_of_bytes, 0, None)
 
         f.analyze()
 
-        if GlobalConfig.REMOVE_POINTERS:
-            was_updated = f.removePointers()
-            if was_updated:
-                f.updateBytes()
+        if spimdisasm.common.GlobalConfig.REMOVE_POINTERS:
+            f.removePointers()
 
-        if isinstance(f, FileSplits):
+        if isinstance(f, spimdisasm.mips.FileSplits):
             subfiles = {
-                ".text" : f.sectionsDict[FileSectionType.Text],
-                ".data" : f.sectionsDict[FileSectionType.Data],
-                ".rodata" : f.sectionsDict[FileSectionType.Rodata],
+                ".text" : f.sectionsDict[spimdisasm.common.FileSectionType.Text],
+                ".data" : f.sectionsDict[spimdisasm.common.FileSectionType.Data],
+                ".rodata" : f.sectionsDict[spimdisasm.common.FileSectionType.Rodata],
                 #".bss" : f.bss,
             }
         else:
@@ -183,7 +171,7 @@ def main():
     choices = ["oot", "mm"]
     parser.add_argument("game", help="Game to comapre.", choices=choices)
     parser.add_argument("versionlist", help="Path to version list.")
-    parser.add_argument("filelist", help="List of filenames of the ROM that will be compared.")
+    parser.add_argument("filelist", help="list of filenames of the ROM that will be compared.")
     parser.add_argument("--noheader", help="Disables the csv header.", action="store_true")
     # parser.add_argument("--overlays", help="Treats the files in filelist as overlays.", action="store_true")
     parser.add_argument("--ignore-words", help="A space separated list of hex numbers. Word differences will be ignored that starts in any of the provided arguments. Max value: FF", action="extend", nargs="+")
@@ -192,17 +180,17 @@ def main():
     parser.add_argument("--disable-multiprocessing", help="", action="store_true")
     args = parser.parse_args()
 
-    GlobalConfig.REMOVE_POINTERS = not args.dont_remove_ptrs
-    GlobalConfig.IGNORE_BRANCHES = args.ignore_branches
+    spimdisasm.common.GlobalConfig.REMOVE_POINTERS = not args.dont_remove_ptrs
+    spimdisasm.common.GlobalConfig.IGNORE_BRANCHES = args.ignore_branches
     if args.ignore_words:
         for upperByte in args.ignore_words:
-            GlobalConfig.IGNORE_WORD_LIST.add(int(upperByte, 16))
-    # GlobalConfig.ASM_COMMENT = True
-    GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
-    # GlobalConfig.TRUST_USER_FUNCTIONS = True
-    # GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS = args.disasm_unknown
-    # GlobalConfig.VERBOSE = args.verbose
-    # GlobalConfig.QUIET = args.quiet
+            spimdisasm.common.GlobalConfig.IGNORE_WORD_LIST.add(int(upperByte, 16))
+    # spimdisasm.common.GlobalConfig.ASM_COMMENT = True
+    spimdisasm.common.GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
+    # spimdisasm.common.GlobalConfig.TRUST_USER_FUNCTIONS = True
+    # spimdisasm.common.GlobalConfig.DISASSEMBLE_UNKNOWN_INSTRUCTIONS = args.disasm_unknown
+    # spimdisasm.common.GlobalConfig.VERBOSE = args.verbose
+    # spimdisasm.common.GlobalConfig.QUIET = args.quiet
 
     # Read filelist
     versionsList = []
@@ -211,22 +199,22 @@ def main():
             if version.startswith("#"):
                 continue
             versionsList.append(version.strip())
-    filesList = disasm_Utils.readFile(args.filelist)
+    filesList = spimdisasm.common.Utils.readFile(args.filelist)
 
-    contextPerVersion: Dict[str, Context] = dict()
+    contextPerVersion: dict[str, spimdisasm.common.Context] = dict()
     for version in versionsList:
-        context = Context()
+        context = spimdisasm.common.Context()
         context.fillDefaultBannedSymbols()
-        context.fillLibultraSymbols()
-        context.fillHardwareRegs()
-        context.readFunctionMap(version)
+        context.globalSegment.fillLibultraSymbols()
+        context.globalSegment.fillHardwareRegs()
+        # context.globalSegment.readFunctionMap(version)
         contextReadVariablesCsv(context, args.game, version)
         contextReadFunctionsCsv(context, args.game, version)
         contextPerVersion[version] = context
 
-    fileAddressesPerVersion: Dict[str, Dict[str, FileAddressesEntry]] = dict()
+    fileAddressesPerVersion: dict[str, dict[str, FileAddressesEntry]] = dict()
     for version in versionsList:
-        fileAddressesPerVersion[version] = getFileAddresses(os.path.join(args.game, version, "tables", "file_addresses.csv"))
+        fileAddressesPerVersion[version] = getFileAddresses(Path(args.game, version, "tables", "file_addresses.csv"))
 
     if not args.noheader:
         # Print csv header

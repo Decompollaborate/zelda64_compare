@@ -4,24 +4,14 @@ from __future__ import annotations
 
 import argparse
 import os
-from typing import List, Tuple
+from pathlib import Path
 
-import py_mips_disasm.backend.common.Utils as disasm_Utils
-from py_mips_disasm.backend.common.GlobalConfig import GlobalConfig, printQuietless, printVerbose
-from py_mips_disasm.backend.common.Context import Context
-from py_mips_disasm.backend.common.FileSectionType import FileSectionType
-from py_mips_disasm.backend.common.FileSplitFormat import FileSplitFormat
+import spimdisasm
 
-from py_mips_disasm.backend.mips.MipsText import Text
-from py_mips_disasm.backend.mips.MipsRodata import Rodata
-from py_mips_disasm.backend.mips.MipsRelocZ64 import RelocZ64
-from py_mips_disasm.backend.mips.FilesHandlers import writeSplitedFunction, writeOtherRodata
-
-from mips.MipsFileSplits import FileSplits
 from mips.ZeldaTables import getFileAddresses
 
-def writeFiles(ovlSection: FileSplits, textOutput: str, dataOutput: str|None):
-    printVerbose("Writing files...")
+def writeFiles(ovlSection: spimdisasm.mips.FileSplits, textOutput: str, dataOutput: str|None):
+    spimdisasm.common.Utils.printVerbose("Writing files...")
 
     if dataOutput is None:
         dataOutput = textOutput
@@ -41,18 +31,18 @@ def writeFiles(ovlSection: FileSplits, textOutput: str, dataOutput: str|None):
     if head != "":
         os.makedirs(head, exist_ok=True)
 
-    for subFileName, section in ovlSection.sectionsDict[FileSectionType.Text].items():
+    for subFileName, section in ovlSection.sectionsDict[spimdisasm.common.FileSectionType.Text].items():
         section.saveToFile(os.path.join(textOutput, subFileName))
 
     for sectionType, filesinSection in ovlSection.sectionsDict.items():
-        if sectionType == FileSectionType.Text:
+        if sectionType == spimdisasm.common.FileSectionType.Text:
             continue
         for subFileName, section in filesinSection.items():
             section.saveToFile(os.path.join(dataOutput, subFileName))
 
 
 # Return the name of the file after the overlay file, which is its reloc file in Animal Forest
-def findRelocFile(input_name: str, file_addresses: str) -> str:
+def findRelocFile(input_name: str, file_addresses: str|None) -> str:
     if file_addresses is not None and os.path.exists(file_addresses):
         with open(file_addresses) as f:
             header = True
@@ -89,88 +79,98 @@ def ovlDisassemblerMain():
 
     parser.add_argument("--nuke-pointers", help="Use every technique available to remove pointers", action="store_true")
 
-    Context.addParametersToArgParse(parser)
+    spimdisasm.common.Context.addParametersToArgParse(parser)
 
-    GlobalConfig.addParametersToArgParse(parser)
+    spimdisasm.common.GlobalConfig.addParametersToArgParse(parser)
 
     parser.add_argument("--add-filename", help="Adds the filename of the file to the generated function/variable name")
 
     args = parser.parse_args()
 
-    GlobalConfig.parseArgs(args)
+    spimdisasm.common.GlobalConfig.parseArgs(args)
 
-    GlobalConfig.REMOVE_POINTERS = args.nuke_pointers
-    GlobalConfig.IGNORE_BRANCHES = args.nuke_pointers
+    spimdisasm.common.GlobalConfig.REMOVE_POINTERS = args.nuke_pointers
+    spimdisasm.common.GlobalConfig.IGNORE_BRANCHES = args.nuke_pointers
     if args.nuke_pointers:
-        GlobalConfig.IGNORE_WORD_LIST.add(0x80)
+        spimdisasm.common.GlobalConfig.IGNORE_WORD_LIST.add(0x80)
 
-    GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
-    GlobalConfig.TRUST_USER_FUNCTIONS = True
+    spimdisasm.common.GlobalConfig.PRODUCE_SYMBOLS_PLUS_OFFSET = True
+    spimdisasm.common.GlobalConfig.TRUST_USER_FUNCTIONS = True
 
 
-    context = Context()
+    context = spimdisasm.common.Context()
     context.parseArgs(args)
 
-    array_of_bytes = disasm_Utils.readFileAsBytearray(args.binary)
-    input_name = os.path.splitext(os.path.split(args.binary)[1])[0]
-
+    inputPath = Path(args.binary)
+    array_of_bytes = spimdisasm.common.Utils.readFileAsBytearray(inputPath)
 
     splitsData = None
-    if args.file_splits is not None and os.path.exists(args.file_splits):
-        splitsData = FileSplitFormat()
-        splitsData.readCsvFile(args.file_splits)
+    if args.file_splits is not None:
+        fileSplitsPath = Path(args.file_splits)
+        if fileSplitsPath.exists():
+            splitsData = spimdisasm.common.FileSplitFormat()
+            splitsData.readCsvFile(fileSplitsPath)
 
-    fileAddresses = getFileAddresses(args.file_addresses)
+    fileAddresses = getFileAddresses(Path(args.file_addresses))
 
     if args.reloc_separate:
-        reloc_filename = findRelocFile(input_name, args.file_addresses)
-        reloc_path = os.path.join(os.path.split(args.binary)[0], reloc_filename)
+        reloc_filename = findRelocFile(inputPath.stem, args.file_addresses)
+        relocPath = Path(args.binary).parent / reloc_filename
 
-        relocSection = RelocZ64(disasm_Utils.readFileAsBytearray(reloc_path), input_name, context)
+        reloc_array_of_bytes = spimdisasm.common.Utils.readFileAsBytearray(relocPath)
+
+        relocSection = spimdisasm.mips.sections.SectionRelocZ64(context, 0, len(reloc_array_of_bytes), 0, reloc_filename, reloc_array_of_bytes, 0, "reloc")
         relocSection.differentSegment = True
         if reloc_filename in fileAddresses:
-            relocSection.setVRamStart(fileAddresses[reloc_filename].vramStart)
+            relocSection.setVram(fileAddresses[reloc_filename].vramStart)
     else:
-        relocSection = RelocZ64(array_of_bytes, input_name, context)
+        relocSection = spimdisasm.mips.sections.SectionRelocZ64(context, 0, len(array_of_bytes), 0, inputPath.stem, array_of_bytes, 0, None)
         relocSection.differentSegment = False
 
 
     vramStart = -1
-    if input_name in fileAddresses:
-        vramStart = fileAddresses[input_name].vramStart
+    if inputPath.stem in fileAddresses:
+        vramStart = fileAddresses[inputPath.stem].vramStart
 
-    f = FileSplits(array_of_bytes, input_name, context, splitsData=splitsData, relocSection=relocSection, vramStartParam=vramStart)
+    f = spimdisasm.mips.FileSplits(context, 0, len(array_of_bytes), vramStart, inputPath.stem, array_of_bytes, 0, None, splitsData=splitsData, relocSection=relocSection)
+
+    spimdisasm.singleFileDisasm.changeGlobalSegmentRanges(context, {spimdisasm.common.FileSectionType.Text: [f]}, len(array_of_bytes), vramStart)
 
     f.analyze()
 
-    if GlobalConfig.VERBOSE:
+    if spimdisasm.common.GlobalConfig.VERBOSE:
         for sectDict in f.sectionsDict.values():
             for section in sectDict.values():
                 section.printAnalyzisResults()
 
     if args.nuke_pointers:
-        printVerbose("Nuking pointers...")
+        spimdisasm.common.Utils.printVerbose("Nuking pointers...")
         f.removePointers()
 
     writeFiles(f, args.output, args.data_output)
 
     if args.split_functions is not None:
-        printVerbose("Spliting functions")
-        rodataList: List[Tuple[str, Rodata]] = list()
-        for rodataName, rodataSection in f.sectionsDict[FileSectionType.Rodata].items():
-            assert(isinstance(rodataSection, Rodata))
-            rodataList.append((rodataName, rodataSection))
-        for path, subFile in f.sectionsDict[FileSectionType.Text].items():
-            assert(isinstance(subFile, Text))
-            for func in subFile.functions:
-                writeSplitedFunction(os.path.join(args.split_functions, subFile.filename), func, rodataList, context)
-        writeOtherRodata(args.split_functions, rodataList, context)
+        spimdisasm.common.Utils.printVerbose("Spliting functions")
+        rodataList: list[spimdisasm.mips.sections.SectionRodata] = list()
+
+        splitFunctionsPath = Path(args.split_functions)
+
+        for rodataName, rodataSection in f.sectionsDict[spimdisasm.common.FileSectionType.Rodata].items():
+            assert(isinstance(rodataSection, spimdisasm.mips.sections.SectionRodata))
+            rodataList.append(rodataSection)
+
+        for path, subFile in f.sectionsDict[spimdisasm.common.FileSectionType.Text].items():
+            assert(isinstance(subFile, spimdisasm.mips.sections.SectionText))
+            for func in subFile.symbolList:
+                assert isinstance(func, spimdisasm.mips.symbols.SymbolFunction)
+
+                spimdisasm.mips.FilesHandlers.writeSplitedFunction(splitFunctionsPath / subFile.name, func, rodataList)
+        spimdisasm.mips.FilesHandlers.writeOtherRodata(splitFunctionsPath, rodataList)
 
     if args.save_context is not None:
-        head, tail = os.path.split(args.save_context)
-        if head != "":
-            os.makedirs(head, exist_ok=True)
-        context.saveContextToFile(args.save_context)
+        contextPath = Path(args.save_context)
+        contextPath.parent.mkdir(parents=True, exist_ok=True)
+        context.saveContextToFile(contextPath)
 
 
 if __name__ == "__main__":

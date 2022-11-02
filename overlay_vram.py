@@ -22,7 +22,7 @@ def main():
 
     dmadata = []
     for entry in dmalist:
-        dmadata.append([entry[0], *map(lambda x: int(x, 16), entry[1:])])
+        dmadata.append([entry[0], *map(lambda x: int(x, 16), entry[1:5])])
 
     overlayTable = vram.constructOverlayTable(args.code, args.game)
 

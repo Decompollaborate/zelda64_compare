@@ -1,3 +1,5 @@
+80000460,cleararena
+80000498,bootproc
 80000DF0,DmaMgr_SendRequest1
 80002E80,bzero
 800D4180,bcmp

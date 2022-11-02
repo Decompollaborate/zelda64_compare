@@ -25,7 +25,7 @@ endif
 
 MAKE = make
 
-DISASSEMBLER        ?= ./py_mips_disasm/simpleDisasm.py
+DISASSEMBLER        ?= python3 -m spimdisasm.singleFileDisasm
 OVL_DISASSEMBLER    ?= ./z64OvlDisasm.py
 
 #### Files ####

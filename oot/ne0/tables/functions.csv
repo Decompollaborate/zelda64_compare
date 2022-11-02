@@ -38,12 +38,14 @@
 80002F20,osCreateThread
 80003440,osWritebackDCache
 800034C0,osViGetNextFramebuffer
+80003500,osCreatePiManager
 80003B60,osVirtualToPhysical
 80003BE0,osViBlack
 80003CC0,osSetIntMask
 80003D60,osViSetMode
 80003FB0,osSetEventMesg
 800040C0,osEPiStartDma
+800041A0,osInvalICache
 80004220,osCreateMesgQueue
 80004250,osInvalDCache
 80004480,osSetThreadPri
@@ -56,9 +58,12 @@
 800051A0,__osRestoreInt
 80005300,__osViSwapContext
 80005630,osEPiReadIo
+800057E0,__osSetFpcCsr
+800057F0,__osGetFpcCsr
 80005800,osEPiWriteIo
 80005EC0,osStartThread
 80006010,__osSetHWIntrRoutine
+80006080,__osGetHWIntrRoutine
 80007220,gMainThread
 800110A0,EnAObj_SetupAction
 80011478,func_8001D234
@@ -104,6 +109,7 @@
 80064178,Math_SmoothStepToF
 80064780,func_80078914
 80065BCC,Lights_PointNoGlowSetInfo
+80066C38,ZeldaArena_MallocR
 8006D8E0,Interface_ChangeAlpha
 8007DFBC,Gfx_CallSetupDL
 8007E298,func_80093D18

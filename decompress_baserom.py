@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import hashlib, io, struct, sys
-from os import path
+from pathlib import Path
 import argparse
 
 from libyaz0 import decompress
@@ -31,8 +31,8 @@ parser.add_argument("edition", help="Version of the game to extract.")
 
 args = parser.parse_args()
 
-BASEROM_PATH = path.join(args.game, args.game + "_" + args.edition + ".z64")
-UNCOMPRESSED_PATH = path.join(args.game, args.game + "_" + args.edition + "_uncompressed.z64")
+BASEROM_PATH = Path(args.game, args.game + "_" + args.edition + ".z64")
+UNCOMPRESSED_PATH = Path(args.game, args.game + "_" + args.edition + "_uncompressed.z64")
 
 
 Game      = args.game.upper()
@@ -172,8 +172,8 @@ def get_str_hash(byte_array):
     return str(hashlib.md5(byte_array).hexdigest())
 
 # If the baserom exists and is correct, we don't need to change anything
-if path.exists(UNCOMPRESSED_PATH):
-    with open(UNCOMPRESSED_PATH, mode="rb") as file:
+if UNCOMPRESSED_PATH.exists():
+    with UNCOMPRESSED_PATH.open(mode="rb") as file:
         fileContent = bytearray(file.read())
         if get_str_hash(fileContent) == correct_str_hash:
             print("Found valid baserom - exiting early")
@@ -192,8 +192,8 @@ romFileName = BASEROM_PATH
 #     sys.exit(1)
 
 # Read in the original ROM
-print("File '" + romFileName + "' found.")
-with open(romFileName, mode="rb") as file:
+print(f"File '{str(romFileName)}' found.")
+with romFileName.open(mode="rb") as file:
     fileContent = bytearray(file.read())
 
 fileContentLen = len(fileContent)
@@ -244,8 +244,8 @@ for i in range(padding_start,padding_end):
 #     sys.exit(1)
 
 # Write out our new ROM
-print("Writing new ROM " + UNCOMPRESSED_PATH + ".")
-with open(UNCOMPRESSED_PATH, "wb") as file:
+print(f"Writing new ROM {UNCOMPRESSED_PATH}.")
+with UNCOMPRESSED_PATH.open("wb") as file:
     file.write(bytes(fileContent))
 
 print("Done!")

@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 
 import argparse
-import os
+from pathlib import Path
 import struct
 
 def readFile(filepath):
     with open(filepath) as f:
         return [x.strip() for x in f.readlines()]
 
-def readFileAsBytearray(filepath: str) -> bytearray:
-    if not os.path.exists(filepath):
+def readFileAsBytearray(filepath: Path) -> bytearray:
+    if not filepath.exists():
         return bytearray(0)
-    with open(filepath, mode="rb") as f:
+    with filepath.open(mode="rb") as f:
         return bytearray(f.read())
 
 def read_uint32_be(offset):
@@ -21,6 +21,8 @@ def extract_dma(address):
     offset = address
 
     while True:
+        fileName = nameData[(offset - address) // 0x10] if len(nameData) > 0 else ""
+
         fileVROMStart = read_uint32_be(offset)
         offset += 4
         fileVROMEnd = read_uint32_be(offset)
@@ -35,7 +37,6 @@ def extract_dma(address):
         else:
             compressed = False
 
-        fileName = nameData[(offset - address) // 0x10] if len(nameData) > 0 else ""
         if fileName != "":
             print(f"{fileName},", end="")
         else:
@@ -62,7 +63,7 @@ def main():
 
     nameData = []
 
-    romData = readFileAsBytearray(args.romfile)
+    romData = readFileAsBytearray(Path(args.romfile))
 
     if args.namefile != None:
         nameData = readFile(args.namefile)

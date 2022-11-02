@@ -1,0 +1,10 @@
+offset,vram,.text
+0,80803650,z_file_copy_erase
+
+offset,vram,.data
+EC40,80812290,z_file_nameset_data
+
+offset,vram,.rodata
+F7F0,80812E40,z_file_nameset_NES
+F800,80812E50,z_file_choose
+F820,80812E70,file_00F820

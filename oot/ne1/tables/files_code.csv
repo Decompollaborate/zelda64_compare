@@ -4,6 +4,7 @@ offset,vram,.text
 40AB0,80051B50,file_040AB0
 48720,800597C0,z_face_reaction.c
 48770,80059810,file_048770
+890E0,8009A180,z_play.c
 8F670,800A0710,title_setup.c
 8F6E0,800A0780,file_08F6E0
 993E0,800AA480,sys_math_atan.c

@@ -18,6 +18,7 @@ DB40,8001EA20,z_actor.c (+z_cheap_proc.c)
 6FF80,80080E60,z_scene.c
 77C30,80088B10,z_skelanime.c
 88A90,80099970,z_kaleido_manager.c
+88FA0,80099E80,z_play.c
 8F320,800A0200,title_setup.c
 8F390,800A0270,file_08F390
 98E50,800A9D30,sys_math_atan.c

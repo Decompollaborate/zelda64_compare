@@ -1,2 +1,2 @@
 libyaz0>=0.5
-sortedcontainers>=2.4.0
+spimdisasm>=1.6.0<2.0.0

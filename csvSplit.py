@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import argparse
-import os
+from pathlib import Path
+import spimdisasm
 
-import py_mips_disasm.backend.common.Utils as disasm_Utils
 from mips.MipsSplitEntry import readSplitsFromCsv
 
 
@@ -16,9 +16,9 @@ def _split_fileSplits_withPrefix(game: str, seg: str, categoryPrefix: str):
     tablePerVersion = dict()
 
     for section in sections:
-        csvPath = os.path.join(game, "tables", f"{categoryPrefix}{seg}.{section}.csv")
+        csvPath = Path(game, "tables", f"{categoryPrefix}{seg}.{section}.csv")
 
-        if not os.path.exists(csvPath):
+        if not csvPath.exists():
             continue
 
         splits = readSplitsFromCsv(csvPath)
@@ -83,9 +83,10 @@ def _split_fileSplits_withPrefix(game: str, seg: str, categoryPrefix: str):
 
     for version, sectionedDict in tablePerVersion.items():
         isFirst = True
-        dstFolder = os.path.join(game, version, "tables")
-        os.makedirs(dstFolder, exist_ok=True)
-        with open(os.path.join(dstFolder, f"files_{seg}.csv"), "w") as f:
+        dstFolder = Path(game, version, "tables")
+        dstFolder.mkdir(parents=True, exist_ok=True)
+        dstFile = dstFolder / f"files_{seg}.csv"
+        with dstFile.open("w") as f:
             for section, data in sectionedDict.items():
                 if isFirst:
                     isFirst = False
@@ -105,11 +106,11 @@ def split_fileSplits(game: str, seg: str):
 
 
 def split_functions(game: str):
-    csvPath = os.path.join(game, "tables", "functions.csv")
+    csvPath = Path(game, "tables", "functions.csv")
 
     tablePerVersion: dict[str, dict[int, str]] = dict()
 
-    functions = disasm_Utils.readCsv(csvPath)
+    functions = spimdisasm.common.Utils.readCsv(csvPath)
 
     columnsToDiscard = 1
     if functions[0][1] != "":
@@ -135,36 +136,37 @@ def split_functions(game: str):
 
             vram = int(vramStr, 16)
             if vram in tablePerVersion[version]:
-                disasm_Utils.eprint(f"Warning: Duplicated function's VRAM found in version '{version}'")
+                spimdisasm.common.Utils.eprint(f"Warning: Duplicated function's VRAM found in version '{version}'")
                 oldFuncName = tablePerVersion[version][vram]
-                disasm_Utils.eprint(f"\t old: {vram:08X},{oldFuncName}")
-                disasm_Utils.eprint(f"\t new: {vram:08X},{funcName}")
-                disasm_Utils.eprint(f"\t Discarding old")
+                spimdisasm.common.Utils.eprint(f"\t old: {vram:08X},{oldFuncName}")
+                spimdisasm.common.Utils.eprint(f"\t new: {vram:08X},{funcName}")
+                spimdisasm.common.Utils.eprint(f"\t Discarding old")
             if funcName in tablePerVersion[version].values():
-                disasm_Utils.eprint(f"Warning: Duplicated function name found in version '{version}'")
+                spimdisasm.common.Utils.eprint(f"Warning: Duplicated function name found in version '{version}'")
                 oldVram = vram
                 for oldVram, oldFuncName in tablePerVersion[version].items():
                     if funcName == oldFuncName:
                         break
-                disasm_Utils.eprint(f"\t old: {oldVram:08X},{funcName}")
-                disasm_Utils.eprint(f"\t new: {vram:08X},{funcName}")
+                spimdisasm.common.Utils.eprint(f"\t old: {oldVram:08X},{funcName}")
+                spimdisasm.common.Utils.eprint(f"\t new: {vram:08X},{funcName}")
 
             tablePerVersion[version][vram] = funcName
 
     for version, funcVramDict in tablePerVersion.items():
-        dstFolder = os.path.join(game, version, "tables")
-        os.makedirs(dstFolder, exist_ok=True)
-        with open(os.path.join(dstFolder, "functions.csv"), "w") as f:
+        dstFolder = Path(game, version, "tables")
+        dstFolder.mkdir(parents=True, exist_ok=True)
+        dstFile = dstFolder / "functions.csv"
+        with dstFile.open("w") as f:
             for vram, funcName in sorted(funcVramDict.items()):
                 f.writelines(f"{vram:08X},{funcName}\n")
 
 
 def split_variables(game: str):
-    csvPath = os.path.join(game, "tables", "variables.csv")
+    csvPath = Path(game, "tables", "variables.csv")
 
     tablePerVersion: dict[str, dict[int, tuple[str, str, int]]] = dict()
 
-    variables = disasm_Utils.readCsv(csvPath)
+    variables = spimdisasm.common.Utils.readCsv(csvPath)
     header = variables[0][3:]
     for i in range(2, len(variables)):
         varName, type, _, *data = variables[i]
@@ -188,24 +190,25 @@ def split_variables(game: str):
             vram = int(vramStr, 16)
             size = int(sizeStr, 16)
             if vram in tablePerVersion[version]:
-                disasm_Utils.eprint(f"Warning: Duplicated variable's VRAM found in version '{version}'")
+                spimdisasm.common.Utils.eprint(f"Warning: Duplicated variable's VRAM found in version '{version}'")
                 oldVarName, oldType, oldSize = tablePerVersion[version][vram]
-                disasm_Utils.eprint(f"\t old: {vram:08X},{oldVarName},{oldType},0x{oldSize:X}")
-                disasm_Utils.eprint(f"\t new: {vram:08X},{varName},{type},0x{size:X}")
-                disasm_Utils.eprint(f"\t Discarding old")
+                spimdisasm.common.Utils.eprint(f"\t old: {vram:08X},{oldVarName},{oldType},0x{oldSize:X}")
+                spimdisasm.common.Utils.eprint(f"\t new: {vram:08X},{varName},{type},0x{size:X}")
+                spimdisasm.common.Utils.eprint(f"\t Discarding old")
             for oldVram, (oldVarName, oldType, oldSize) in tablePerVersion[version].items():
                 if varName == oldVarName:
-                    disasm_Utils.eprint(f"Warning: Duplicated variable name found in version '{version}'")
-                    disasm_Utils.eprint(f"\t old: {oldVram:08X},{oldVarName},{oldType},0x{oldSize:X}")
-                    disasm_Utils.eprint(f"\t new: {vram:08X},{varName},{type},0x{size:X}")
+                    spimdisasm.common.Utils.eprint(f"Warning: Duplicated variable name found in version '{version}'")
+                    spimdisasm.common.Utils.eprint(f"\t old: {oldVram:08X},{oldVarName},{oldType},0x{oldSize:X}")
+                    spimdisasm.common.Utils.eprint(f"\t new: {vram:08X},{varName},{type},0x{size:X}")
                     break
 
             tablePerVersion[version][vram] = (varName, type, size)
 
     for version, variablesVramDict in tablePerVersion.items():
-        dstFolder = os.path.join(game, version, "tables")
-        os.makedirs(dstFolder, exist_ok=True)
-        with open(os.path.join(dstFolder, "variables.csv"), "w") as f:
+        dstFolder = Path(game, version, "tables")
+        dstFolder.mkdir(parents=True, exist_ok=True)
+        dstFile = dstFolder / "variables.csv"
+        with dstFile.open("w") as f:
             for vram, (varName, type, size) in sorted(variablesVramDict.items()):
                 f.writelines(f"{vram:08X},{varName},{type},0x{size:X}\n")
 
@@ -221,7 +224,10 @@ def main():
     parser.add_argument("csv", help="") # TODO
     args = parser.parse_args()
 
-    seg = os.path.split(args.csv)[-1].split('.')[0]
+    csvArg = Path(args.csv)
+    while csvArg.suffix != "":
+        csvArg = csvArg.with_suffix("")
+    seg = csvArg.stem
 
     if seg == "functions":
         split_functions(args.game)

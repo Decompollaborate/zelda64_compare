@@ -1,3 +1,5 @@
+80006230,gViModeType,u8,0x1
+80006234,D_80006234,void*,0x4
 80006280,gCurrentRegion,u32,0x4
 80006338,__osRunQueue,OSThread*,0x4
 80006360,__OSGlobalIntMask,OSHWIntr,0x4

@@ -6,6 +6,7 @@ offset,vram,.text
 48590,80059470,file_048590
 6FF60,80080E40,z_scene.c
 77C10,80088AF0,z_skelanime.c
+88F80,80099E60,z_play.c
 8F300,800A01E0,title_setup.c
 8F370,800A0250,file_08F370
 98E30,800A9D10,sys_math_atan.c
