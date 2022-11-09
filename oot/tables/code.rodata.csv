@@ -1,6 +1,6 @@
 ,,,ner,,,ne0,,,ne1,,,np0,,,ne2,,,np1,,,cjo,,,cjm,,,ceo,,,cem,,,cpo,,,cpod1,,,cpod2,,,cpm,,,cpmd,,,cjc,,,iqs,,,iqt,,,
 Debug rom,Pal MQ retail,Notes,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,iQue
-z_en_a_keep.c,,,0F4AB0,80105B50,,0F4CC0,80105D60,,0F4E80,80105F20,,0F25D0,80103CB0,,0F4D10,801063F0,,0F2610,80103CF0,,0F3F60,80104E40,,0F3F40,80104E20,,0F3F40,80104E20,,0F3F20,80104E00,,117EF0,80128DF0,,117ED0,80134D30,,117EF0,80134D50,,0F18A0,801027A0,,0F1880,8010E6E0,,0F3F40,80104E20,,0F69A0,8010F940,,0F62C0,8010ED00,,
+z_en_a_keep.c,,,0F4AB0,80105B50,,0F4CC0,80105D60,,0F4E80,80105F20,,0F25D0,80103CB0,,0F4D10,801063F0,,0F2610,80103CF0,,0F3F60,80104E40,,0F3F40,80104E20,,0F3F40,80104E20,,0F3F20,80104E00,,117EF0,80128DF0,,117ED0,80134D30,,117EF0,80134D50,,0F18A0,801027A0,,117ED0,80134D30,,0F3F40,80104E20,,0F69A0,8010F940,,0F62C0,8010ED00,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

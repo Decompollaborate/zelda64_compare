@@ -219,7 +219,7 @@ offset,vram,.data
 F85C0,80115420,z_en_a_keep.c
 
 offset,vram,.rodata
-F1880,8010E6E0,z_en_a_keep.c
+117ED0,80134D30,z_en_a_keep.c
 
 offset,vram,.bss
 13AF30,80157D90,z_en_item00.c
