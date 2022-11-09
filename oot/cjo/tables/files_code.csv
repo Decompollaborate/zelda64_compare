@@ -17,6 +17,7 @@ DB40,8001EA20,z_actor.c (+z_cheap_proc.c)
 485B0,80059490,file_0485B0
 6FF80,80080E60,z_scene.c
 77C30,80088B10,z_skelanime.c
+801B0,80091090,z_ssram.c
 88A90,80099970,z_kaleido_manager.c
 88FA0,80099E80,z_play.c
 8F320,800A0200,title_setup.c

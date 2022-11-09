@@ -1,6 +1,6 @@
 ,,,ner,,,ne0,,,ne1,,,np0,,,ne2,,,np1,,,cjo,,,cjm,,,ceo,,,cem,,,cpo,,,cpod1,,,cpod2,,,cpm,,,cpmd,,,cjc,,,iqs,,,iqt,,
 Debug rom,,Notes,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
-boot_main.c,,,0063D0,80006830,,0063D0,80006830,,0063D0,80006830,,0068F0,80006D50,,6900,80006D60,,,,,6110,80006570,,6110,80006570,,6110,80006570,,6110,80006570,,6110,80006570,,,,,,,,6110,80006570,,,,,6110,80006570,,A750,8000ABA0,,,,
+boot_main.c,,,0063D0,80006830,,0063D0,80006830,,0063D0,80006830,,0068F0,80006D50,,6900,80006D60,,68F0,80006D50,,6110,80006570,,6110,80006570,,6110,80006570,,6110,80006570,,6110,80006570,,,,,,,,6110,80006570,,,,,6110,80006570,,A750,8000ABA0,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

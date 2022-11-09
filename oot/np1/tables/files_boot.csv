@@ -121,4 +121,6 @@ offset,vram,.rodata
 6820,80006C80,devmgr.c
 6840,80006CA0,setintmask.s
 68C0,80006D20,build.c
-68F0,80006D50,.bss
+
+offset,vram,.bss
+68F0,80006D50,boot_main.c

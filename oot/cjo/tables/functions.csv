@@ -1,4 +1,7 @@
 80000460,cleararena
 80000498,bootproc
 80002E10,bzero
+80091090,SsSram_Init
+80091168,SsSram_Dma
+800911F4,SsSram_ReadWrite
 800CD200,Overlay_Relocate
