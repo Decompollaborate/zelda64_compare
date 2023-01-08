@@ -1,0 +1,1 @@
+gCurrentRegion = 80006110; // size:0x4 type:u32

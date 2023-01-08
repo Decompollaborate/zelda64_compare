@@ -1,0 +1,1 @@
+_string_n64dd_c = 801D9680; // size:0x1 type:char

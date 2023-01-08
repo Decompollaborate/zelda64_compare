@@ -96,7 +96,7 @@ def _split_fileSplits_withPrefix(game: str, seg: str, categoryPrefix: str):
                 f.write(f"offset,vram,.{section}\n")
                 for row in data:
                     offset, vram, filename = row
-                    f.writelines(f"{offset:X},{vram:X},{filename}\n")
+                    f.write(f"{offset:X},{vram:X},{filename}\n")
 
 def split_fileSplits(game: str, seg: str):
     categoriesPrefixes = ["", "iQue."]
@@ -156,10 +156,9 @@ def split_functions(game: str):
         dstFolder = Path(game, version, "tables")
         dstFolder.mkdir(parents=True, exist_ok=True)
         dstFile = dstFolder / "functions.txt"
-        print (f"rm {dstFolder / 'functions.csv'}")
         with dstFile.open("w") as f:
             for vram, funcName in sorted(funcVramDict.items()):
-                f.writelines(f"{funcName} = 0x{vram:08X}; // type:func\n")
+                f.write(f"{funcName} = 0x{vram:08X}; // type:func\n")
 
 
 def split_variables(game: str):
@@ -208,10 +207,13 @@ def split_variables(game: str):
     for version, variablesVramDict in tablePerVersion.items():
         dstFolder = Path(game, version, "tables")
         dstFolder.mkdir(parents=True, exist_ok=True)
-        dstFile = dstFolder / "variables.csv"
+        dstFile = dstFolder / "variables.txt"
         with dstFile.open("w") as f:
             for vram, (varName, type, size) in sorted(variablesVramDict.items()):
-                f.writelines(f"{vram:08X},{varName},{type},0x{size:X}\n")
+                f.write(f"{varName} = 0x{vram:08X}; // size:0x{size:X}")
+                if type != "":
+                    f.write(f" type:{type}")
+                f.write("\n")
 
 
 def main():
