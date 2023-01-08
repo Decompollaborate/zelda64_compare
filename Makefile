@@ -98,6 +98,8 @@ csvs:
 	$(MAKE) splitcsvs
 
 #### Various Recipes ####
+$(BASE_DIR)/tables/%.txt: $(GAME)/tables/%.csv
+	./csvSplit.py $(GAME) $<
 $(BASE_DIR)/tables/%.csv: $(GAME)/tables/%.csv
 	./csvSplit.py $(GAME) $<
 $(BASE_DIR)/tables/files_%.csv: $(GAME)/tables/%.*.csv
@@ -105,22 +107,22 @@ $(BASE_DIR)/tables/files_%.csv: $(GAME)/tables/%.*.csv
 
 
 
-$(BASE_DIR)/asm/text/%/.disasm: $(BASE_DIR)/baserom/% $(BASE_DIR)/tables/variables.csv $(BASE_DIR)/tables/functions.csv $(BASE_DIR)/tables/files_%.csv
+$(BASE_DIR)/asm/text/%/.disasm: $(BASE_DIR)/baserom/% $(BASE_DIR)/tables/variables.txt $(BASE_DIR)/tables/functions.txt $(BASE_DIR)/tables/files_%.csv
 	$(RM) -rf $(BASE_DIR)/asm/text/$* $(BASE_DIR)/asm/data/$* $(BASE_DIR)/asm/functions/$* $(BASE_DIR)/context/$*.txt
 	$(DISASSEMBLER) $< $(BASE_DIR)/asm/text/$* $(DISASM_VERBOSITY) --data-output $(BASE_DIR)/asm/data/$* $(DISASM_FUNC_SPLIT) \
 		--file-splits $(BASE_DIR)/tables/files_$*.csv \
-		--variables $(BASE_DIR)/tables/variables.csv --functions $(BASE_DIR)/tables/functions.csv \
+		--symbol-addrs $(BASE_DIR)/tables/variables.txt --symbol-addrs $(BASE_DIR)/tables/functions.txt \
 		--constants $(GAME)/tables/constants.csv --constants $(BASE_DIR)/tables/constants_$*.csv \
 		--save-context $(BASE_DIR)/context/$*.txt $(DISASM_EXTRA_PARAMS) \
 		--default-banned --libultra-syms --hardware-regs --named-hardware-regs
 	@touch $@
 
 
-$(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables/variables.csv $(BASE_DIR)/tables/functions.csv
+$(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables/variables.txt $(BASE_DIR)/tables/functions.txt
 	$(RM) -rf $(BASE_DIR)/asm/text/ovl_$* $(BASE_DIR)/asm/data/ovl_$* $(BASE_DIR)/asm/functions/ovl_$* $(BASE_DIR)/context/ovl_$*.txt
 	$(OVL_DISASSEMBLER) $< $(BASE_DIR)/asm/text/ovl_$* $(DISASM_VERBOSITY) --data-output $(BASE_DIR)/asm/data/ovl_$* $(DISASM_FUNC_SPLIT) \
 		--file-splits $(BASE_DIR)/tables/files_ovl_$*.csv \
-		--variables $(BASE_DIR)/tables/variables.csv --functions $(BASE_DIR)/tables/functions.csv \
+		--symbol-addrs $(BASE_DIR)/tables/variables.txt --symbol-addrs $(BASE_DIR)/tables/functions.txt \
 		--constants $(GAME)/tables/constants.csv --constants $(BASE_DIR)/tables/constants_ovl_$*.csv \
 		--file-addresses $(BASE_DIR)/tables/file_addresses.csv \
 		--save-context $(BASE_DIR)/context/ovl_$*.txt $(DISASM_EXTRA_PARAMS) $(OVL_DIS_EXTRA_PARAMS) \

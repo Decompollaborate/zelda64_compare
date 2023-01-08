@@ -1,0 +1,12 @@
+aspMainTextStart = 0x801AAAB0; // size:0x1000 type:u64
+gspS2DEX2_fifoTextStart = 0x801ABAB0; // size:0x18C0 type:u64
+njpgdspMainTextStart = 0x801AD370; // size:0xAF0 type:u64
+gActorOverlayTable = 0x801AEFD0; // size:0x5640 type:ActorOverlay
+aspMainDataStart = 0x801E1E80; // size:0x2E0 type:u64
+gspF3DZEX2_NoN_PosLight_fifoTextStart = 0x801E2160; // size:0x1630 type:u64
+gspF3DZEX2_NoN_PosLight_fifoDataStart = 0x801E3790; // size:0x420 type:u64
+gspS2DEX2_fifoDataStart = 0x801E3BB0; // size:0x390 type:u64
+njpgdspMainDataStart = 0x801E3F40; // size:0x60 type:u64
+gSaveContext = 0x801EF670; // size:0x48E8 type:SaveContext
+gGameInfo = 0x801F3F60; // size:0x4 type:GameInfo*
+gSystemHeap = 0x803824C0; // size:0x1 type:u8

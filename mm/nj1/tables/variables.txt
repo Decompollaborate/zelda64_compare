@@ -1,0 +1,2 @@
+gActorOverlayTable = 0x801AA0A0; // size:0x5640 type:ActorOverlay
+gSaveContext = 0x801EF710; // size:0x4C78 type:SaveContext

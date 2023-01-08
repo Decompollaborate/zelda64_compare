@@ -1,8 +1,8 @@
-gCartHandle = 80009D60; // size:0x4 type:OSPiHandle*
-gCurrentRegion = 80009F00; // size:0x4 type:u32
-__DriveRomHandle = 80010760; // size:0x74 type:OSPiHandle
-sZeldaArena = 80127C50; // size:0x24 type:Arena
-sFaultDrawer = 8012E030; // size:0x3C type:FaultDrawer
-sArenaLockMsg = 80137E40; // size:0x4 type:OSMesg
-gSystemArena = 80137E50; // size:0x4 type:Arena
-gSaveContext = 80137F40; // size:0x1428 type:SaveContext
+gCartHandle = 0x80009D60; // size:0x4 type:OSPiHandle*
+gCurrentRegion = 0x80009F00; // size:0x4 type:u32
+__DriveRomHandle = 0x80010760; // size:0x74 type:OSPiHandle
+sZeldaArena = 0x80127C50; // size:0x24 type:Arena
+sFaultDrawer = 0x8012E030; // size:0x3C type:FaultDrawer
+sArenaLockMsg = 0x80137E40; // size:0x4 type:OSMesg
+gSystemArena = 0x80137E50; // size:0x4 type:Arena
+gSaveContext = 0x80137F40; // size:0x1428 type:SaveContext
