@@ -1,0 +1,6 @@
+cleararena = 0x80000460; // type:func
+bootproc = 0x80000498; // type:func
+DmaMgr_SendRequest1 = 0x80000F80; // type:func
+bzero = 0x80003040; // type:func
+bcmp = 0x800D4A20; // type:func
+n64dd_SetDiskVersion = 0x801C8808; // type:func

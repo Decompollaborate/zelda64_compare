@@ -155,10 +155,11 @@ def split_functions(game: str):
     for version, funcVramDict in tablePerVersion.items():
         dstFolder = Path(game, version, "tables")
         dstFolder.mkdir(parents=True, exist_ok=True)
-        dstFile = dstFolder / "functions.csv"
+        dstFile = dstFolder / "functions.txt"
+        print (f"rm {dstFolder / 'functions.csv'}")
         with dstFile.open("w") as f:
             for vram, funcName in sorted(funcVramDict.items()):
-                f.writelines(f"{vram:08X},{funcName}\n")
+                f.writelines(f"{funcName} = 0x{vram:08X}; // type:func\n")
 
 
 def split_variables(game: str):

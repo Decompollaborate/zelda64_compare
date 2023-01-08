@@ -1,0 +1,2 @@
+Cutscene_TerminatorImpl = 0x800ECE6C; // type:func
+Cutscene_IsPlayingCs = 0x800EFDFC; // type:func

@@ -1,0 +1,7 @@
+cleararena = 0x80000460; // type:func
+bootproc = 0x80000498; // type:func
+bzero = 0x80002E10; // type:func
+SsSram_Init = 0x80091090; // type:func
+SsSram_Dma = 0x80091168; // type:func
+SsSram_ReadWrite = 0x800911F4; // type:func
+Overlay_Relocate = 0x800CD200; // type:func

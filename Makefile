@@ -127,6 +127,5 @@ $(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables
 		--default-banned --libultra-syms --hardware-regs --named-hardware-regs
 	@touch $@
 
-
 # Print target for debugging
 print-% : ; $(info $* is a $(flavor $*) variable set to [$($*)]) @true
