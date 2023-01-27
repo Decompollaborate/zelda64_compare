@@ -101,7 +101,8 @@ $(BASE_DIR)/asm/text/%/.disasm: $(BASE_DIR)/baserom/% $(BASE_DIR)/tables/variabl
 		--file-splits $(BASE_DIR)/tables/files_$*.csv \
 		--variables $(BASE_DIR)/tables/variables.csv --functions $(BASE_DIR)/tables/functions.csv \
 		--constants $(GAME)/tables/constants.csv --constants $(BASE_DIR)/tables/constants_$*.csv \
-		--save-context $(BASE_DIR)/context/$*.txt $(DISASM_EXTRA_PARAMS)
+		--save-context $(BASE_DIR)/context/$*.txt $(DISASM_EXTRA_PARAMS) \
+		--default-banned --libultra-syms --hardware-regs --named-hardware-regs
 	@touch $@
 
 
@@ -112,5 +113,6 @@ $(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables
 		--variables $(BASE_DIR)/tables/variables.csv --functions $(BASE_DIR)/tables/functions.csv \
 		--constants $(GAME)/tables/constants.csv --constants $(BASE_DIR)/tables/constants_ovl_$*.csv \
 		--file-addresses $(BASE_DIR)/tables/file_addresses.csv \
-		--save-context $(BASE_DIR)/context/ovl_$*.txt $(DISASM_EXTRA_PARAMS) $(OVL_DIS_EXTRA_PARAMS)
+		--save-context $(BASE_DIR)/context/ovl_$*.txt $(DISASM_EXTRA_PARAMS) $(OVL_DIS_EXTRA_PARAMS) \
+		--default-banned --libultra-syms --hardware-regs --named-hardware-regs
 	@touch $@
