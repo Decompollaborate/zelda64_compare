@@ -5,3 +5,4 @@
 80091168,SsSram_Dma
 800911F4,SsSram_ReadWrite
 800CD200,Overlay_Relocate
+800D66B4,__ull_to_d

@@ -1,5 +1,6 @@
 offset,vram,.text
 0,800B6AC0,z_en_a_keep
+F6C80,801AD740,graph
 10C550,801C3010,code_80185F90
 10D030,801C3AF0,file_10D030
 

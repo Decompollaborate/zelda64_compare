@@ -1,0 +1,11 @@
+800D8810,guS2DInitBg
+800D8930,__ull_rshift
+800D8968,__ull_rem
+800D8984,__ull_div
+800D89A0,__ll_lshift
+800D89D8,__ll_rem
+800D89F4,__ll_div
+800D8A10,__ll_mul
+800D8A48,__ull_divremi
+800D8ADC,__ll_mod
+800D8B68,__ll_rshift
