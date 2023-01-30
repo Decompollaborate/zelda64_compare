@@ -45,45 +45,45 @@ def readSplitsFromCsv(csvfilename: Path) -> dict[str, dict[str, list[SplitEntry]
 
     for row_num in range(2, len(code_splits_file)):
         row = code_splits_file[row_num]
-        filename1, filename2, _, *data = row
+        try:
+            filename1, filename2, _, *data = row
 
-        name = filename1 or filename2
-        if name == "":
-            continue
-
-        for column_set_num in range(len(header)):
-            h = header[column_set_num]
-            if h == "":
+            name = filename1 or filename2
+            if name == "":
                 continue
-            try:
+
+            for column_set_num in range(len(header)):
+                h = header[column_set_num]
+                if h == "":
+                    continue
                 subrow = data[ column_set_num * columnsPerVersion : (column_set_num + 1) * columnsPerVersion ]
                 offset = subrow[0]
                 vram = subrow[1]
                 size = subrow[2]
-            except:
-                print(f"error when parsing {str(csvfilename)}, line {row_num}: could not read row:")
-                print(f"    {row}\n")
-                raise
 
-            try:
-                offset = int(offset, 16)
-            except:
-                continue
+                try:
+                    offset = int(offset, 16)
+                except:
+                    continue
 
-            try:
-                size = int(size, 16)
-            except:
-                size = -1
+                try:
+                    size = int(size, 16)
+                except:
+                    size = -1
 
-            try:
-                vram = int(vram, 16)
-            except:
-                vram = -1
+                try:
+                    vram = int(vram, 16)
+                except:
+                    vram = -1
 
-            if name not in splits[h]:
-                splits[h][name] = list()
+                if name not in splits[h]:
+                    splits[h][name] = list()
 
-            splits[h][name].append(SplitEntry(h, name, offset, size, vram))
+                splits[h][name].append(SplitEntry(h, name, offset, size, vram))
+        except:
+            spimdisasm.common.Utils.eprint(f"error when parsing {str(csvfilename)}, line {row_num}: could not read row:")
+            spimdisasm.common.Utils.eprint(f"    {row}\n")
+            raise
     return splits
 
 def getFileStartsFromEntries(splits: dict[str, SplitEntry], fileEndOffset: int) -> list[tuple[int, int, str]]:
