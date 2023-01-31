@@ -81,7 +81,7 @@ def readSplitsFromCsv(csvfilename: Path) -> dict[str, dict[str, list[SplitEntry]
 
                 splits[h][name].append(SplitEntry(h, name, offset, size, vram))
         except:
-            spimdisasm.common.Utils.eprint(f"error when parsing {str(csvfilename)}, line {row_num}: could not read row:")
+            spimdisasm.common.Utils.eprint(f"error when parsing {str(csvfilename)}, line {row_num-1}: could not read row:")
             spimdisasm.common.Utils.eprint(f"    {row}\n")
             raise
     return splits
