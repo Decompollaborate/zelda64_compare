@@ -45,6 +45,10 @@ def readSplitsFromCsv(csvfilename: Path) -> dict[str, dict[str, list[SplitEntry]
 
     for row_num in range(2, len(code_splits_file)):
         row = code_splits_file[row_num]
+        if len(row) == 0:
+            # row had a comment at the begninning
+            continue
+
         try:
             filename1, filename2, _, *data = row
 
