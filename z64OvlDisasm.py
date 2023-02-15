@@ -79,6 +79,8 @@ def ovlDisassemblerMain():
 
     parser.add_argument("--nuke-pointers", help="Use every technique available to remove pointers", action="store_true")
 
+    parser.add_argument("--function-info", help="Specifies a path where to output a csvs sumary file of every analyzed function", metavar="PATH")
+
     spimdisasm.common.Context.addParametersToArgParse(parser)
 
     spimdisasm.common.GlobalConfig.addParametersToArgParse(parser)
@@ -151,12 +153,11 @@ def ovlDisassemblerMain():
 
     if args.split_functions is not None:
         spimdisasm.common.Utils.printVerbose("Spliting functions")
-        rodataList: list[spimdisasm.mips.sections.SectionRodata] = list()
+        rodataList: list[spimdisasm.mips.sections.SectionBase] = list()
 
         splitFunctionsPath = Path(args.split_functions)
 
         for rodataName, rodataSection in f.sectionsDict[spimdisasm.common.FileSectionType.Rodata].items():
-            assert(isinstance(rodataSection, spimdisasm.mips.sections.SectionRodata))
             rodataList.append(rodataSection)
 
         for path, subFile in f.sectionsDict[spimdisasm.common.FileSectionType.Text].items():
@@ -166,6 +167,15 @@ def ovlDisassemblerMain():
 
                 spimdisasm.mips.FilesHandlers.writeSplitedFunction(splitFunctionsPath / subFile.name, func, rodataList)
         spimdisasm.mips.FilesHandlers.writeOtherRodata(splitFunctionsPath, rodataList)
+
+    if args.function_info is not None:
+        processedFiles: dict[spimdisasm.common.FileSectionType, list[spimdisasm.mips.sections.SectionBase]] = {}
+        for sectionType, sectionDict in f.sectionsDict.items():
+            processedFiles[sectionType] = []
+            for name, sect in sectionDict.items():
+                processedFiles[sectionType].append(sect)
+
+        spimdisasm.frontendCommon.FrontendUtilities.writeFunctionInfoCsv(processedFiles, Path(args.function_info))
 
     if args.save_context is not None:
         contextPath = Path(args.save_context)

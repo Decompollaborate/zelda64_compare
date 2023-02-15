@@ -1,2 +1,2 @@
 libyaz0>=0.5
-spimdisasm>=1.6.0<2.0.0
+spimdisasm>=1.11.3<2.0.0
