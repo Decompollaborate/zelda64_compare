@@ -25,7 +25,7 @@ ovl_007492E0
 file_00771900
 ovl_007745B0
 file_00774980
-ovl_007749C0
+ovl_submenu
 file_007778B0
 ovl_00777AE0
 file_00781D60

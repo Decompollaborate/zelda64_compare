@@ -8,7 +8,7 @@ ovl_00747AA0
 ovl_007486E0
 ovl_007492E0
 ovl_007745B0
-ovl_007749C0
+ovl_submenu
 ovl_007E4DF0
 ovl_007E5640
 ovl_007E5880
