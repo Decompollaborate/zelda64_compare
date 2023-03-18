@@ -85,9 +85,13 @@ def ovlDisassemblerMain():
 
     spimdisasm.common.GlobalConfig.addParametersToArgParse(parser)
 
+    spimdisasm.mips.InstructionConfig.addParametersToArgParse(parser)
+
     parser.add_argument("--add-filename", help="Adds the filename of the file to the generated function/variable name")
 
     args = parser.parse_args()
+
+    spimdisasm.mips.InstructionConfig.parseArgs(args)
 
     spimdisasm.common.GlobalConfig.parseArgs(args)
 
