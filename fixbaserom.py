@@ -15,6 +15,8 @@ CRC_VERSION = {
         "693ba2aeb7f14e9f": ["OOT", "NE2", "Nintendo 64 American 1.2"],
         "b2055fbd0bab4e0c": ["OOT", "NP1", "Nintendo 64 PAL 1.1"],
 
+        "67c8b1371cde6113": ["OOT", "NEG", "Gateway American"],
+
         "f611f4bac584135c": ["OOT", "CJO", "GameCube Japanese"],
         "f43b45ba2f0e9b6f": ["OOT", "CJM", "GameCube Japanese Master Quest"],
         "f3dd35ba4152e075": ["OOT", "CEO", "GameCube American"],
@@ -59,6 +61,7 @@ VERSIONS_MD5S = {
         "NJ2":            "2258052847bdd056c8406a9ef6427f13",
         "NE2":            "57a9719ad547c516342e1a15d5c28c3d",
         "NP1":            "d714580dd74c2c033f5e1b6dc0aeac77",
+        "NEG":            "74072c944a82c34190f412ee96a51b13",
         "PAL WII 1.1":    None,
         "CJO":            "33fb7852c180b18ea0b9620b630f413f",
         "CJM":            "69895c5c78442260f6eafb2506dc482a",

@@ -20,6 +20,7 @@ FILE_TABLE_OFFSET = {
         "NP0":        0x07950,
         "NE2":        0x07960,
         "NP1":        0x07950,
+        "NEG":        0x07A40,
         "CJO":        0x07170,
         "CJM":        0x07170,
         "CEO":        0x07170,
@@ -32,7 +33,6 @@ FILE_TABLE_OFFSET = {
         "CJC":        0x07170, # Zelda collection
         "IQS":        0x0B7A0,
         "IQT":        0x0B240,
-        # "GATEWAY":    0x0AC80, # fake
     },
 
     "MM": {
@@ -67,6 +67,7 @@ FILE_NAMES: dict[str, dict[str, list[str] | None]] = {
         "NP0":        None,
         "NE2":        None,
         "NP1":        None,
+        "NEG":        None,
         "CJO":        None,
         "CJM":        None,
         "CEO":        None,
@@ -142,6 +143,7 @@ def readFilelists():
     FILE_NAMES["OOT"]["NER"] = FILE_NAMES["OOT"]["NE0"]
     FILE_NAMES["OOT"]["NE1"] = FILE_NAMES["OOT"]["NE0"]
     FILE_NAMES["OOT"]["NE2"] = FILE_NAMES["OOT"]["NE0"]
+    FILE_NAMES["OOT"]["NEG"] = FILE_NAMES["OOT"]["NE0"]
 
     FILE_NAMES["OOT"]["NJR"]  = FILE_NAMES["OOT"]["NER"]
     FILE_NAMES["OOT"]["NJ0"]  = FILE_NAMES["OOT"]["NE0"]
