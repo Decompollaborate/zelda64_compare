@@ -1,6 +1,6 @@
 ,,,iqs,,,iqt,,
 Debug rom,,Notes,Offset,VRAM,Size,Offset,VRAM,Size
-boot_main.c,,,A750,8000ABA0,,,,
+boot_main.c,,,A750,8000ABA0,,A1F0,8000A640,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,

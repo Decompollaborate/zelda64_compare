@@ -1,5 +1,6 @@
 offset,vram,.text
 0,80803650,z_file_copy_erase
+3040,80806690,z_file_nameset_NES
 
 offset,vram,.data
 EC40,80812290,z_file_nameset_data

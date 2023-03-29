@@ -37,7 +37,7 @@ EC0,80001320,CIC6105.c
 3840,80003CA0,getthreadid.c
 3860,80003CC0,setintmask.s
 3900,80003D60,visetmode.c
-3960,80003DC0,probetlb.s
+3970,80003DD0,probetlb.s
 3A30,80003E90,getmemsize.c
 3B50,80003FB0,seteventmesg
 3C10,80004070,unmaptlball.s

@@ -39,7 +39,7 @@ FD0,80001430,z_locale.c
 3A00,80003E60,getthreadid.c
 3A20,80003E80,setintmask.s
 3AC0,80003F20,visetmode.c
-3B20,80003F80,probetlb.s
+3B30,80003F90,probetlb.s
 3BF0,80004050,getmemsize.c
 3D10,80004170,seteventmesg
 3DD0,80004230,unmaptlball.s

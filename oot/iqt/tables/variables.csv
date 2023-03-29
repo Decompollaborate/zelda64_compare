@@ -1,0 +1,13 @@
+800099C8,__osRunQueue,OSThread*,0x4
+800099D0,__osRunningThread,OSThread*,0x4
+800099D4,__osFaultedThread,OSThread*,0x4
+80009B00,__osHwIntTable,struct __osHwInt[5],0x28
+80009B28,__osPiIntTable,struct __osHwInt[1],0x8
+80009BAC,__osShutdown,u32,0x4
+80009BB0,__osShutdownTime,u32,0x4
+80009BB4,__OSGlobalIntMask,OSHWIntr,0x4
+8000A120,__osIntOffTable,u8[0x20],0x20
+8000A140,__osIntTable,void*[9],0x24
+8000A170,__osRcpImTable,u16[],0x4
+80012680,__osThreadSave,OSThread,0x4
+800129E0,__osEventStateTab,__OSEventState,0x78

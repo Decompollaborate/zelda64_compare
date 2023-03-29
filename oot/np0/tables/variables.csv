@@ -1,1 +1,6 @@
+80111310,gGameOverTimer,s16,0x4
+801183D0,gSaveContext,SaveContext,0x1428
+80119800,gGameInfo,GameInfo*,0x4
+8011EC58,gSegments,uintptr_t[16],0x40
+80129E80,gZBuffer,u16,0x25800
 801D6DC0,_string_n64dd_c,char,0x1

@@ -41,6 +41,7 @@ FC0,80001420,driverominit.c
 3660,80003AC0,getmemsize.c
 3780,80003BE0,seteventmesg
 3840,80003CA0,unmaptlball.s
+3890,80003CF0,epidma.c
 3930,80003D90,invalicache.s
 39B0,80003E10,createmesgqueue.c
 39E0,80003E40,invaldcache.s

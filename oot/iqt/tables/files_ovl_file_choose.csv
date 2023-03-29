@@ -1,0 +1,2 @@
+offset,vram,.text
+0,80803700,z_file_copy_erase

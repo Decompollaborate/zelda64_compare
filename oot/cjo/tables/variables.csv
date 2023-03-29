@@ -1,1 +1,2 @@
 80006110,gCurrentRegion,u32,0x4
+8011B168,gSaveContext,SaveContext,0x1428

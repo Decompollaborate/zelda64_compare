@@ -1,4 +1,4 @@
 ,,,iqs,,,iqt,,
 Debug rom,,Notes,Offset,VRAM,Size,Offset,VRAM,Size
-unk_80009410,,,98D0,80009D20,20,,,
+unk_80009410,,,98D0,80009D20,20,9360,800097B0,
 idle,,,98F0,80009D40,,,,
