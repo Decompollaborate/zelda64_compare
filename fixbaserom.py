@@ -40,6 +40,8 @@ CRC_VERSION = {
         "9fc385e53ecc05c7": ["MM", "NPD", "Nintendo 64 PAL Debug"],
         "0a5d8f8398c5371a": ["MM", "NP1", "Nintendo 64 PAL 1.1"],
 
+        "83a5163da110704d": ["MM", "NEG", "Gateway American"],
+
         "b443eb084db31193": ["MM", "CE0", "GameCube American"],
         "6aecec4ff0924814": ["MM", "CP0", "GameCube PAL"],
         "8473d0c123120666": ["MM", "CJ0", "GameCube Japanese"],
@@ -85,6 +87,7 @@ VERSIONS_MD5S = {
         "NP0":            "13fab67e603b002ceaf0eea84130e973",
         "NPD":            "71fbae5d2b27926ea54e92ce2fc91622",
         "NP1":            "beccfded43a2f159d03555027462a950",
+        "NEG":            "f6738180b95d46f6355855d1da8dbb0b",
         "CE0":            "ac0751dbc23ab2ec0c3144203aca0003",
         "CP0":            "dbe9af0db46256e42b5c67902b696549",
         "CJ0":            "d3929aadf7640f8c5b4ce8321ad4393a",
