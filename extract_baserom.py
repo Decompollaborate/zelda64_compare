@@ -40,6 +40,7 @@ FILE_TABLE_OFFSET = {
         "NJ1":    0x1C050,
         "NEK":    0x1AB50,
         "NE0":    0x1A500,
+        "NEG":    0x1A500,
         "NP0":    0x1A650,
         "NPD":    0x24F60,
         "NP1":    0x1A8D0,
@@ -88,6 +89,7 @@ FILE_NAMES: dict[str, dict[str, list[str] | None]] = {
         "NJ1":    None,
         "NEK":    None,
         "NE0":    None,
+        "NEG":    None,
         "NP0":    None,
         "NPD":    None,
         "NP1":    None,
@@ -157,6 +159,7 @@ def readFilelists():
     FILE_NAMES["MM"]["NJ0"] = readFile("mm/filelists/filelist_mm_jp_1.0.txt")
     FILE_NAMES["MM"]["NEK"] = readFile("mm/filelists/filelist_mm_usa_demo.txt")
     FILE_NAMES["MM"]["NE0"] = readFile("mm/filelists/filelist_mm_usa.txt")
+    FILE_NAMES["MM"]["NEG"] = readFile("mm/filelists/filelist_mm_usa_gateway.txt")
     FILE_NAMES["MM"]["NPD"] = readFile("mm/filelists/filelist_mm_pal_dbg.txt")
     FILE_NAMES["MM"]["CE0"] = readFile("mm/filelists/filelist_mm_usa_gc.txt")
     FILE_NAMES["MM"]["CP0"] = readFile("mm/filelists/filelist_mm_pal_gc.txt")

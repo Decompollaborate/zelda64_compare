@@ -9,7 +9,7 @@ SPLIT_FUNCTIONS        ?= 0
 
 
 DISASM_VERBOSITY       ?= -q
-DISASM_EXTRA_PARAMS    ?=
+DISASM_EXTRA_PARAMS    ?= --no-use-fpccsr --Mreg-names o32 --function-info $(GAME)/function_info/$(VERSION)_$*_function_info.csv --custom-suffix _$(VERSION)
 
 OVL_DIS_EXTRA_PARAMS   ?=
 ifeq ($(GAME), dnm)
@@ -116,3 +116,7 @@ $(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables
 		--save-context $(BASE_DIR)/context/ovl_$*.txt $(DISASM_EXTRA_PARAMS) $(OVL_DIS_EXTRA_PARAMS) \
 		--default-banned --libultra-syms --hardware-regs --named-hardware-regs
 	@touch $@
+
+
+# Print target for debugging
+print-% : ; $(info $* is a $(flavor $*) variable set to [$($*)]) @true

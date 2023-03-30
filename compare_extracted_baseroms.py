@@ -282,7 +282,7 @@ def main():
     # spimdisasm.common.GlobalConfig.VERBOSE = args.verbose
     # spimdisasm.common.GlobalConfig.QUIET = args.quiet
 
-    filelist = spimdisasm.common.Utils.readFile(args.filelist)
+    filelist = spimdisasm.common.Utils.readFile(Path(args.filelist))
 
     if not args.no_csv:
         compare_to_csv(args, filelist)

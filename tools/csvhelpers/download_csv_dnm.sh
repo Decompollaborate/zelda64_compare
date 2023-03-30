@@ -2,9 +2,9 @@
 
 set -e
 
-# Run the script from the root of the project
-DIR="$(dirname "$(readlink -f "$0")")"
-cd "$DIR/../.."
+# # Run the script from the root of the project
+# DIR="$(dirname "$(readlink -f "$0")")"
+# cd "$DIR/../.."
 
 
 ## File adresses

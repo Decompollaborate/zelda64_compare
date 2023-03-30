@@ -3,8 +3,8 @@
 set -e
 
 # Run the script from the root of the project
-DIR="$(dirname "$(readlink -f "$0")")"
-cd "$DIR/../.."
+# DIR="$(dirname "$(readlink -f "$0")")"
+# cd "$DIR/../.."
 
 
 ## Functions and variables

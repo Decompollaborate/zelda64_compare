@@ -1,0 +1,7 @@
+80000400,entrypoint
+80000460,cleararena
+800005A0,Main_ThreadEntry
+80000FFC,DmaMgr_Init
+80003010,bzero
+80004BB0,osGetTime
+800A25B0,Main
