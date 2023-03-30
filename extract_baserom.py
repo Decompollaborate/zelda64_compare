@@ -122,17 +122,18 @@ def readFile(filepath):
 
 def readFilelists():
     FILE_NAMES["OOT"]["CPMD"] = readFile("oot/filelists/filelist_pal_mq_dbg.txt")
-    FILE_NAMES["OOT"]["CPM"]     = readFile("oot/filelists/filelist_pal_mq.txt")
-    FILE_NAMES["OOT"]["CEM"]     = readFile("oot/filelists/filelist_usa_mq.txt")
-    FILE_NAMES["OOT"]["NE0"]   = readFile("oot/filelists/filelist_ntsc_1.0.txt")
-    FILE_NAMES["OOT"]["NP0"]    = readFile("oot/filelists/filelist_pal_1.0.txt")
-    FILE_NAMES["OOT"]["CJC"]   = readFile("oot/filelists/filelist_jp_gc_ce.txt")
-    FILE_NAMES["OOT"]["IQS"]    = readFile("oot/filelists/filelist_ique_cn.txt")
+    FILE_NAMES["OOT"]["CPM"]  = readFile("oot/filelists/filelist_pal_mq.txt")
+    FILE_NAMES["OOT"]["CEM"]  = readFile("oot/filelists/filelist_usa_mq.txt")
+    FILE_NAMES["OOT"]["NE0"]  = readFile("oot/filelists/filelist_ntsc_1.0.txt")
+    FILE_NAMES["OOT"]["NEG"]  = readFile("oot/filelists/filelist_ntsc_gateway.txt")
+    FILE_NAMES["OOT"]["NP0"]  = readFile("oot/filelists/filelist_pal_1.0.txt")
+    FILE_NAMES["OOT"]["CJC"]  = readFile("oot/filelists/filelist_jp_gc_ce.txt")
+    FILE_NAMES["OOT"]["IQS"]  = readFile("oot/filelists/filelist_ique_cn.txt")
 
     FILE_NAMES["OOT"]["CJM"] = FILE_NAMES["OOT"]["CEM"]
 
     FILE_NAMES["OOT"]["CEO"] = FILE_NAMES["OOT"]["CJC"]
-    FILE_NAMES["OOT"]["CJO"]  = FILE_NAMES["OOT"]["CEO"]
+    FILE_NAMES["OOT"]["CJO"] = FILE_NAMES["OOT"]["CEO"]
     FILE_NAMES["OOT"]["CPO"] = FILE_NAMES["OOT"]["CPM"]
 
     FILE_NAMES["OOT"]["NP1"] = FILE_NAMES["OOT"]["NP0"]
@@ -145,12 +146,11 @@ def readFilelists():
     FILE_NAMES["OOT"]["NER"] = FILE_NAMES["OOT"]["NE0"]
     FILE_NAMES["OOT"]["NE1"] = FILE_NAMES["OOT"]["NE0"]
     FILE_NAMES["OOT"]["NE2"] = FILE_NAMES["OOT"]["NE0"]
-    FILE_NAMES["OOT"]["NEG"] = FILE_NAMES["OOT"]["NE0"]
 
-    FILE_NAMES["OOT"]["NJR"]  = FILE_NAMES["OOT"]["NER"]
-    FILE_NAMES["OOT"]["NJ0"]  = FILE_NAMES["OOT"]["NE0"]
-    FILE_NAMES["OOT"]["NJ1"]  = FILE_NAMES["OOT"]["NE1"]
-    FILE_NAMES["OOT"]["NJ2"]  = FILE_NAMES["OOT"]["NE2"]
+    FILE_NAMES["OOT"]["NJR"] = FILE_NAMES["OOT"]["NER"]
+    FILE_NAMES["OOT"]["NJ0"] = FILE_NAMES["OOT"]["NE0"]
+    FILE_NAMES["OOT"]["NJ1"] = FILE_NAMES["OOT"]["NE1"]
+    FILE_NAMES["OOT"]["NJ2"] = FILE_NAMES["OOT"]["NE2"]
     FILE_NAMES["OOT"]["PAL WII 1.1"] = FILE_NAMES["OOT"]["NP1"]
 
     FILE_NAMES["OOT"]["GATEWAY"] = FILE_NAMES["OOT"]["IQS"]
@@ -165,7 +165,7 @@ def readFilelists():
     FILE_NAMES["MM"]["CP0"] = readFile("mm/filelists/filelist_mm_pal_gc.txt")
     FILE_NAMES["MM"]["CJ0"] = readFile("mm/filelists/filelist_mm_jp_gc.txt")
 
-    FILE_NAMES["MM"]["NJ1"]  = FILE_NAMES["MM"]["NJ0"]
+    FILE_NAMES["MM"]["NJ1"] = FILE_NAMES["MM"]["NJ0"]
     FILE_NAMES["MM"]["NP0"] = FILE_NAMES["MM"]["NPD"]
     FILE_NAMES["MM"]["NP1"] = FILE_NAMES["MM"]["NP0"]
 
