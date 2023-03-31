@@ -158,17 +158,15 @@ def compare_to_csv(args, filelist):
     column1 = args.version1 if args.column1 is None else args.column1
     column2 = args.version2 if args.column2 is None else args.column2
 
-    context_one = spimdisasm.common.Context()
-    context_two = spimdisasm.common.Context()
-    # context_one.readFunctionMap(args.version1)
-    # context_two.readFunctionMap(args.version2)
-
     print(f"Index,File,Are equals,Size in {column1},Size in {column2},Size proportion,Size difference,Bytes different,Words different", end="")
     if not args.dont_split_files:
         print(",Opcodes difference,Same opcode but different arguments", end="")
     print(flush=True)
 
     for filename in filelist:
+        context_one = spimdisasm.common.Context()
+        context_two = spimdisasm.common.Context()
+
         filepath_one = Path(args.game, args.version1, "baserom", filename)
         filepath_two = Path(args.game, args.version2, "baserom", filename)
 
