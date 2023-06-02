@@ -1,0 +1,11 @@
+80080160,Idle_ClearMemory
+80081AD0,Fault_AddClient
+8008447C,8008447C
+800848AC,FaultDrawer_Printf
+80089C90,bzero
+800B3EA0,Actor_PrintLists
+800B5BE4,func_800B5814
+800B81D4,Hilite_Draw
+800B83B0,Hilite_DrawOpa
+800B83E8,Hilite_DrawXlu
+800B9540,Actor_InitContext

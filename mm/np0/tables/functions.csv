@@ -1,0 +1,6 @@
+8080D170,FileChoose_InitModeUpdate
+8080D304,FileChoose_InitModeDraw
+8080D334,FileChoose_SetView
+8080D780,FileChoose_SplitNumber
+808151C8,FileChoose_Destroy
+808151EC,FileChoose_Init

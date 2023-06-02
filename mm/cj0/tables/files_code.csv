@@ -1,5 +1,8 @@
 offset,vram,.text
 0,800A6420,z_en_a_keep
+DA60,800B3E80,z_actor
+19930,800BFD50,z_actor_dlftbls
+19B10,800BFF30,file_019B10
 DE680,80184AA0,code_80185F90
 DF160,80185580,file_0DF160
 
@@ -8,3 +11,11 @@ offset,vram,.data
 
 offset,vram,.rodata
 134C40,801DB060,z_en_item00
+134F80,801DB3A0,z_actor
+135160,801DB580,z_actor_dlftbls
+
+offset,vram,.bss
+13BD40,801E2160,code_801E3FA0
+145630,801EBA50,z_actor
+1456C0,801EBAE0,z_actor_dlftbls
+15FA00,80205E20,.end

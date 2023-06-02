@@ -1,5 +1,7 @@
 offset,vram,.text
 0,80080060,boot_main
+120,80080180,idle
+8C0,80080920,file_0008C0
 
 offset,vram,.bss
 23F00,800A3F60,boot_main

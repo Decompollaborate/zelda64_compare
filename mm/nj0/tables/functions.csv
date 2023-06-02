@@ -1,2 +1,2 @@
-800ECEBC,Cutscene_TerminatorImpl
-800EFE4C,Cutscene_IsPlayingCs
+800ECEBC,CutsceneCmd_DestinationDefault
+800EFE4C,Cutscene_IsPlaying

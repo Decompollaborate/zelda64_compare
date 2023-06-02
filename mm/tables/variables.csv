@@ -1,9 +1,9 @@
 Variable / Symbol,Type,Notes,nj0,,nj1,,ne0,,np0,,np1,,nek,,neg,,npd,,cj0,,ce0,,cp0,
 ,,,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size,VRAM,Size
-gActorOverlayTable,ActorOverlay,,801A9E60,5640,801AA0A0,5640,801AEFD0,5640,,,,,,,,,,,,,,,,
-gSaveContext,SaveContext,,801EF460,4C78,801EF710,4C78,801EF670,48E8,,,801E6EF0,48E8,801EEE80,48E8,,,,,,,,,,
+gActorOverlayTable,ActorOverlay,,801A9E60,5640,801AA0A0,5640,801AEFD0,5640,801AF760,,,,,,,,,,,,,,,
+gSaveContext,SaveContext,,801EF460,4C78,801EF710,4C78,801EF670,48E8,,,801E6EF0,48E8,801EEE80,48E8,801EE8D0,48E8,,,,,,,,
 gSystemHeap,u8,,,,,,803824C0,1,,,80379D00,1,80381CD0,1,,,,,,,,,,
-gGameInfo,GameInfo*,,,,,,801F3F60,4,,,801EB7E0,4,801F3770,4,,,,,,,,,,
+gGameInfo,GameInfo*,,,,,,801F3F60,4,,,801EB7E0,4,801F3770,4,801F31C0,4,,,,,,,,
 aspMainTextStart,u64,,,,,,801AAAB0,1000,,,,,,,,,,,,,,,,
 gspS2DEX2_fifoTextStart,u64,,,,,,801ABAB0,18C0,,,,,,,,,,,,,,,,
 njpgdspMainTextStart,u64,,,,,,801AD370,AF0,,,,,,,,,,,,,,,,
@@ -12,3 +12,19 @@ gspF3DZEX2_NoN_PosLight_fifoTextStart,u64,,,,,,801E2160,1630,,,,,,,,,,,,,,,,
 gspF3DZEX2_NoN_PosLight_fifoDataStart,u64,,,,,,801E3790,420,,,,,,,,,,,,,,,,
 gspS2DEX2_fifoDataStart,u64,,,,,,801E3BB0,390,,,,,,,,,,,,,,,,
 njpgdspMainDataStart,u64,,,,,,801E3F40,60,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,
+sActorFaultClient,FaultClient,z_actor,,,,,801ED8A0,10,,,,,,,,,8023D9F0,10,801EBA50,10,801EBA60,10,801E36B0,10
+D_801ED8B0,CollisionPoly*,z_actor,,,,,801ED8B0,4,,,,,,,,,8023DA00,4,801EBA60,4,801EBA70,4,801E36C0,4
+D_801ED8B4,s32,z_actor,,,,,801ED8B4,4,,,,,,,,,8023DA04,4,801EBA64,4,801EBA74,4,801E36C4,4
+D_801ED8B8,Actor*,z_actor,,,,,801ED8B8,4,,,,,,,,,8023D9C4,4,801EBA68,4,801EBA78,4,801E36C8,4
+D_801ED8BC,Actor*,z_actor,,,,,801ED8BC,4,,,,,,,,,8023D9C8,4,801EBA6C,4,801EBA7C,4,801E36CC,4
+D_801ED8C0,Actor*,z_actor,,,,,801ED8C0,4,,,,,,,,,8023D9CC,4,801EBA70,4,801EBA80,4,801E36D0,4
+D_801ED8C4,Actor*,z_actor,,,,,801ED8C4,4,,,,,,,,,8023D9D0,4,801EBA74,4,801EBA84,4,801E36D4,4
+D_801ED8C8,f32,z_actor,,,,,801ED8C8,4,,,,,,,,,8023D9D4,4,801EBA78,4,801EBA88,4,801E36D8,4
+sBgmEnemyDistSq,f32,z_actor,,,,,801ED8CC,4,,,,,,,,,8023D9D8,4,801EBA7C,4,801EBA8C,4,801E36DC,4
+D_801ED8D0,f32,z_actor,,,,,801ED8D0,4,,,,,,,,,8023D9DC,4,801EBA80,4,801EBA90,4,801E36E0,4
+D_801ED8D4,s32,z_actor,,,,,801ED8D4,4,,,,,,,,,8023D9E0,4,801EBA84,4,801EBA94,4,801E36E4,4
+D_801ED8D8,s32,z_actor,,,,,801ED8D8,4,,,,,,,,,8023D9E4,4,801EBA88,4,801EBA98,4,801E36E8,4
+D_801ED8DC,s16,z_actor,,,,,801ED8DC,2,,,,,,,,,8023D9E8,2,801EBA8C,2,801EBA9C,2,801E36EC,2
+D_801ED8E0,Mtx,z_actor,,,,,801ED8E0,0x40,,,,,,,,,8023DA08,40,801EBA90,40,801EBAA0,40,801E36F0,40
+D_801ED920,Actor*,z_actor,,,,,801ED920,4,,,,,,,,,8023D9C0,4,801EBAD0,4,801EBAE0,4,801E3730,4
