@@ -1,3 +1,14 @@
+80080150,Idle_ClearMemory
+80081A50,Fault_AddClient
+800843FC,FaultDrawer_SetCharPad
+8008482C,FaultDrawer_Printf
+80089690,bzero
+800B37C0,Actor_PrintLists
+800B5504,func_800B5814
+800B73BC,Actor_UpdateBgCheckInfo
+800B7908,Hilite_Draw
+800B7AE4,Hilite_DrawOpa
+800B7B1C,Hilite_DrawXlu
 8080D170,FileChoose_InitModeUpdate
 8080D304,FileChoose_InitModeDraw
 8080D334,FileChoose_SetView

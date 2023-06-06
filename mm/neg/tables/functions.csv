@@ -94,7 +94,7 @@
 800842BC,FaultDrawer_SetForeColor
 80084308,FaultDrawer_SetBackColor
 80084354,FaultDrawer_SetFontColor
-8008439C,8008447C
+8008439C,FaultDrawer_SetCharPad
 800843D4,FaultDrawer_SetCursor
 800844D8,FaultDrawer_FillScreen
 80084568,FaultDrawer_FormatStringFunc
@@ -152,7 +152,7 @@
 800860D8,GfxPrint_Printf
 80086110,MtxConv_F2L
 80086258,MtxConv_L2F
-80086280,__assert
+80086280,__assert_retail
 800862B4,func_800862B4
 800862E0,SystemArena_MallocMin1
 80086310,SystemArena_FreeNull
@@ -1479,7 +1479,7 @@
 80100560,Lib_PhysicalToVirtualNull
 8010EF18,Interface_ChangeAlpha
 8013ED84,View_Init
-80143430,SkyboxDraw_UpdateMatrix
+80143430,Skybox_UpdateMatrix
 801434B4,SkyboxDraw_SetColors
 801434F8,SkyboxDraw_Draw
 80143894,SkyboxDraw_Noop

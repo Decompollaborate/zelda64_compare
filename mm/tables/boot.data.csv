@@ -1,6 +1,6 @@
 File,,Notes,nj0,,,nj1,,,ne0,,,np0,,,np1,,,nek,,,neg,,,npd,,,cj0,,,ce0,,,cp0,,
 ,,,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
-idle,,Start of data,,,,,,,16AC0,80096B20,20,,,,16C60,80096CC0,20,17020,80097080,20,16AC0,80096B20,20,,,,,,,,,,,,
+idle,,Start of data,,,,,,,16AC0,80096B20,20,,,,16C60,80096CC0,20,17020,80097080,20,16AC0,80096B20,20,01F5D0,8009F630,,,,,,,,,,
 viconfig,,,,,,,,,16AE0,80096B40,10,,,,16C80,80096CE0,10,17040,800970A0,10,16AE0,80096B40,10,,,,,,,,,,,,
 z_std_dma,,,,,,,,,16AF0,80096B50,10,,,,16C90,80096CF0,10,17050,800970B0,10,16AF0,80096B50,10,,,,,,,,,,,,
 irqmgr,,,,,,,,,16B00,80096B60,20,,,,16CA0,80096D00,20,17060,800970C0,20,16B00,80096B60,20,,,,,,,,,,,,

@@ -1,3 +1,4 @@
+80080150,Idle_ClearMemory
 800807E0,DmaMgr_DMARomToRam
 80080924,DmaMgr_DmaCallback0
 80080944,DmaMgr_FindDmaEntry
@@ -10,6 +11,7 @@
 80080CE0,DmaMgr_SendRequest0
 80080D5C,DmaMgr_Start
 80080E50,DmaMgr_Stop
+80081A50,Fault_AddClient
 800855E0,GfxPrint_InitDlist
 80085A2C,GfxPrint_SetColor
 80085A78,GfxPrint_SetPosPx
@@ -27,6 +29,13 @@
 80086128,GfxPrint_VPrintf
 80086148,GfxPrint_Printf
 800897D0,bzero
+800B3A40,Actor_PrintLists
+800B5784,func_800B5814
+800B763C,Actor_UpdateBgCheckInfo
+800B7B88,Hilite_Draw
+800B7D64,Hilite_DrawOpa
+800B7D9C,Hilite_DrawXlu
+800BB388,func_800BB604
 800F4D00,Font_LoadChar
 800F4D14,Font_LoadCharNES
 800F4D80,Font_LoadMessageBoxEndIcon
@@ -107,7 +116,7 @@
 8013F400,func_8013F050
 8013F450,View_SetScale
 8013F470,View_GetScale
-8013F480,func_8013F0D0
+8013F480,View_SetPerspective
 8013F4B0,func_8013F100
 8013F4D0,func_8013F120
 8013F50C,func_8013F15C
@@ -123,12 +132,12 @@
 8013F870,View_ClearDistortion
 8013F8A4,View_SetDistortion
 8013F8FC,View_StepDistortion
-8013FAAC,View_RenderView
+8013FAAC,View_Apply
 8013FAF8,View_RenderToPerspectiveMatrix
 8013FDCC,View_RenderToOrthographicMatrix
 8013FF78,func_8013FBC8
 80140124,func_8013FD74
-801403D4,func_80140024
+801403D4,View_UpdateViewingMatrix
 8014047C,func_801400CC
 80161D70,ShrinkWindow_SetLetterboxTarget
 80161D84,ShrinkWindow_GetLetterboxTarget

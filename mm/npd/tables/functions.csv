@@ -12,11 +12,15 @@
 80080684,Idle_InitVideo
 80080828,Idle_ThreadEntry
 800816F4,DmaMgr_SendRequestImpl
+80082830,__assert_debug
 80082910,Fault_AddClient
+80084D14,Fault_AddHungupAndCrashImpl
 80086AA0,StackCheck_Init
+8008A904,sprintf
 8008AF30,osRecvMesg
 8008CC00,bzero
 8008E430,osCreateThread
+8008F5A0,osGetThreadId
 80090B20,osCreatePiManager
 80093E60,osCreateMesgQueue
 80095040,osSetThreadPri
@@ -36,7 +40,15 @@
 800CF8A4,Actor_SpawnEntry
 800CFFF0,func_800BB8EC
 800D4950,ActorOverlayTable_Init
+800F78B8,Camera_Update
+801435A0,Skybox_UpdateMatrix
+801679FC,View_SetPerspective
+80168330,View_Apply
+8018C72C,ShrinkWindow_Draw
+8019CAF4,Play_SetFog
+8019F8A0,Play_DrawMain
 801A1A50,Play_GetOriginalSceneId
+801AA4B0,PreRender_ApplyFiltersSlowlyDestroy
 801AB070,THA_GetHead
 801AB07C,THA_SetHead
 801AB088,THA_GetTail
@@ -56,4 +68,5 @@
 801AEF14,Graph_Alloc
 801AEF64,Graph_OpenDisps
 801AEFE4,Graph_CloseDisps
+801AF0AC,Graph_BranchDlist
 801BDFC8,SkinMatrix_MtxFCopy

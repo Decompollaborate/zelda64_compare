@@ -167,4 +167,6 @@ offset,vram,.rodata
 
 offset,vram,.bss
 13D740,801E3200,code_801E3FA0
+147040,801ECB00,z_actor
+1470D0,801ECB90,file_1470D0
 1626A0,80208160,.end

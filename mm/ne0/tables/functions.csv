@@ -94,7 +94,7 @@
 800842BC,FaultDrawer_SetForeColor
 80084308,FaultDrawer_SetBackColor
 80084354,FaultDrawer_SetFontColor
-8008439C,8008447C
+8008439C,FaultDrawer_SetCharPad
 800843D4,FaultDrawer_SetCursor
 800844D8,FaultDrawer_FillScreen
 80084568,FaultDrawer_FormatStringFunc
@@ -152,7 +152,7 @@
 800860D8,GfxPrint_Printf
 80086110,MtxConv_F2L
 80086258,MtxConv_L2F
-80086280,__assert
+80086280,__assert_retail
 800862B4,func_800862B4
 800862E0,SystemArena_MallocMin1
 80086310,SystemArena_FreeNull
@@ -2722,7 +2722,7 @@
 8013F050,func_8013F050
 8013F0A0,View_SetScale
 8013F0C0,View_GetScale
-8013F0D0,func_8013F0D0
+8013F0D0,View_SetPerspective
 8013F100,func_8013F100
 8013F120,func_8013F120
 8013F15C,func_8013F15C
@@ -2738,12 +2738,12 @@
 8013F4C0,View_ClearDistortion
 8013F4F4,View_SetDistortion
 8013F54C,View_StepDistortion
-8013F6FC,View_RenderView
+8013F6FC,View_Apply
 8013F748,View_RenderToPerspectiveMatrix
 8013FA1C,View_RenderToOrthographicMatrix
 8013FBC8,func_8013FBC8
 8013FD74,func_8013FD74
-80140024,func_80140024
+80140024,View_UpdateViewingMatrix
 801400CC,func_801400CC
 80140260,func_80140260
 8014026C,func_8014026C
@@ -2780,7 +2780,7 @@
 801431E8,func_801431E8
 80143324,func_80143324
 801434E4,func_801434E4
-801435A0,SkyboxDraw_UpdateMatrix
+801435A0,Skybox_UpdateMatrix
 80143624,SkyboxDraw_SetColors
 80143668,SkyboxDraw_Draw
 80143A04,SkyboxDraw_Noop
@@ -2982,7 +2982,7 @@
 80165E7C,func_80165E7C
 80165EC0,func_80165EC0
 80166060,func_80166060
-801660B8,func_801660B8
+801660B8,Play_SetFog
 8016613C,Play_Fini
 801663C4,func_801663C4
 80166644,func_80166644
@@ -2992,7 +2992,7 @@
 80167814,func_80167814
 80167DE4,func_80167DE4
 80167F0C,func_80167F0C
-80168090,Play_Draw
+80168090,Play_DrawMain
 80168DAC,func_80168DAC
 80168F64,Play_Update
 801690CC,func_801690CC

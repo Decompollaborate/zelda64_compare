@@ -132,3 +132,11 @@ offset,vram,.data
 
 offset,vram,.rodata
 12EE80,801D6520,z_en_item00
+12FB20,801D71C0,z_actor
+12FE50,801D74F0,z_actor_dlftbls
+
+offset,vram,.bss
+13C6F0,801E3D90,code_801E3FA0
+145FF0,801ED690,z_actor
+146080,801ED720,file_146080
+161950,80208FF0,.end

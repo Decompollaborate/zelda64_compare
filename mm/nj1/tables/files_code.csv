@@ -12,6 +12,7 @@ B050,800B2630,z_effect_soft_sprite_old_init
 D810,800B4DF0,flg_set
 DDC0,800B53A0,z_DLF
 E010,800B55F0,z_actor
+19EE0,800C14C0,z_actor_dlftbls
 445A0,800EBB80,z_demo
 48850,800EFE30,z_draw
 C76A0,8016EC80,game
@@ -25,3 +26,11 @@ offset,vram,.data
 
 offset,vram,.rodata
 12F150,801D6730,z_en_item00
+12FDF0,801D73D0,z_actor
+130120,801D7700,z_actor_dlftbls
+
+offset,vram,.bss
+13CA60,801E4040,code_801E3FA0
+146360,801ED940,z_actor
+1463F0,801ED9D0,file_1463F0
+161CD0,802092B0,.end

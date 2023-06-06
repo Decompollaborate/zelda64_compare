@@ -1,6 +1,6 @@
 80080160,Idle_ClearMemory
 80081AD0,Fault_AddClient
-8008447C,8008447C
+8008447C,FaultDrawer_SetCharPad
 800848AC,FaultDrawer_Printf
 80089C90,bzero
 800B3EA0,Actor_PrintLists

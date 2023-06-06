@@ -15,6 +15,8 @@ offset,vram,.data
 
 offset,vram,.rodata
 1677A0,8021E260,z_en_item00
+168820,8021F2E0,z_actor
+169500,8021FFC0,z_actor_dlftbls
 
 offset,vram,.bss
 17D600,802340C0,code_801E3FA0
