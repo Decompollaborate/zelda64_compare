@@ -14,4 +14,4 @@
 801ECB40,D_801ED8E0,Mtx,0x40
 801ECB80,D_801ED920,Actor*,0x4
 801EE8D0,gSaveContext,SaveContext,0x48E8
-801F31C0,gGameInfo,GameInfo*,0x4
+801F31C0,gRegEditor,GameInfo*,0x4

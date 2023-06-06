@@ -14,5 +14,5 @@
 801E5160,D_801ED8E0,Mtx,0x40
 801E51A0,D_801ED920,Actor*,0x4
 801E6EF0,gSaveContext,SaveContext,0x48E8
-801EB7E0,gGameInfo,GameInfo*,0x4
-80379D00,gSystemHeap,u8,0x1
+801EB7E0,gRegEditor,GameInfo*,0x4
+80379D00,gSystemHeap,u8,0x4

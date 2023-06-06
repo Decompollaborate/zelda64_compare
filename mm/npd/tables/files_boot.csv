@@ -42,7 +42,7 @@ offset,vram,.data
 
 offset,vram,.rodata
 20EB0,800A0F10,boot_main
-21860,800A18C0,assert
+21860,800A18C0,assert_debug
 21880,800A18E0,file_021880
 23ED0,800A3F30,build
 
