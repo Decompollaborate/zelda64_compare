@@ -185,7 +185,7 @@ def split_variables(game: str):
             if vramStr == "-":
                 continue
             if sizeStr == "":
-                sizeStr = "4"
+                sizeStr = "0"
 
             vram = int(vramStr, 16)
             size = int(sizeStr, 16)
