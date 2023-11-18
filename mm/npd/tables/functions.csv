@@ -41,6 +41,8 @@
 800CFFF0,func_800BB8EC
 800D4950,ActorOverlayTable_Init
 800F78B8,Camera_Update
+801038C0,SaveContext_Init
+80104E30,Debug_DrawText
 801435A0,Skybox_UpdateMatrix
 801679FC,View_SetPerspective
 80168330,View_Apply
@@ -63,8 +65,10 @@
 801AB200,THA_Init
 801AB260,THA_Destroy
 801ABB70,Game_UpdateFramerateVariables
+801AC844,GameState_Draw
 801ACE64,GameState_InitArena
 801ACF4C,GameState_Realloc
+801AD03C,GameState_Init
 801AEF14,Graph_Alloc
 801AEF64,Graph_OpenDisps
 801AEFE4,Graph_CloseDisps

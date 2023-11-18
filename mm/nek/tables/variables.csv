@@ -15,4 +15,4 @@
 801ED130,D_801ED920,Actor*,0x4
 801EEE80,gSaveContext,SaveContext,0x48E8
 801F3770,gRegEditor,GameInfo*,0x4
-80381CD0,gSystemHeap,u8,0x4
+80381CD0,gSystemHeap,u8,0x0

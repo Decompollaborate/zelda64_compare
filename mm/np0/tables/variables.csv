@@ -1,4 +1,4 @@
-801AF760,gActorOverlayTable,ActorOverlay,0x4
+801AF760,gActorOverlayTable,ActorOverlay,0x0
 801E4D80,sActorFaultClient,FaultClient,0x10
 801E4D90,D_801ED8B0,CollisionPoly*,0x4
 801E4D94,D_801ED8B4,s32,0x4

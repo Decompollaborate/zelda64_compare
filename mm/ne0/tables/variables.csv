@@ -1487,7 +1487,7 @@
 801DB900,reverbSettingsF,,0x30
 801DB930,gReverbSettingsTable,,0x28
 801DB958,gAudioSpecs,,0x498
-801DCA10,Actor_PrintLists_SegName,asciz,0x4
+801DCA10,Actor_PrintLists_SegName,asciz,0x0
 801DCD40,D_801DCD40,,0x4
 801DCD44,D_801DCD44,,0x4
 801DCD48,D_801DCD48,,0x18

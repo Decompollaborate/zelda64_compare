@@ -1,5 +1,5 @@
 801A9E60,gActorOverlayTable,ActorOverlay,0x5640
-801D7200,Actor_PrintLists_SegName,asciz,0x4
+801D7200,Actor_PrintLists_SegName,asciz,0x0
 801ED690,sActorFaultClient,FaultClient,0x10
 801ED6A0,D_801ED8B0,CollisionPoly*,0x4
 801ED6A4,D_801ED8B4,s32,0x4

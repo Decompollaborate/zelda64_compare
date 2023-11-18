@@ -6,7 +6,8 @@ GAME                   ?= oot
 VERSION                ?= ne0
 # if SPLIT_FUNCTIONS is non-zero, the disassembler will try to split functions and rodata
 SPLIT_FUNCTIONS        ?= 0
-
+# if PRINT_BOUNDARIES is non-zero, the disassembler will print any detected new boundaries
+PRINT_BOUNDARIES       ?= 0
 
 DISASM_VERBOSITY       ?= -q
 DISASM_EXTRA_PARAMS    ?= --no-use-fpccsr --Mreg-names o32 --function-info $(GAME)/function_info/$(VERSION)_$*_function_info.csv --custom-suffix _$(VERSION)
@@ -19,6 +20,10 @@ endif
 DISASM_FUNC_SPLIT      = 
 ifneq ($(SPLIT_FUNCTIONS), 0)
   DISASM_FUNC_SPLIT    = --split-functions $(BASE_DIR)/asm/functions/$*
+endif
+
+ifneq ($(PRINT_BOUNDARIES), 0)
+  DISASM_EXTRA_PARAMS += --print-new-file-boundaries
 endif
 
 

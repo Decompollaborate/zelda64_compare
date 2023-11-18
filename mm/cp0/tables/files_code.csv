@@ -2,6 +2,8 @@ offset,vram,.text
 0,800A65A0,z_en_a_keep
 DA60,800B4000,z_actor
 19740,800BFCE0,z_actor_dlftbls
+430F0,800E9690,z_common_data
+43170,800E9710,file_043170
 DEE10,801853B0,code_80185F90
 DF8F0,80185E90,file_0DF8F0
 

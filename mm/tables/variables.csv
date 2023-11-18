@@ -2035,7 +2035,7 @@ D_801EF5C8,,z_collision_check,,,,,801EF5C8,38,,,,,,,,,,,,,,,,
 D_801EF600,,z_collision_check,,,,,801EF600,38,,,,,,,,,,,,,,,,
 D_801EF638,,z_collision_check,,,,,801EF638,38,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,
-gSaveContext,SaveContext,z_common_data,801EF460,4C78,801EF710,4C78,801EF670,48E8,,,801E6EF0,48E8,801EEE80,48E8,801EE8D0,48E8,,,,,,,,
+gSaveContext,SaveContext,z_common_data,801EF460,4C78,801EF710,4C78,801EF670,48E8,,,801E6EF0,48E8,801EEE80,48E8,801EE8D0,48E8,8023F790,48E8,801ED820,48E8,801ED830,48E8,801E5480,48E8
 ,,,,,,,,,,,,,,,,,,,,,,,,
 gRegEditor,GameInfo*,z_debug,,,,,801F3F60,4,,,801EB7E0,4,801F3770,4,801F31C0,4,80244080,4,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,

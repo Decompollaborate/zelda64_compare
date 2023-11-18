@@ -134,6 +134,9 @@ offset,vram,.rodata
 12EE80,801D6520,z_en_item00
 12FB20,801D71C0,z_actor
 12FE50,801D74F0,z_actor_dlftbls
+12FEA0,801D7540,z_bgcheck
+133C90,801DB330,z_message
+135E30,801DD4D0,file_135E30
 
 offset,vram,.bss
 13C6F0,801E3D90,code_801E3FA0
