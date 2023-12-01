@@ -6,12 +6,12 @@ N.B. Support for Animal Forest is quite limited at present, but is being activel
 
 ## Setup
 
-- Each ROM you wish to extract for comparison should be named `baserom_{version}.z64`.
+- Each ROM you wish to extract for comparison should be named `{game}/{game}_{version}.z64`.
 - (Optional) Run `fixbaserom.py` for every version just to be sure: the roms are expected to be big-endian.
 - Run `make setup GAME={game} VERSION={version}` for every version you wish to compare to extract the baseroms to separate decompressed files, e.g.
 
   ```bash
-  make GAME=MM VERSION=ne0
+  make setup GAME=MM VERSION=ne0
   ```
 
   will extract MM's US N64 version (see the bottom of the README.md for the abbreviations this repository uses)
