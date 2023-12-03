@@ -212,7 +212,7 @@ CED60,800DFC60,z_construct.c
 D02A0,800E11A0,rsp.s
 
 offset,vram,.data
-D3600,800E4500,z_en_a_keep.c
+D3600,800E4500,z_en_a_keep
 
 offset,vram,.rodata
-F18A0,801027A0,z_en_a_keep.c
+F18A0,801027A0,z_en_a_keep

@@ -1,6 +1,9 @@
-80111310,gGameOverTimer,s16,0x4
+800F9640,gLinkObjectIds,,0x0
+800F9644,gObjectTableSize,,0x0
+800F9648,gObjectTable,,0x0
+80111310,gGameOverTimer,s16,0x0
 801183D0,gSaveContext,SaveContext,0x1428
-80119800,gGameInfo,GameInfo*,0x4
+80119800,gRegEditor,RegEditor*,0x4
 8011EC58,gSegments,uintptr_t[16],0x40
 80129E80,gZBuffer,u16,0x25800
 801D6DC0,_string_n64dd_c,char,0x1

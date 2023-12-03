@@ -1499,6 +1499,7 @@
 8007D8C8,Quake_Update
 8007DFBC,Gfx_CallSetupDL
 8007E298,func_80093D18
+8007E868,Gfx_SetupDL_42Opa
 8007EE5C,func_80095248
 8007F540,func_80095AA0
 8007F558,Room_DrawNormal
@@ -3007,3 +3008,4 @@
 801D2CB0,LeoTestUnitReady
 801D2D50,leoTest_unit_rdy
 801D2D90,leoSeek
+80819C50,KaleidoScope_DrawItemSelect

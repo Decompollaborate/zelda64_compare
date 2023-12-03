@@ -1,13 +1,17 @@
-80006230,gViModeType,u8,0x1
-80006234,D_80006234,void*,0x4
+80006230,gViConfigModeType,u8,0x1
+80006234,D_80006234_ne0,void*,0x0
 80006280,gCurrentRegion,u32,0x4
 80006338,__osRunQueue,OSThread*,0x4
 80006360,__OSGlobalIntMask,OSHWIntr,0x4
 8000638C,__osPiTable,OSPiHandle*,0x4
-80009DE0,__osEventStateTab,__OSEventState[16],0x80
+80009DE0,__osEventStateTab,__OSEventState,0x80
+800F8CCC,gUpgradeCapacities,u16,0x40
+800F8F34,gItemSlots,,0x0
 8011A5D0,gSaveContext,SaveContext,0x1428
-8011BA00,gGameInfo,GameInfo*,0x4
+8011BA00,gRegEditor,RegEditor*,0x4
 80120C38,gSegments,uintptr_t[16],0x40
+80121200,sMatrixStack,MtxF*,0x4
+80121204,sCurrentMatrix,MtxF*,0x4
 80121210,gN64ddIsLoaded,u8,0x1
 8012BAA0,gSystemArena,Arena,0x10
 8012BE40,gZBuffer,u16,0x25800
@@ -36,7 +40,7 @@
 801D9B70,ymdupper,u8,0x6
 801D9B78,dayupper,u8,0x13
 801D9C30,B_801D9C30,struct_801D9C30,0x118
-801E0D10,B_801E0D10,OSMesgQueue*,0x8
+801E0D10,B_801E0D10_ne0,OSMesgQueue*,0x8
 801E0D18,B_801E0D18,struct_801E0D18,0x70
 801E51A0,LEO_sys_data,,0xE8
 801E5288,LEOcommandThread,,0x1B0
@@ -75,5 +79,5 @@
 801E6070,LEOC2_Syndrome,,0x740
 801E67B0,LEOc2_param,,0x10
 801E67C0,mseq_tbl,u32,0x40
-801E6800,__leoVersion,,0x4
+801E6800,__leoVersion,,0x0
 801E6810,leoDiskStack,,0x1000

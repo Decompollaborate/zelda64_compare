@@ -92,7 +92,7 @@ DB80,8001F260,z_actor&z_cheap_proc
 8F780,800A0E60,game.c
 8FFC0,800A16A0,gamealloc.c
 90100,800A17E0,graph.c
-90AA0,800A2180,file_090AA0
+90AA0,800A2180,gfxalloc
 90B00,800A21E0,listalloc.c
 90C50,800A2330,main.c
 91000,800A26E0,padmgr.c
@@ -207,7 +207,28 @@ D0B60,800E2240,z_construct.c
 D1F20,800E3600,rsp.s
 
 offset,vram,.data
-D6610,800E7CF0,z_en_a_keep.c
+D6610,800E7CF0,z_en_a_keep
+D66B0,800E7D90,file_0D66B0
+D6BA0,800E8280,z_effect_soft_sprite_dlftbls
+D6FB0,800E8690,flg_set
+D7170,800E8850,z_actor
+D7490,800E8B70,z_actor_dlftbls
+DAF80,800EC660,file_0DAF80
+E02A0,800F1980,z_game_dlftbls
+E04D0,800F1BB0,z_jpeg
+E0510,800F1BF0,file_0E0510
+E0AB0,800F2190,z_map_mark
+E7F60,800F9640,object_table
+E8C00,800FA2E0,file_0E8C00
+EB4A0,800FCB80,z_player_call
+EB4C0,800FCBA0,file_0EB4C0
+ED3F0,800FEAD0,z_kaleido_manager
+ED440,800FEB20,file_0ED440
+ED470,800FEB50,main
+ED480,800FEB60,file_0ED480
+EE280,800FF960,fault
+EE2E0,800FF9C0,file_0EE2E0
 
 offset,vram,.rodata
-F4D10,801063F0,z_en_a_keep.c
+F4D10,801063F0,z_en_a_keep
+F7EF0,801095D0,fault

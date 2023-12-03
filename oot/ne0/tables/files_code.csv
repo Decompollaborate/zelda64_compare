@@ -92,7 +92,7 @@ DB80,8001EC20,z_actor&z_cheap_proc
 8F6D0,800A0770,game.c
 8FF50,800A0FF0,gamealloc.c
 90090,800A1130,graph.c
-90A00,800A1AA0,file_090A00
+90A00,800A1AA0,gfxalloc
 90A60,800A1B00,listalloc.c
 90BB0,800A1C50,main.c
 90F60,800A2000,padmgr.c
@@ -212,19 +212,20 @@ D0B50,800E1BF0,z_construct.c
 D1F20,800E2FC0,rsp.s
 
 offset,vram,.data
-D6610,800E76B0,z_en_a_keep.c
+D6610,800E76B0,z_en_a_keep
 EDE80,801D5530,fault
 
 offset,vram,.rodata
-F4CC0,80105D60,z_en_a_keep.c
-F7CE0,80108D80,game.c
+F4CC0,80105D60,z_en_a_keep
+F7CE0,80108D80,game
 F7D00,80108DA0,file_0F7D00
 
 offset,vram,.bss
-103D30,80114DD0,z_en_item00.c
-10C0D0,8011D170,game.c
+103D30,80114DD0,z_en_item00
+10C0D0,8011D170,game
 10C1B0,8011D250,file_10C1B0
 10FF30,80120FD0,sys_cfb
 10FF40,80120FE0,sys_math3d
 110160,80121200,sys_matrix
+110170,80121210,file_110170
 11AD90,8012BE30,.end

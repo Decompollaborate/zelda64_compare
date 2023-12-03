@@ -92,7 +92,7 @@ DB40,80026AE0,z_actor&z_cheap_proc
 8D830,800A67D0,game.c
 8DFB0,800A6F50,gamealloc.c
 8E0F0,800A7090,graph.c
-8EA90,800A7A30,file_08EA90
+8EA90,800A7A30,gfxalloc
 8EAF0,800A7A90,listalloc.c
 8EC40,800A7BE0,main.c
 8EFA0,800A7F40,padmgr.c
@@ -221,26 +221,26 @@ D20D0,800EB070,z_construct.c
 D2FD0,800EBF70,rsp.s
 
 offset,vram,.data
-D6330,800EF2D0,z_en_a_keep.c
+D6330,800EF2D0,z_en_a_keep
 
 offset,vram,.rodata
-F69A0,8010F940,z_en_a_keep.c
-F77E0,80110780,z_bgcheck.c
-F9CF0,80112C90,z_room.c
-FA5B0,80113550,z_kaleido_manager.c
-FA5D0,80113570,z_play.c
-FA690,80113630,game.c
-FA6B0,80113650,graph.c
+F69A0,8010F940,z_en_a_keep
+F77E0,80110780,z_bgcheck
+F9CF0,80112C90,z_room
+FA5B0,80113550,z_kaleido_manager
+FA5D0,80113570,z_play
+FA690,80113630,game
+FA6B0,80113650,graph
 FA700,801136A0,file_0FA700
-FA730,801136D0,padmgr.c
-FA740,801136E0,sys_cfb.c
+FA730,801136D0,padmgr
+FA740,801136E0,sys_cfb
 FB660,80114600,fault_drawer
 FB690,80114630,file_0FB690
 FC190,80115130,__osMalloc
 FC450,801153F0,file_0FC450
 
 offset,vram,.bss
-108FA0,80121F40,z_en_item00.c
+108FA0,80121F40,z_en_item00
 11EEA0,80137E50,__osMalloc
 11EEB0,80137E50,system_malloc
 11EEE0,80137E80,file_11EEE0

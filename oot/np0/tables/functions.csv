@@ -2812,6 +2812,7 @@
 800D0F80,osSpTaskYield
 800D1630,sqrtf
 800D1640,osAfterPreNMI
+800D16B4,osContGetQuery
 800D1710,guLookAtHiliteF
 800D1E48,guLookAtHilite
 800D1F00,_Putfld

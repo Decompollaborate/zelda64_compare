@@ -2804,12 +2804,15 @@
 800CFBB0,osGetIntMask
 800CFCB0,sinf
 800CFE70,sins
+800D09A0,osContStartReadData
+800D0A24,osContGetReadData
 800D1600,sqrtf
 800D1ED0,_Putfld
 800D2540,_Printf
 800D2B90,memcpy
 800D2BBC,strlen
 800D2BE4,strchr
+800D3900,osContSetCh
 800D4A20,bcmp
 800D5220,_Litob
 800D54C0,lldiv
@@ -2831,4 +2834,5 @@
 800D6410,fmodf
 800D6460,__osMemset
 800D6490,__osMemmove
+800E7200,njpgdspMainTextStart
 801C8808,n64dd_SetDiskVersion

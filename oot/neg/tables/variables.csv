@@ -1,0 +1,3 @@
+800FA820,gSramSlotOffsets,u16,0xC
+80118F30,gSaveContext,SaveContext,0x1428
+8011A360,gRegEditor,RegEditor*,0x4

@@ -723,6 +723,7 @@
 8003BFE8,DynaPolyActor_IsPlayerAbove
 8003C00C,func_800435B4
 8003C030,func_800435D8
+8004DBD4,Camera_Special9
 80050880,DamageTable_Get
 800508AC,DamageTable_Clear
 80058560,SaveContext_Init

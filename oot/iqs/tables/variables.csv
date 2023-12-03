@@ -3,18 +3,19 @@
 80009F38,__osRunQueue,OSThread*,0x4
 80009F40,__osRunningThread,OSThread*,0x4
 80009F44,__osFaultedThread,OSThread*,0x4
-8000A070,__osHwIntTable,struct __osHwInt[5],0x28
-8000A098,__osPiIntTable,struct __osHwInt[1],0x8
+8000A070,__osHwIntTable,struct __osHwInt,0x28
+8000A098,__osPiIntTable,struct __osHwInt,0x8
 8000A0FC,__osShutdown,u32,0x4
-8000A100,__OSGlobalIntMask,OSHWIntr,0x4
-8000A670,__osIntOffTable,u8[0x20],0x20
-8000A690,__osIntTable,void*[9],0x24
-8000A6C0,__osRcpImTable,u16[],0x4
+8000A100,__OSGlobalIntMask,OSHWIntr,0x0
+8000A670,__osIntOffTable,u8,0x20
+8000A690,__osIntTable,void*,0x24
+8000A6C0,__osRcpImTable,u16,0x0
 80010760,__DriveRomHandle,OSPiHandle,0x74
-80012BE0,__osThreadSave,OSThread,0x4
+80012BE0,__osThreadSave,OSThread,0x0
 80012F40,__osEventStateTab,__OSEventState,0x78
+800F8F30,gGameStateOverlayTable,GameStateOverlay,0x120
 80127C50,sZeldaArena,Arena,0x24
 8012E030,sFaultDrawer,FaultDrawer,0x3C
 80137E40,sArenaLockMsg,OSMesg,0x4
-80137E50,gSystemArena,Arena,0x4
+80137E50,gSystemArena,Arena,0x0
 80137F40,gSaveContext,SaveContext,0x1428

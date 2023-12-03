@@ -92,7 +92,7 @@ DB80,8001F260,z_actor&z_cheap_proc
 8F7E0,800A0EC0,game.c
 90020,800A1700,gamealloc.c
 90160,800A1840,graph.c
-90B00,800A21E0,file_090B00
+90B00,800A21E0,gfxalloc
 90B60,800A2240,listalloc.c
 90CB0,800A2390,main.c
 91060,800A2740,padmgr.c
@@ -208,7 +208,7 @@ CE300,800DF9E0,z_construct.c
 CF830,800E0F10,rsp.s
 
 offset,vram,.data
-D3F20,800E5600,z_en_a_keep.c
+D3F20,800E5600,z_en_a_keep
 
 offset,vram,.rodata
-F25D0,80103CB0,z_en_a_keep.c
+F25D0,80103CB0,z_en_a_keep
