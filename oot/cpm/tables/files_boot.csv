@@ -82,6 +82,7 @@ FC0,80001420,driverominit
 5B20,80005F80,gethwintrroutine
 5B50,80005FB0,setwatchlo
 5B60,80005FC0,rsp_boot.text
+5C30,80006090,file_005C30
 
 offset,vram,.data
 5C50,800060B0,idle

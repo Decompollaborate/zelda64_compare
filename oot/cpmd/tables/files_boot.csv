@@ -17,7 +17,6 @@ offset,vram,.text
 2C00,80003060,sendmesg
 2D50,800031B0,stopthread
 2E10,80003270,viextendvstart
-2E20,80003280,vimodepallan1
 2E20,80003280,recvmesg
 2F60,800033C0,initialize
 32B0,80003710,ll
@@ -25,6 +24,7 @@ offset,vram,.text
 3EA0,80004300,thread
 3EE0,80004340,destroythread
 3FF0,80004450,bzero
+4090,800044F0,parameters
 40F0,80004550,createthread
 4240,800046A0,setsr
 4250,800046B0,getsr
@@ -66,9 +66,6 @@ offset,vram,.text
 6AB0,80006F10,bcopy
 6DC0,80007220,resetglobalintmask
 6E20,80007280,interrupt
-6E90,800072F0,file_006E90
-6EB0,80007310,osViModeMpalLan1
-6EB0,80007310,osViModeNtscLan1
 6EB0,80007310,vi
 6FD0,80007430,viswapcontext
 72D0,80007730,pigetcmdq
@@ -85,7 +82,6 @@ offset,vram,.text
 78A0,80007D00,xlitob
 7B40,80007FA0,ldiv
 7CD0,80008130,xldtob
-87E0,80008C40,build
 87E0,80008C40,sirawwrite
 8830,80008C90,[PADDING]
 8840,80008CA0,vimgr
@@ -97,4 +93,4 @@ offset,vram,.text
 8E80,800092E0,gethwintrroutine
 8EB0,80009310,setwatchlo
 8EC0,80009320,rsp_boot.text
-8FD0,80009430,file_008FD0
+8F90,800093F0,file_008F90
