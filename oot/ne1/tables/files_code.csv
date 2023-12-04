@@ -30,7 +30,6 @@ DB80,8001EC20,z_actor
 48770,80059810,code_8006C3A0
 488F0,80059990,z_fcurve_data
 48B30,80059BD0,z_fcurve_data_skelanime
-49320,8005A3C0,z_game_dlftbls
 49320,8005A3C0,z_horse
 4A000,8005B0A0,z_jpeg
 4A7C0,8005B860,z_kaleido_setup
