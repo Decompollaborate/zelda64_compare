@@ -88,11 +88,11 @@ FD0,80001430,z_locale
 6240,800066A0,rsp_boot.text
 
 offset,vram,.data
-63C0,80006820,idle.c
+63C0,80006820,idle
 
 offset,vram,.rodata
-6700,80006B60,boot_main.c
-69B0,80006E10,build.c
+6700,80006B60,boot_main
+69B0,80006E10,build
 
 offset,vram,.bss
-69E0,80006E40,boot_main.c
+69E0,80006E40,boot_main

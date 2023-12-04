@@ -96,8 +96,8 @@ offset,vram,.data
 9360,800097B0,unk_80009410
 
 offset,vram,.rodata
-97F0,80009C40,boot_main.c
+97F0,80009C40,boot_main
 9800,80009C50,file_009800
 
 offset,vram,.bss
-A1F0,8000A640,boot_main.c
+A1F0,8000A640,boot_main
