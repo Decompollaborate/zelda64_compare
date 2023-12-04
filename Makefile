@@ -10,7 +10,12 @@ SPLIT_FUNCTIONS        ?= 0
 PRINT_BOUNDARIES       ?= 0
 
 DISASM_VERBOSITY       ?= -q
-DISASM_EXTRA_PARAMS    ?= --no-use-fpccsr --Mreg-names o32 --function-info $(GAME)/function_info/$(VERSION)_$*_function_info.csv --custom-suffix _$(VERSION)
+DISASM_EXTRA_PARAMS    ?=
+DISASM_EXTRA_PARAMS    += --no-use-fpccsr
+DISASM_EXTRA_PARAMS    += --Mreg-names o32
+DISASM_EXTRA_PARAMS    += --function-info $(GAME)/function_info/$(VERSION)_$*_function_info.csv
+DISASM_EXTRA_PARAMS    += --custom-suffix _$(VERSION)
+DISASM_EXTRA_PARAMS    += --sequential-label-names
 
 OVL_DIS_EXTRA_PARAMS   ?=
 ifeq ($(GAME), dnm)

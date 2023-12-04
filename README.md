@@ -4,6 +4,29 @@ TODO: write description
 
 N.B. Support for Animal Forest is quite limited at present, but is being actively worked on.
 
+## Python dependencies
+
+First you'll need to create a virtual environment for the python packages:
+
+```bash
+python3 -m venv .venv
+```
+
+To start using the virtual environment on your current terminal run:
+
+```bash
+source .venv/bin/activate
+```
+
+Take in mind for each new terminal you'll need to **active** the Python virtual
+environment again, there's no need to create the virtual environment again.
+
+Now you can install the Python dependencies, to do so run:
+
+```bash
+python3 -m pip install -U -r requirements.txt
+```
+
 ## Setup
 
 - Each ROM you wish to extract for comparison should be named `{game}/{game}_{version}.z64`.
