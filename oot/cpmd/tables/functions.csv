@@ -3093,7 +3093,7 @@
 800FD8C0,SystemArena_Check
 800FD8E4,SystemArena_Init
 800FD91C,SystemArena_Cleanup
-800FD948,SystemArena_IsInitalized
+800FD948,SystemArena_IsInitialized
 800FD970,Rand_Next
 800FD9A0,Rand_Seed
 800FD9AC,Rand_ZeroOne

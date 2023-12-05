@@ -2766,7 +2766,7 @@
 800CE430,SystemArena_Check
 800CE454,SystemArena_Init
 800CE484,SystemArena_Cleanup
-800CE4A8,SystemArena_IsInitalized
+800CE4A8,SystemArena_IsInitialized
 800CE4D0,Rand_Next
 800CE500,Rand_Seed
 800CE50C,Rand_ZeroOne

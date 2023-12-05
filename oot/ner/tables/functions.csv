@@ -2750,7 +2750,7 @@
 800CD9E0,SystemArena_Check
 800CDA04,SystemArena_Init
 800CDA34,SystemArena_Cleanup
-800CDA58,SystemArena_IsInitalized
+800CDA58,SystemArena_IsInitialized
 800CDA80,Rand_Next
 800CDAB0,Rand_Seed
 800CDABC,Rand_ZeroOne

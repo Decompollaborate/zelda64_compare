@@ -300,7 +300,7 @@
 800CE304,SystemArena_Check
 800CE328,SystemArena_Init
 800CE358,SystemArena_Cleanup
-800CE37C,SystemArena_IsInitalized
+800CE37C,SystemArena_IsInitialized
 800CF310,proutSprintf
 800CF334,vsprintf
 800CF384,sprintf

@@ -1714,7 +1714,7 @@
 800D5084,SystemArena_Check
 800D50A8,SystemArena_Init
 800D50D8,SystemArena_Cleanup
-800D50FC,SystemArena_IsInitalized
+800D50FC,SystemArena_IsInitialized
 800D5120,Math_FTanF
 800D5154,Math_FFloorF
 800D5174,Math_FCeilF

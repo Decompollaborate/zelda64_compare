@@ -2796,7 +2796,7 @@
 800CDBF0,SystemArena_Check
 800CDC14,SystemArena_Init
 800CDC44,SystemArena_Cleanup
-800CDC68,SystemArena_IsInitalized
+800CDC68,SystemArena_IsInitialized
 800CDC90,Rand_Next
 800CDCC0,Rand_Seed
 800CDCCC,Rand_ZeroOne
