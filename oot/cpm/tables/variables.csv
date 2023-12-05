@@ -1,0 +1,3 @@
+80118938,gSaveContext,SaveContext,0x1428
+80119D60,gRegEditor,RegEditor*,0x4
+8011B648,gSegments,uintptr_t[16],0x40

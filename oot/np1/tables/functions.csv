@@ -1503,6 +1503,8 @@
 8007DE6C,Quake_Request
 8007DE90,Quake_RemoveRequest
 8007DED8,Quake_Update
+8007E5CC,Gfx_SetupDL
+8007E668,Gfx_SetupDL_52NoCD
 8007FB50,func_80095AA0
 8007FB68,Room_DrawNormal
 8007FD54,Room_DrawCullable

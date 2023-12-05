@@ -2894,7 +2894,7 @@
 800D5E30,__osMemset
 800D5E60,__osMemmove
 800D5EF0,Message_ResetOcarinaNoteState
-800D5FEC,Message_UpdateOcarinaGame
+800D5FEC,Message_UpdateOcarinaMemoryGame
 800D6110,Message_ShouldAdvance
 800D61D0,Message_ShouldAdvanceSilent
 800D6218,Message_CloseTextbox

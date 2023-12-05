@@ -1083,7 +1083,7 @@
 80166668,gScheduler,,0x0
 801668C0,gPadMgr,,0x0
 80166D28,gIrqMgr,,0x0
-80166FA8,gSegments,uintptr_t[16],0x0
+80166FA8,gSegments,uintptr_t[16],0x40
 80166FE8,sGraphThread,,0x0
 80167198,sGraphStack,,0x0
 80168998,sSchedStack,,0x0
