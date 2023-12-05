@@ -96,13 +96,13 @@ def _split_fileSplits_withPrefix(game: str, seg: str, categoryPrefix: str):
                 f.write(f"offset,vram,.{section}\n")
                 for row in data:
                     offset, vram, filename = row
-                    # z_message_PAL.data is included with .rodata in the
+                    # oot's z_message_PAL.data is included with .rodata in the
                     # spreadsheet, because that's where it's located in the ROM
-                    if filename == 'z_message_PAL.data':
+                    if game == "oot" and filename == "z_message_PAL.data":
                         f.write("\n")
                         f.writelines(f"offset,vram,.data\n")
                         f.writelines(f"{offset:X},{vram:X},z_message_PAL\n")
-                    elif filename == 'z_message_PAL.rodata':
+                    elif game == "oot" and filename == "z_message_PAL.rodata":
                         f.write("\n")
                         f.writelines(f"offset,vram,.rodata\n")
                         f.writelines(f"{offset:X},{vram:X},z_message_PAL\n")
