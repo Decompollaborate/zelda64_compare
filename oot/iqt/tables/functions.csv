@@ -225,9 +225,9 @@
 80023000,EffectSs_UpdateAll
 800230BC,EffectSs_Draw
 80023100,EffectSs_DrawAll
-8002324C,func_80027DD4
-800232B0,func_80027E34
-80023304,func_80027E84
+8002324C,EffectSs_LerpInv
+800232B0,EffectSs_LerpS16
+80023304,EffectSs_LerpU8
 800233F0,EffectSs_DrawGEffect
 8002362C,EffectSsDust_Spawn
 800236E0,func_8002829C
@@ -256,8 +256,8 @@
 80024260,EffectSsBomb2_SpawnFade
 800242C8,EffectSsBomb2_SpawnLayered
 80024338,EffectSsBlast_Spawn
-800243C8,EffectSsBlast_SpawnWhiteCustomScale
-8002441C,EffectSsBlast_SpawnShockwave
+800243C8,EffectSsBlast_SpawnWhiteShockwaveSetScale
+8002441C,EffectSsBlast_SpawnShockwaveSetColor
 80024468,EffectSsBlast_SpawnWhiteShockwave
 800244A4,EffectSsGSpk_SpawnAccel
 80024534,EffectSsGSpk_SpawnNoAccel
@@ -565,7 +565,7 @@
 80081194,func_80090A28
 80081268,Player_DrawHookshotReticle
 8008144C,Player_PostLimbDrawGameplay
-80081DB4,func_80091738
+80081DB4,Player_InitPauseDrawData
 80081EE0,Player_OverrideLimbDrawPause
 80082084,Player_DrawPauseImpl
 80082788,Player_DrawPause
@@ -729,7 +729,7 @@
 8009FE28,KaleidoScopeCall_Destroy
 8009FE48,KaleidoScopeCall_Update
 8009FFE8,KaleidoScopeCall_Draw
-800A0070,Play_ChangeViewpointBgCamIndex
+800A0070,Play_RequestViewpointBgCam
 800A00B0,Play_SetViewpoint
 800A015C,Play_CheckViewpoint
 800A0184,Play_SetShopBrowsingViewpoint
@@ -1201,7 +1201,7 @@
 800CEB10,Audio_SetSfxBanksMute
 800CEB68,Audio_QueueSeqCmdMute
 800CEBCC,Audio_ClearBGMMute
-800CEC3C,Audio_PlaySoundGeneral
+800CEC3C,Audio_PlaySfxGeneral
 800CECBC,Audio_RemoveMatchingSfxRequests
 800CEE5C,Audio_ProcessSfxRequest
 800CF2F8,Audio_RemoveSfxBankEntry

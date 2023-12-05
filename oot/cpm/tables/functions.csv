@@ -202,9 +202,9 @@
 8001B4C0,EffectSs_UpdateAll
 8001B57C,EffectSs_Draw
 8001B5C0,EffectSs_DrawAll
-8001B70C,func_80027DD4
-8001B770,func_80027E34
-8001B7C4,func_80027E84
+8001B70C,EffectSs_LerpInv
+8001B770,EffectSs_LerpS16
+8001B7C4,EffectSs_LerpU8
 8001B8B0,EffectSs_DrawGEffect
 8001BAEC,EffectSsDust_Spawn
 8001BBA0,func_8002829C
@@ -233,8 +233,8 @@
 8001C720,EffectSsBomb2_SpawnFade
 8001C788,EffectSsBomb2_SpawnLayered
 8001C7F8,EffectSsBlast_Spawn
-8001C888,EffectSsBlast_SpawnWhiteCustomScale
-8001C8DC,EffectSsBlast_SpawnShockwave
+8001C888,EffectSsBlast_SpawnWhiteShockwaveSetScale
+8001C8DC,EffectSsBlast_SpawnShockwaveSetColor
 8001C928,EffectSsBlast_SpawnWhiteShockwave
 8001C964,EffectSsGSpk_SpawnAccel
 8001C9F4,EffectSsGSpk_SpawnNoAccel
@@ -298,7 +298,7 @@
 8006D3B0,Interface_ChangeHudVisibilityMode
 8008C2A4,Animation_OnFrameImpl
 8009C894,Play_InCsMode
-800A0194,AudioMgr_Unlock
+800A0194,AudioMgr_WaitForInit
 800A01C0,AudioMgr_Init
 800A0BC0,Graph_InitTHGA
 800A0CD8,Graph_GetNextGameState
@@ -310,6 +310,6 @@
 800AC7E0,IrqMgr_AddClient
 800ACD38,IrqMgr_Init
 800AF364,Fault_Init
-800C8B1C,Audio_PlaySoundGeneral
+800C8B1C,Audio_PlaySfxGeneral
 800CD208,RcpUtils_Reset
 800CD8C8,SystemHeap_Init

@@ -202,9 +202,9 @@
 8001B4A0,EffectSs_UpdateAll
 8001B55C,EffectSs_Draw
 8001B5A0,EffectSs_DrawAll
-8001B6EC,func_80027DD4
-8001B750,func_80027E34
-8001B7A4,func_80027E84
+8001B6EC,EffectSs_LerpInv
+8001B750,EffectSs_LerpS16
+8001B7A4,EffectSs_LerpU8
 8001B890,EffectSs_DrawGEffect
 8001BACC,EffectSsDust_Spawn
 8001BB80,func_8002829C
@@ -233,8 +233,8 @@
 8001C700,EffectSsBomb2_SpawnFade
 8001C768,EffectSsBomb2_SpawnLayered
 8001C7D8,EffectSsBlast_Spawn
-8001C868,EffectSsBlast_SpawnWhiteCustomScale
-8001C8BC,EffectSsBlast_SpawnShockwave
+8001C868,EffectSsBlast_SpawnWhiteShockwaveSetScale
+8001C8BC,EffectSsBlast_SpawnShockwaveSetColor
 8001C908,EffectSsBlast_SpawnWhiteShockwave
 8001C944,EffectSsGSpk_SpawnAccel
 8001C9D4,EffectSsGSpk_SpawnNoAccel

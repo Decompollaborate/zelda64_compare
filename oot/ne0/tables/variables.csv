@@ -4,6 +4,7 @@
 80006338,__osRunQueue,OSThread*,0x4
 80006360,__OSGlobalIntMask,OSHWIntr,0x4
 8000638C,__osPiTable,OSPiHandle*,0x4
+80007220,gMainThread,,0x0
 80009DE0,__osEventStateTab,__OSEventState,0x80
 800F8CCC,gUpgradeCapacities,u16,0x40
 800F8F34,gItemSlots,,0x0
