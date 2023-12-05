@@ -498,8 +498,8 @@ offset,vram,.bss
 14D740,8016A5A0,sys_math3d
 14D960,8016A7C0,sys_matrix
 14D970,8016A7D0,debug_malloc
-14D9A0,8016A800,fault.bss
-14E820,8016B680,fault_drawer.bss
+14D9A0,8016A800,fault
+14E820,8016B680,fault_drawer
 14E880,8016B6E0,audio_lib_load
 14E940,8016B7A0,audio_general
 14EC70,8016BAD0,audio_sfx
