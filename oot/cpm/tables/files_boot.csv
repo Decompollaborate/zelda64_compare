@@ -119,3 +119,16 @@ offset,vram,.rodata
 
 offset,vram,.bss
 6110,80006570,boot_main
+6B00,80006F60,idle
+7710,80007B70,z_std_dma
+7E80,800082E0,yaz0
+8290,800086F0,z_locale
+82B0,80008710,driverominit
+8330,80008790,piacs
+8350,800087B0,initialize
+8360,800087C0,pimgr
+97D0,80009C30,seteventmesg
+9850,80009CB0,timerintr
+9890,80009CF0,cartrominit
+9910,80009D70,vimgr
+AB30,8000AF90,.end
