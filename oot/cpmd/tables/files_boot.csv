@@ -96,7 +96,7 @@ offset,vram,.text
 8F90,800093F0,file_008F90
 
 offset,vram,.data
-8FD0,80009430,idle
+8FB0,80009410,idle
 8FF0,80009450,file_008FF0
 9000,80009460,z_std_dma
 A800,8000AC60,z_locale
