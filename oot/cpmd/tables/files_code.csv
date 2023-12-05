@@ -449,8 +449,12 @@ offset,vram,.rodata
 12E420,8014B280,cosf
 12E470,8014B2D0,libm_vals
 12E480,8014B2E0,llcvt
-12E490,8014B2F0,z_message_PAL.data
-136F30,80153D90,z_message_PAL.rodata
+
+offset,vram,.data
+12E490,8014B2F0,z_message_PAL
+
+offset,vram,.rodata
+136F30,80153D90,z_message_PAL
 137E90,80154CF0,z_game_over
 137EF0,80154D50,z_construct
 138270,801550D0,audio_tables.rodata
