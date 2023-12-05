@@ -34,8 +34,10 @@ class FileAddressesEntry:
         self.number = number
 
 
-def getFileAddresses(filePath: Path | None) -> dict[str, FileAddressesEntry]:
-    table: dict[str, FileAddressesEntry] = dict()
+
+
+def getFileAddressList(filePath: Path | None) -> list[FileAddressesEntry]:
+    result: list[FileAddressesEntry] = []
     if filePath is not None and filePath.exists():
         with filePath.open() as f:
             header = True
@@ -45,8 +47,11 @@ def getFileAddresses(filePath: Path | None) -> dict[str, FileAddressesEntry]:
                     header = False
                     continue
                 filename, *data = line.strip().split(",")
-                table[filename] = FileAddressesEntry(filename, *data)
-    return table
+                result.append(FileAddressesEntry(filename, *data))
+    return result
+
+def getFileAddresses(filePath: Path | None) -> dict[str, FileAddressesEntry]:
+    return {entry.filename: entry for entry in getFileAddressList(filePath)}
 
 
 def contextReadVariablesCsv(context: spimdisasm.common.Context, game: str, version: str):
