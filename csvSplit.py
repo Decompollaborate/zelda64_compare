@@ -210,7 +210,9 @@ def split_variables(game: str):
         dstFile = dstFolder / "variables.txt"
         with dstFile.open("w") as f:
             for vram, (varName, type, size) in sorted(variablesVramDict.items()):
-                f.write(f"{varName} = 0x{vram:08X}; // size:0x{size:X}")
+                f.write(f"{varName} = 0x{vram:08X}; //")
+                if size > 0:
+                    f.write(f" size:0x{size:X}")
                 if type != "":
                     f.write(f" type:{type}")
                 f.write("\n")
