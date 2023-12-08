@@ -1,4 +1,4 @@
-njpgdspMainDataStart = 0x08011542; // size:0x0
+njpgdspMainDataStart = 0x08011542; //
 gActorOverlayTable = 0x800E8B70; // size:0x3AE0
 gMaxActorId = 0x800EC650; // size:0x4
 sJpegTask = 0x800F1BB0; // size:0x40 type:OSTask

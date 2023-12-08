@@ -15,4 +15,4 @@ D_801ED8E0 = 0x801E5160; // size:0x40 type:Mtx
 D_801ED920 = 0x801E51A0; // size:0x4 type:Actor*
 gSaveContext = 0x801E6EF0; // size:0x48E8 type:SaveContext
 gRegEditor = 0x801EB7E0; // size:0x4 type:GameInfo*
-gSystemHeap = 0x80379D00; // size:0x0 type:u8
+gSystemHeap = 0x80379D00; // type:u8

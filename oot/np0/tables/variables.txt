@@ -1,7 +1,7 @@
-gLinkObjectIds = 0x800F9640; // size:0x0
-gObjectTableSize = 0x800F9644; // size:0x0
-gObjectTable = 0x800F9648; // size:0x0
-gGameOverTimer = 0x80111310; // size:0x0 type:s16
+gLinkObjectIds = 0x800F9640; //
+gObjectTableSize = 0x800F9644; //
+gObjectTable = 0x800F9648; //
+gGameOverTimer = 0x80111310; // type:s16
 gSaveContext = 0x801183D0; // size:0x1428 type:SaveContext
 gRegEditor = 0x80119800; // size:0x4 type:RegEditor*
 gSegments = 0x8011EC58; // size:0x40 type:uintptr_t[16]

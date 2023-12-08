@@ -1,4 +1,4 @@
-gActorOverlayTable = 0x801AF760; // size:0x0 type:ActorOverlay
+gActorOverlayTable = 0x801AF760; // type:ActorOverlay
 sActorFaultClient = 0x801E4D80; // size:0x10 type:FaultClient
 D_801ED8B0 = 0x801E4D90; // size:0x4 type:CollisionPoly*
 D_801ED8B4 = 0x801E4D94; // size:0x4 type:s32

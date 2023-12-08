@@ -1,5 +1,5 @@
 gActorOverlayTable = 0x801A9E60; // size:0x5640 type:ActorOverlay
-Actor_PrintLists_SegName = 0x801D7200; // size:0x0 type:asciz
+Actor_PrintLists_SegName = 0x801D7200; // type:asciz
 sActorFaultClient = 0x801ED690; // size:0x10 type:FaultClient
 D_801ED8B0 = 0x801ED6A0; // size:0x4 type:CollisionPoly*
 D_801ED8B4 = 0x801ED6A4; // size:0x4 type:s32
