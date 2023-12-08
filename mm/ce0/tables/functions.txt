@@ -1,0 +1,11 @@
+Idle_ClearMemory = 0x80080160; // type:func
+Fault_AddClient = 0x80081AD0; // type:func
+FaultDrawer_SetCharPad = 0x8008447C; // type:func
+FaultDrawer_Printf = 0x800848AC; // type:func
+bzero = 0x80089C90; // type:func
+Actor_PrintLists = 0x800B3EA0; // type:func
+func_800B5814 = 0x800B5BE4; // type:func
+Hilite_Draw = 0x800B81D4; // type:func
+Hilite_DrawOpa = 0x800B83B0; // type:func
+Hilite_DrawXlu = 0x800B83E8; // type:func
+Actor_InitContext = 0x800B9540; // type:func

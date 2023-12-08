@@ -1,0 +1,3 @@
+gSaveContext = 0x80118938; // size:0x1428 type:SaveContext
+gRegEditor = 0x80119D60; // size:0x4 type:RegEditor*
+gSegments = 0x8011B648; // size:0x40 type:uintptr_t[16]

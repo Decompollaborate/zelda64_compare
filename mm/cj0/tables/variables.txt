@@ -1,0 +1,16 @@
+sActorFaultClient = 0x801EBA50; // size:0x10 type:FaultClient
+D_801ED8B0 = 0x801EBA60; // size:0x4 type:CollisionPoly*
+D_801ED8B4 = 0x801EBA64; // size:0x4 type:s32
+D_801ED8B8 = 0x801EBA68; // size:0x4 type:Actor*
+D_801ED8BC = 0x801EBA6C; // size:0x4 type:Actor*
+D_801ED8C0 = 0x801EBA70; // size:0x4 type:Actor*
+D_801ED8C4 = 0x801EBA74; // size:0x4 type:Actor*
+D_801ED8C8 = 0x801EBA78; // size:0x4 type:f32
+sBgmEnemyDistSq = 0x801EBA7C; // size:0x4 type:f32
+D_801ED8D0 = 0x801EBA80; // size:0x4 type:f32
+D_801ED8D4 = 0x801EBA84; // size:0x4 type:s32
+D_801ED8D8 = 0x801EBA88; // size:0x4 type:s32
+D_801ED8DC = 0x801EBA8C; // size:0x2 type:s16
+D_801ED8E0 = 0x801EBA90; // size:0x40 type:Mtx
+D_801ED920 = 0x801EBAD0; // size:0x4 type:Actor*
+gSaveContext = 0x801ED820; // size:0x48E8 type:SaveContext

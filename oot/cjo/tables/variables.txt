@@ -1,1 +1,2 @@
 gCurrentRegion = 0x80006110; // size:0x4 type:u32
+gSaveContext = 0x8011B168; // size:0x1428 type:SaveContext

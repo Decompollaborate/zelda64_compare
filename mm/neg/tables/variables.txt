@@ -1,0 +1,17 @@
+sActorFaultClient = 0x801ECB00; // size:0x10 type:FaultClient
+D_801ED8B0 = 0x801ECB10; // size:0x4 type:CollisionPoly*
+D_801ED8B4 = 0x801ECB14; // size:0x4 type:s32
+D_801ED8B8 = 0x801ECB18; // size:0x4 type:Actor*
+D_801ED8BC = 0x801ECB1C; // size:0x4 type:Actor*
+D_801ED8C0 = 0x801ECB20; // size:0x4 type:Actor*
+D_801ED8C4 = 0x801ECB24; // size:0x4 type:Actor*
+D_801ED8C8 = 0x801ECB28; // size:0x4 type:f32
+sBgmEnemyDistSq = 0x801ECB2C; // size:0x4 type:f32
+D_801ED8D0 = 0x801ECB30; // size:0x4 type:f32
+D_801ED8D4 = 0x801ECB34; // size:0x4 type:s32
+D_801ED8D8 = 0x801ECB38; // size:0x4 type:s32
+D_801ED8DC = 0x801ECB3C; // size:0x2 type:s16
+D_801ED8E0 = 0x801ECB40; // size:0x40 type:Mtx
+D_801ED920 = 0x801ECB80; // size:0x4 type:Actor*
+gSaveContext = 0x801EE8D0; // size:0x48E8 type:SaveContext
+gRegEditor = 0x801F31C0; // size:0x4 type:GameInfo*

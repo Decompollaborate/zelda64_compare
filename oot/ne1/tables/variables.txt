@@ -1,1 +1,2 @@
+gSaveContext = 0x8011A790; // size:0x1428 type:SaveContext
 _string_n64dd_c = 0x801D8FA0; // size:0x1 type:char

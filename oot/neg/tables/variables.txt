@@ -1,0 +1,3 @@
+gSramSlotOffsets = 0x800FA820; // size:0xC type:u16
+gSaveContext = 0x80118F30; // size:0x1428 type:SaveContext
+gRegEditor = 0x8011A360; // size:0x4 type:RegEditor*
