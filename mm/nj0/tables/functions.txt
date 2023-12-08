@@ -1,0 +1,14 @@
+Fault_AddClient = 0x80081C10; // type:func
+FaultDrawer_SetCharPad = 0x800845BC; // type:func
+FaultDrawer_Printf = 0x800849EC; // type:func
+bzero = 0x8008A5D0; // type:func
+Actor_PrintLists = 0x800B56B0; // type:func
+func_800B5814 = 0x800B73F4; // type:func
+Actor_UpdateBgCheckInfo = 0x800B94DC; // type:func
+Hilite_Draw = 0x800B99EC; // type:func
+Hilite_DrawOpa = 0x800B9BC8; // type:func
+Hilite_DrawXlu = 0x800B9C00; // type:func
+func_800BB604 = 0x800BD17C; // type:func
+func_800BB8EC = 0x800BD464; // type:func
+CutsceneCmd_DestinationDefault = 0x800ECEBC; // type:func
+Cutscene_IsPlaying = 0x800EFE4C; // type:func

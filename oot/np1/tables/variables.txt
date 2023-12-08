@@ -1,0 +1,5 @@
+gGameOverTimer = 0x80111350; // type:s16
+gSaveContext = 0x80118410; // size:0x1428 type:SaveContext
+gRegEditor = 0x80119840; // size:0x4 type:RegEditor*
+gSegments = 0x8011EC98; // size:0x40 type:uintptr_t[16]
+_string_n64dd_c = 0x801D6E00; // size:0x1 type:char
