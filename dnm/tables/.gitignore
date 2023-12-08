@@ -6,6 +6,9 @@
 functions.csv
 variables.csv
 
+functions.txt
+variables.txt
+
 boot_functions.csv
 code_functions.csv
 gamestate_functions.csv
