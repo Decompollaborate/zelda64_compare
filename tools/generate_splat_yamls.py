@@ -9,33 +9,28 @@ import spimdisasm
 from typing import TextIO
 
 from mips.MipsSplitEntry import readSegmentSplitsFromSheetCsv, SplitEntry
+from mips.ZeldaTables import getFileAddresses
 
 @dataclasses.dataclass
-class DmaEntry:
+class FileInfo:
     name: str
     virt_start: int
     virt_end: int
-    phys_start: int
-    phys_end: int
     splits: list[SplitEntry]
     section_order: list[str] = dataclasses.field(default_factory=list)
+    vram: int|None = None
 
-def readDmaInfo(game: str, version: str) -> list[DmaEntry]:
-    dma_info: list[DmaEntry] = []
+def readDmaInfo(game: str, version: str) -> list[FileInfo]:
+    segments_info: list[FileInfo] = []
 
-    dma_addresses_path = Path(f"{game}/{version}/tables/dma_addresses.csv")
-    dma_addresses = spimdisasm.common.Utils.readCsv(dma_addresses_path)
+    file_addresses_path = Path(f"{game}/{version}/tables/file_addresses.csv")
+    file_addresses = getFileAddresses(file_addresses_path)
 
     csvNamePrefix = ""
     if version in {"iqs", "iqt"}:
         csvNamePrefix = "iQue."
 
-    for segment_name, virt_start_str, virt_end_str, phys_start_str, phys_end_str in dma_addresses:
-        virt_start = int(virt_start_str, 16)
-        virt_end = int(virt_end_str, 16)
-        phys_start = int(phys_start_str, 16)
-        phys_end = int(phys_end_str, 16)
-
+    for segment_name, entry in file_addresses.items():
         csv_list: list[tuple[str, Path]] = []
 
         # Check if a csv with all the sections mixed exists
@@ -52,25 +47,30 @@ def readDmaInfo(game: str, version: str) -> list[DmaEntry]:
         segment_splits_per_version = readSegmentSplitsFromSheetCsv(csv_list)
         segment_splits = segment_splits_per_version.get(version, [])
 
-        dma_entry = DmaEntry(segment_name, virt_start, virt_end, phys_start, phys_end, segment_splits)
+        info_entry = FileInfo(segment_name, entry.vromStart, entry.vromEnd, segment_splits)
+        if entry.vramStart > 0:
+            info_entry.vram = entry.vramStart
         if segment_name == "makerom":
-            dma_entry.section_order = [".data", ".text", ".rodata", ".bss"]
-            if len(segment_splits) == 0:
+            info_entry.section_order = [".data", ".text", ".rodata", ".bss"]
+            if len(info_entry.splits) == 0:
                 entry = SplitEntry(version, "rom_header", 0x000000, 0x40, 0x80000000)
                 entry.section = ".data"
-                segment_splits.append(entry)
+                info_entry.splits.append(entry)
 
                 entry = SplitEntry(version, "ipl3", 0x000040, 0x1000-0x40, 0x80000040)
                 entry.section = ".databin"
-                segment_splits.append(entry)
+                info_entry.splits.append(entry)
 
                 entry = SplitEntry(version, "entry", 0x001000, 0x60, 0x80001000) # TODO: proper vram
                 entry.section = ".hasm"
-                segment_splits.append(entry)
+                info_entry.splits.append(entry)
 
-        dma_info.append(dma_entry)
+        if segment_name.startswith("ovl_") and len(info_entry.splits) == 0:
+            pass
 
-    return dma_info
+        segments_info.append(info_entry)
+
+    return segments_info
 
 
 def write_header(f: TextIO, game: str, version: str):
@@ -79,10 +79,10 @@ name: zelda (zelda, TODO)
 # sha1: TODO
 options:
   basename: zelda
-  base_path: oot/cpmd
-  target_path: ../oot_cpmd_uncompressed.z64
-  elf_path: build/oot_cpmd.elf
-  ld_script_path: linker_scripts/oot_cpmd.ld
+  base_path: {game}/{version}
+  target_path: ../{game}_{version}_uncompressed.z64
+  elf_path: build/{game}_{version}.elf
+  ld_script_path: linker_scripts/{game}_{version}.ld
   compiler: IDO
   find_file_boundaries: True
   header_encoding: ASCII
@@ -128,7 +128,7 @@ options:
 """)
 
 
-def write_segment(f: TextIO, dma_entry: DmaEntry):
+def write_segment(f: TextIO, segmment_entry: FileInfo):
     finished_sections = {
         "asm": False,
         "data": False,
@@ -137,22 +137,26 @@ def write_segment(f: TextIO, dma_entry: DmaEntry):
     }
 
     f.write(f"""
-- name: {dma_entry.name}
-  start: 0x{dma_entry.virt_start:06X}
+- name: {segmment_entry.name}
+  start: 0x{segmment_entry.virt_start:06X}
 """)
-    if len(dma_entry.splits) == 0:
+    if len(segmment_entry.splits) == 0:
         f.write(f"""\
   type: databin
+""")
+        if segmment_entry.vram is not None:
+            f.write(f"""\
+  vram: 0x{segmment_entry.vram:08X}
 """)
         return
 
     f.write(f"""\
   type: code
-  vram: 0x{dma_entry.splits[0].vram:08X}
+  vram: 0x{segmment_entry.vram if segmment_entry.vram is not None else segmment_entry.splits[0].vram:08X}
 """)
-    if len(dma_entry.section_order) > 0:
+    if len(segmment_entry.section_order) > 0:
         f.write(f"""\
-  section_order: {dma_entry.section_order}
+  section_order: {segmment_entry.section_order}
 """)
     f.write(f"""\
   subsegments:
@@ -160,10 +164,10 @@ def write_segment(f: TextIO, dma_entry: DmaEntry):
     lastSection = ""
     linker_section = ""
     first_bss = True
-    for split in dma_entry.splits:
+    for split in segmment_entry.splits:
         section = split.splatSection()
 
-        rom_offset = dma_entry.virt_start + split.offset
+        rom_offset = segmment_entry.virt_start + split.offset
         if section != lastSection and not finished_sections.get(section, False):
             finished_sections[lastSection] = True
             linker_section = split.section
@@ -194,24 +198,25 @@ def write_segment(f: TextIO, dma_entry: DmaEntry):
 """)
         lastSection = section
 
-def write_segments(f: TextIO, game: str, version: str, dma_addresses: list[DmaEntry]):
-    assert len(dma_addresses) > 0
+def write_segments(f: TextIO, game: str, version: str, segments_info: list[FileInfo]):
+    assert len(segments_info) > 0
 
     f.write(f"""\
 segments:
 """)
 
-    for dma_entry in dma_addresses:
-        write_segment(f, dma_entry)
+    for segmment_entry in segments_info:
+        write_segment(f, segmment_entry)
 
-    f.write(f"\n- [0x{dma_addresses[-1].virt_end:06X}]\n")
+    print(segments_info[-1])
+    f.write(f"\n- [0x{segments_info[-1].virt_end:06X}]\n")
 
 GAME = "oot"
 VERSION = "cpmd"
 
-dma_info = readDmaInfo(GAME, VERSION)
+segments_info = readDmaInfo(GAME, VERSION)
 
 path = Path(f"{GAME}/{VERSION}/tables/{VERSION}.yaml")
 with path.open("w") as f:
     write_header(f, GAME, VERSION)
-    write_segments(f, GAME, VERSION, dma_info)
+    write_segments(f, GAME, VERSION, segments_info)
