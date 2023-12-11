@@ -61,6 +61,9 @@ CSV_FILES           := $(CSV_FILES_ORIGINAL:$(GAME)/tables/%.text.csv=$(BASE_DIR
 
 DISASM_TARGETS      := $(DISASM_LIST:%=$(BASE_DIR)/asm/text/%/.disasm)
 
+
+YAML_FILE           := $(BASE_DIR)/tables/$(GAME)_$(VERSION).yaml
+
 .PHONY: all splitcsvs disasm clean downloadcsvs csvs
 .DEFAULT_GOAL := all
 
@@ -129,6 +132,11 @@ $(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables
 		--save-context $(BASE_DIR)/context/ovl_$*.txt $(DISASM_EXTRA_PARAMS) $(OVL_DIS_EXTRA_PARAMS) \
 		--default-banned --libultra-syms --hardware-regs --named-hardware-regs
 	@touch $@
+
+
+$(YAML_FILE): $(BASE_DIR)/tables/file_addresses.csv $(BASE_DIR)/tables/ovl_sections.csv
+	./tools/generate_splat_yamls.py $(GAME) $(VERSION)
+
 
 # Print target for debugging
 print-% : ; $(info $* is a $(flavor $*) variable set to [$($*)]) @true

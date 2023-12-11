@@ -131,7 +131,7 @@ def read_ovl_section_info(game: str, version: str) -> dict[str, OvlSectionInfo]:
 
 def write_header(f: TextIO, game: str, version: str):
     f.write(f"""\
-name: zelda (zelda, TODO)
+name: {game} ({version})
 # sha1: TODO
 options:
   basename: zelda
@@ -266,13 +266,23 @@ segments:
 
     f.write(f"\n- [0x{segments_info[-1].virt_end:06X}]\n")
 
-GAME = "oot"
-VERSION = "cpmd"
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("game")
+    parser.add_argument("version")
+    args = parser.parse_args()
 
-ovl_section_info = read_ovl_section_info(GAME, VERSION)
-segments_info = read_segments_info(GAME, VERSION, ovl_section_info)
+    GAME: str = args.game
+    VERSION: str = args.version
 
-path = Path(f"{GAME}/{VERSION}/tables/{VERSION}.yaml")
-with path.open("w") as f:
-    write_header(f, GAME, VERSION)
-    write_segments(f, GAME, VERSION, segments_info)
+    ovl_section_info = read_ovl_section_info(GAME, VERSION)
+    segments_info = read_segments_info(GAME, VERSION, ovl_section_info)
+
+    path = Path(f"{GAME}/{VERSION}/tables/{GAME}_{VERSION}.yaml")
+    print(f"Generating {path}")
+    with path.open("w") as f:
+        write_header(f, GAME, VERSION)
+        write_segments(f, GAME, VERSION, segments_info)
+
+if __name__ == "__main__":
+    main()
