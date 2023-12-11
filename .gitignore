@@ -62,3 +62,4 @@ context/
 function_info/
 
 ctx.c.m2c
+*.yaml
