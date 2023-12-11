@@ -20,7 +20,17 @@ class FileInfo:
     section_order: list[str] = dataclasses.field(default_factory=list)
     vram: int|None = None
 
-def readDmaInfo(game: str, version: str) -> list[FileInfo]:
+@dataclasses.dataclass
+class OvlSectionInfo:
+    name: str
+    text_size: int
+    data_size: int
+    rodata_size: int
+    ovl_size: int
+    bss_size: int
+
+
+def read_segments_info(game: str, version: str, ovl_section_info: dict[str, OvlSectionInfo]) -> list[FileInfo]:
     segments_info: list[FileInfo] = []
 
     file_addresses_path = Path(f"{game}/{version}/tables/file_addresses.csv")
@@ -30,7 +40,7 @@ def readDmaInfo(game: str, version: str) -> list[FileInfo]:
     if version in {"iqs", "iqt"}:
         csvNamePrefix = "iQue."
 
-    for segment_name, entry in file_addresses.items():
+    for segment_name, addresses_entry in file_addresses.items():
         csv_list: list[tuple[str, Path]] = []
 
         # Check if a csv with all the sections mixed exists
@@ -47,9 +57,9 @@ def readDmaInfo(game: str, version: str) -> list[FileInfo]:
         segment_splits_per_version = readSegmentSplitsFromSheetCsv(csv_list)
         segment_splits = segment_splits_per_version.get(version, [])
 
-        info_entry = FileInfo(segment_name, entry.vromStart, entry.vromEnd, segment_splits)
-        if entry.vramStart > 0:
-            info_entry.vram = entry.vramStart
+        info_entry = FileInfo(segment_name, addresses_entry.vromStart, addresses_entry.vromEnd, segment_splits)
+        if addresses_entry.vramStart > 0:
+            info_entry.vram = addresses_entry.vramStart
         if segment_name == "makerom":
             info_entry.section_order = [".data", ".text", ".rodata", ".bss"]
             if len(info_entry.splits) == 0:
@@ -65,13 +75,59 @@ def readDmaInfo(game: str, version: str) -> list[FileInfo]:
                 entry.section = ".hasm"
                 info_entry.splits.append(entry)
 
-        if segment_name.startswith("ovl_") and len(info_entry.splits) == 0:
-            pass
+        if segment_name.startswith("ovl_") and len(info_entry.splits) == 0 and info_entry.vram is not None:
+            section_info = ovl_section_info.get(segment_name)
+            if section_info is not None:
+                accumulated_size = 0
+
+                if section_info.text_size > 0:
+                    entry = SplitEntry(version, segment_name, accumulated_size, section_info.text_size, info_entry.vram+accumulated_size)
+                    entry.section = ".text"
+                    info_entry.splits.append(entry)
+                    accumulated_size += section_info.text_size
+
+                if section_info.data_size > 0:
+                    entry = SplitEntry(version, segment_name, accumulated_size, section_info.data_size, info_entry.vram+accumulated_size)
+                    entry.section = ".data"
+                    info_entry.splits.append(entry)
+                    accumulated_size += section_info.data_size
+
+                if section_info.rodata_size > 0:
+                    entry = SplitEntry(version, segment_name, accumulated_size, section_info.rodata_size, info_entry.vram+accumulated_size)
+                    entry.section = ".rodata"
+                    info_entry.splits.append(entry)
+                    accumulated_size += section_info.rodata_size
+
+                if section_info.ovl_size > 0:
+                    entry = SplitEntry(version, segment_name, accumulated_size, section_info.ovl_size, info_entry.vram+accumulated_size)
+                    entry.section = ".ovl"
+                    info_entry.splits.append(entry)
+                    accumulated_size += section_info.ovl_size
+
+                if section_info.bss_size > 0:
+                    entry = SplitEntry(version, segment_name, accumulated_size, section_info.bss_size, info_entry.vram+accumulated_size)
+                    entry.section = ".bss"
+                    info_entry.splits.append(entry)
+                    accumulated_size += section_info.bss_size
 
         segments_info.append(info_entry)
 
     return segments_info
 
+def read_ovl_section_info(game: str, version: str) -> dict[str, OvlSectionInfo]:
+    infos: dict[str, OvlSectionInfo] = dict()
+
+    ovl_sections_path = Path(f"{game}/{version}/tables/ovl_sections.csv")
+    header_seen = False
+    for row in spimdisasm.common.Utils.readCsv(ovl_sections_path):
+        if not header_seen:
+            header_seen = True
+            continue
+        name, *data = row
+        processed_data = list(map(lambda x: int(x, 0), data))
+        infos[name] = OvlSectionInfo(name, *processed_data)
+
+    return infos
 
 def write_header(f: TextIO, game: str, version: str):
     f.write(f"""\
@@ -128,7 +184,7 @@ options:
 """)
 
 
-def write_segment(f: TextIO, segmment_entry: FileInfo):
+def write_segment(f: TextIO, game: str, version: str, segmment_entry: FileInfo):
     finished_sections = {
         "asm": False,
         "data": False,
@@ -206,15 +262,15 @@ segments:
 """)
 
     for segmment_entry in segments_info:
-        write_segment(f, segmment_entry)
+        write_segment(f, game, version, segmment_entry)
 
-    print(segments_info[-1])
     f.write(f"\n- [0x{segments_info[-1].virt_end:06X}]\n")
 
 GAME = "oot"
 VERSION = "cpmd"
 
-segments_info = readDmaInfo(GAME, VERSION)
+ovl_section_info = read_ovl_section_info(GAME, VERSION)
+segments_info = read_segments_info(GAME, VERSION, ovl_section_info)
 
 path = Path(f"{GAME}/{VERSION}/tables/{VERSION}.yaml")
 with path.open("w") as f:
