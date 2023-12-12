@@ -1,8 +1,8 @@
 __osRunQueue = 0x800099C8; // size:0x4 type:OSThread*
 __osRunningThread = 0x800099D0; // size:0x4 type:OSThread*
 __osFaultedThread = 0x800099D4; // size:0x4 type:OSThread*
-__osHwIntTable = 0x80009B00; // size:0x28 type:struct __osHwInt
-__osPiIntTable = 0x80009B28; // size:0x8 type:struct __osHwInt
+__osHwIntTable = 0x80009B00; // size:0x28 type:__osHwInt
+__osPiIntTable = 0x80009B28; // size:0x8 type:__osHwInt
 __osShutdown = 0x80009BAC; // size:0x4 type:u32
 __osShutdownTime = 0x80009BB0; // size:0x4 type:u32
 __OSGlobalIntMask = 0x80009BB4; // type:OSHWIntr
