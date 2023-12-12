@@ -37,6 +37,7 @@ MAKE = make
 
 DISASSEMBLER        ?= python3 -m spimdisasm.singleFileDisasm
 OVL_DISASSEMBLER    ?= ./z64OvlDisasm.py
+SPLAT               ?= ./tools/splat/split.py
 
 #### Files ####
 
@@ -64,7 +65,7 @@ DISASM_TARGETS      := $(DISASM_LIST:%=$(BASE_DIR)/asm/text/%/.disasm)
 
 YAML_FILE           := $(BASE_DIR)/tables/$(GAME)_$(VERSION).yaml
 
-.PHONY: all splitcsvs disasm clean downloadcsvs csvs
+.PHONY: all splitcsvs disasm clean downloadcsvs csvs extract
 .DEFAULT_GOAL := all
 
 
@@ -86,6 +87,8 @@ setup:
 disasm: $(DISASM_TARGETS)
 	@echo "Disassembly done!"
 
+extract: $(YAML_FILE)
+	$(SPLAT) $(YAML_FILE)
 
 
 all: disasm

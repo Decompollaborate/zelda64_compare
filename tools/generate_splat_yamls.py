@@ -135,7 +135,7 @@ name: {game} ({version})
 # sha1: TODO
 options:
   basename: zelda
-  base_path: {game}/{version}
+  base_path: ..
   target_path: ../{game}_{version}_uncompressed.z64
   elf_path: build/{game}_{version}.elf
   ld_script_path: linker_scripts/{game}_{version}.ld
@@ -149,7 +149,9 @@ options:
     - tables/functions.txt
     - tables/variables.txt
 
-  auto_all_sections: [".text", ".data", ".rodata", ".bss"]
+  auto_all_sections: [".text", ".data", ".rodata", ".ovl", ".bss"]
+  section_order: [".text", ".data", ".rodata", ".ovl", ".bss"]
+  ld_section_labels: [".text", ".data", ".rodata", ".ovl", ".bss"]
 
   ld_dependencies: True
 
@@ -157,7 +159,7 @@ options:
   src_path: src
   build_path: build
   asset_path: bin
-  extensions_path: tools/splat_ext
+  extensions_path: ../../tools/splat_ext
   mips_abi_float_regs: o32
   do_c_func_detection: True
   o_as_suffix: True
@@ -256,6 +258,8 @@ def write_segment(f: TextIO, game: str, version: str, segmment_entry: FileInfo):
 
 def write_segments(f: TextIO, game: str, version: str, segments_info: list[FileInfo]):
     assert len(segments_info) > 0
+
+    segments_info.sort(key=lambda x: x.virt_start)
 
     f.write(f"""\
 segments:
