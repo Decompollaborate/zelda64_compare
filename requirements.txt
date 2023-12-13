@@ -1,2 +1,3 @@
 libyaz0>=0.5
 spimdisasm>=1.19.0,<2.0.0
+-r tools/splat/requirements.txt
