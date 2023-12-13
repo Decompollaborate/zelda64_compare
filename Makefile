@@ -65,7 +65,7 @@ DISASM_TARGETS      := $(DISASM_LIST:%=$(BASE_DIR)/asm/text/%/.disasm)
 
 YAML_FILE           := $(BASE_DIR)/tables/$(GAME)_$(VERSION).yaml
 
-.PHONY: all splitcsvs disasm clean downloadcsvs csvs extract
+.PHONY: all splitcsvs disasm clean downloadcsvs csvs yaml extract
 .DEFAULT_GOAL := all
 
 
@@ -104,6 +104,8 @@ csvs:
 	$(MAKE) downloadcsvs
 	$(MAKE) splitcsvs
 
+yaml: $(YAML_FILE)
+
 #### Various Recipes ####
 $(BASE_DIR)/tables/%.txt: $(GAME)/tables/%.csv
 	./csvSplit.py $(GAME) $<
@@ -137,7 +139,7 @@ $(BASE_DIR)/asm/text/ovl_%/.disasm: $(BASE_DIR)/baserom/ovl_% $(BASE_DIR)/tables
 	@touch $@
 
 
-$(YAML_FILE): $(BASE_DIR)/tables/file_addresses.csv $(BASE_DIR)/tables/ovl_sections.csv
+$(YAML_FILE): $(BASE_DIR)/tables/file_addresses.csv $(BASE_DIR)/tables/ovl_sections.csv tools/generate_splat_yamls.py
 	./tools/generate_splat_yamls.py $(GAME) $(VERSION)
 
 

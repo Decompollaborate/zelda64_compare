@@ -137,7 +137,7 @@ options:
   basename: zelda
   base_path: ..
   target_path: ../{game}_{version}_uncompressed.z64
-  elf_path: build/{game}_{version}.elf
+  elf_path: ../../build/{game}_{version}.elf
   ld_script_path: linker_scripts/{game}_{version}.ld
   compiler: IDO
   find_file_boundaries: True
@@ -155,7 +155,8 @@ options:
 
   ld_dependencies: True
 
-  asm_path: asm
+  asm_path: splat_asm
+  data_path: .
   src_path: src
   build_path: build
   asset_path: bin
@@ -187,7 +188,7 @@ options:
 
 
 def write_segment(f: TextIO, game: str, version: str, segmment_entry: FileInfo):
-    finished_sections = {
+    finished_sections: dict[str, bool] = {
         "asm": False,
         "data": False,
         "rodata": False,
@@ -240,19 +241,19 @@ def write_segment(f: TextIO, game: str, version: str, segmment_entry: FileInfo):
             if first_bss:
                 first_bss = False
                 f.write(f"""\
-  - {{ start: 0x{rom_offset:06X}, type: {section}, vram: 0x{split.vram:08X}, name: {filename} }}
+  - {{ start: 0x{rom_offset:06X}, type: {section}, vram: 0x{split.vram:08X}, name: {segmment_entry.name}/{filename} }}
 """)
             else:
                 f.write(f"""\
-  - {{ type: {section}, vram: 0x{split.vram:08X}, name: {filename} }}
+  - {{ type: {section}, vram: 0x{split.vram:08X}, name: {segmment_entry.name}/{filename} }}
 """)
         elif finished_sections.get(section, False):
             f.write(f"""\
-  - {{ start: 0x{rom_offset:06X}, type: {section}, name: {filename}, linker_section_order: {linker_section} }}
+  - {{ start: 0x{rom_offset:06X}, type: {section}, name: {segmment_entry.name}/{filename}, linker_section_order: {linker_section} }}
 """)
         else:
             f.write(f"""\
-  - [0x{rom_offset:06X}, {section}, {filename}]
+  - [0x{rom_offset:06X}, {section}, {segmment_entry.name}/{filename}]
 """)
         lastSection = section
 

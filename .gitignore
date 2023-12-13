@@ -58,6 +58,9 @@ asm/
 splits/
 data/
 context/
+bin/
+linker_scripts/
+splat_asm/
 
 function_info/
 
