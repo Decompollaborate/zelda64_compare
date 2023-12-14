@@ -6,7 +6,7 @@ import argparse
 from pathlib import Path
 import spimdisasm
 
-from mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv
+from tools.mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv
 
 
 def print_result_different(comparison, indentation=0):

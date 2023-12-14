@@ -8,7 +8,7 @@ from functools import partial
 from pathlib import Path
 import spimdisasm
 
-from mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv, getFileAddresses, FileAddressesEntry
+from tools.mips.ZeldaTables import contextReadVariablesCsv, contextReadFunctionsCsv, getFileAddresses, FileAddressesEntry
 
 
 def countUnique(row: list) -> int:

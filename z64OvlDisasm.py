@@ -8,7 +8,7 @@ from pathlib import Path
 
 import spimdisasm
 
-from mips.ZeldaTables import getFileAddresses
+from tools.mips.ZeldaTables import getFileAddresses
 
 def writeFiles(ovlSection: spimdisasm.mips.FileSplits, textOutput: str, dataOutput: str|None):
     spimdisasm.common.Utils.printVerbose("Writing files...")

@@ -13,12 +13,15 @@ class SplitEntry:
         self.offset: int = offset
         self.size: int = size
         self.vram: int = vram
+        self.section: str = ""
 
     def __str__(self) -> str:
         out = "<SplitData "
 
         out += f"{self.version}/{self.filename} Offset: 0x{self.offset:X}"
 
+        if self.section != "":
+            out += f" Section: {self.section}"
         if self.size >= 0:
             out += f" Size: 0x{self.size:X}"
         if self.vram >= 0:
@@ -28,6 +31,13 @@ class SplitEntry:
 
     def __repr__(self) -> str:
         return self.__str__()
+
+    def splatSection(self) -> str:
+        if self.section == ".text":
+            return "asm"
+        if self.section.startswith("."):
+            return self.section[1:]
+        return "data"
 
 
 def readSplitsFromCsv(csvfilename: Path) -> dict[str, dict[str, list[SplitEntry]]]:
@@ -114,3 +124,83 @@ def getFileStartsFromEntries(splits: dict[str, SplitEntry], fileEndOffset: int) 
         i += 1
 
     return starts
+
+
+def readSegmentSplitsFromSheetCsv(csvList: list[tuple[str, Path]]) -> dict[str, list[SplitEntry]]:
+    tablePerVersion: dict[str, list[SplitEntry]] = dict()
+
+    for section, csvPath in csvList:
+        oldSection = section
+        if not csvPath.exists():
+            continue
+
+        splits = readSplitsFromCsv(csvPath)
+
+        for version, filesDict in splits.items():
+            if version == "":
+                continue
+
+            if version not in tablePerVersion:
+                tablePerVersion[version] = []
+
+            auxList: list[SplitEntry] = []
+
+            for filename, splitDataList in filesDict.items():
+                section = oldSection
+                for splitData in splitDataList:
+                    if splitData.filename.startswith(".") and splitData.filename != ".end":
+                        section = splitData.filename
+                        continue
+                    splitData.section = section
+                    if splitData.offset < 0 or splitData.vram < 0 or splitData.filename == "":
+                        continue
+                    auxList.append(splitData)
+
+            if len(auxList) == 0:
+                continue
+
+            # fake extra to avoid problems
+            auxList.append(SplitEntry(version, "end", 0xFFFFFF, 0, 0x80FFFFFF))
+
+            # Reading from the file may not be sorted by offset
+            auxList.sort(key=lambda x: x.offset)
+
+            i = 0
+            while i < len(auxList) - 1:
+                currentSplit = auxList[i]
+                nextSplit = auxList[i+1]
+
+                end = currentSplit.offset + currentSplit.size
+                if currentSplit.size <= 0:
+                    end = nextSplit.offset
+
+                if end < nextSplit.offset:
+                    # Adds placeholder files
+                    placeholderSplit = SplitEntry(version, f"file_{end:06X}", end, -1, currentSplit.vram + (end - currentSplit.offset))
+                    placeholderSplit.section = currentSplit.section
+                    auxList.insert(i+1, placeholderSplit)
+                    end = nextSplit.offset
+
+                entry = SplitEntry(version, currentSplit.filename, currentSplit.offset, end - currentSplit.offset, currentSplit.vram)
+                entry.section = currentSplit.section
+                tablePerVersion[version].append(entry)
+
+                i += 1
+
+
+    for version, splitsList in tablePerVersion.items():
+        splitsList.sort(key=lambda x: x.offset)
+
+        i = 0
+        while i < len(splitsList)-1:
+            currentSplit = splitsList[i]
+            nextSplit = splitsList[i+1]
+
+            # Looks for duplicates on section changes
+            if currentSplit.section != nextSplit.section:
+                if currentSplit.offset == nextSplit.offset:
+                    del splitsList[i]
+                    continue
+            i += 1
+
+    return tablePerVersion

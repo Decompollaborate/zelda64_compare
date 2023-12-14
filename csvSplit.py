@@ -6,7 +6,7 @@ import argparse
 from pathlib import Path
 import spimdisasm
 
-from mips.MipsSplitEntry import readSplitsFromCsv
+from tools.mips.MipsSplitEntry import readSplitsFromCsv
 
 
 
