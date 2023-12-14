@@ -80,7 +80,6 @@ asmclean:
 
 ## Extraction step
 setup:
-	$(RM) -rf $(BASE_DIR)/splat_asm $(BASE_DIR)/bin $(BASE_DIR)/linker_scripts $(BASE_DIR)/.splat
 	./decompress_baserom.py $(GAME) $(VERSION)
 	./extract_baserom.py $(GAME) $(VERSION)
 
@@ -89,6 +88,7 @@ disasm: $(DISASM_TARGETS)
 	@echo "Disassembly done!"
 
 extract: $(YAML_FILE)
+	$(RM) -rf $(BASE_DIR)/splat_asm $(BASE_DIR)/bin $(BASE_DIR)/linker_scripts $(BASE_DIR)/.splat
 	$(SPLAT) $(YAML_FILE)
 
 
