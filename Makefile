@@ -76,6 +76,7 @@ asmclean:
 
 ## Extraction step
 setup:
+	./decompress_baserom.py $(GAME) $(VERSION)
 	./extract_baserom.py $(GAME) $(VERSION)
 
 ## Assembly generation

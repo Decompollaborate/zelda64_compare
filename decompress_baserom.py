@@ -1,13 +1,27 @@
 #!/usr/bin/env python3
 
-import hashlib, io, struct, sys
-from pathlib import Path
 import argparse
+import hashlib, io, struct, sys
+import libyaz0
+from pathlib import Path
+import zlib
 
-from libyaz0 import decompress
 from extract_baserom import FILE_TABLE_OFFSET
 from fixbaserom import VERSIONS_MD5S
 
+def decompressZlib(data: bytes) -> bytes:
+    decomp = zlib.decompressobj(-zlib.MAX_WBITS)
+    output = bytearray()
+    output.extend(decomp.decompress(data))
+    while decomp.unconsumed_tail:
+        output.extend(decomp.decompress(decomp.unconsumed_tail))
+    output.extend(decomp.flush())
+    return bytes(output)
+
+def decompress(data: bytes, is_zlib_compressed: bool) -> bytes:
+    if is_zlib_compressed:
+        return decompressZlib(data)
+    return libyaz0.decompress(data)
 
 description = "Convert a rom that uses dmadata to an uncompressed one."
 
@@ -150,7 +164,7 @@ def decompress_rom(dmadata_addr, dmadata):
         if p_end == 0: # uncompressed
             rom_segments.update({v_start : fileContent[p_start:p_start + v_end - v_start]})
         else: # compressed
-            rom_segments.update({v_start : decompress(fileContent[p_start:p_end])})
+            rom_segments.update({v_start : decompress(fileContent[p_start:p_end], Edition in {"iqs", "iqt", "cn"})})
         new_dmadata.extend(struct.pack(">IIII", v_start, v_end, v_start, 0))
 
     # write rom segments to vaddrs
