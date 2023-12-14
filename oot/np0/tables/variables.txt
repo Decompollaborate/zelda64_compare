@@ -4,6 +4,6 @@ gObjectTable = 0x800F9648; //
 gGameOverTimer = 0x80111310; // type:s16
 gSaveContext = 0x801183D0; // size:0x1428 type:SaveContext
 gRegEditor = 0x80119800; // size:0x4 type:RegEditor*
-gSegments = 0x8011EC58; // size:0x40 type:uintptr_t[16]
+gSegments = 0x8011EC58; // size:0x40
 gZBuffer = 0x80129E80; // size:0x25800 type:u16
 _string_n64dd_c = 0x801D6DC0; // size:0x1 type:char

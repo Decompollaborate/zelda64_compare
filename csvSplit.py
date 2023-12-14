@@ -105,6 +105,21 @@ def split_fileSplits(game: str, seg: str):
         _split_fileSplits_withPrefix(game, seg, catPrefix)
 
 
+splat_sym_types = {"func", "jtbl", "jtbl_label", "label"}
+
+def check_valid_splat_type(typename: str) -> bool:
+    if typename[0].isupper():
+        return True
+
+    if typename in splat_sym_types:
+        return True
+
+    if typename in spimdisasm.common.gKnownTypes:
+        return True
+
+    return False
+
+
 def split_functions(game: str):
     csvPath = Path(game, "tables", "functions.csv")
 
@@ -213,7 +228,7 @@ def split_variables(game: str):
                 f.write(f"{varName} = 0x{vram:08X}; //")
                 if size > 0:
                     f.write(f" size:0x{size:X}")
-                if type != "":
+                if type != "" and check_valid_splat_type(type):
                     f.write(f" type:{type}")
                 f.write("\n")
 
