@@ -65,6 +65,7 @@ DB40,8001EA20,z_actor
 80170,80091050,z_ss_sram
 80340,80091220,z_rumble
 805C0,800914A0,z_view
+81CC0,80092BA0,z_vimode
 82830,80093710,z_viscvg
 829D0,800938B0,z_vismono
 831F0,800940D0,z_viszbuf
@@ -98,7 +99,7 @@ DB40,8001EA20,z_actor
 92240,800A3120,speed_meter
 92C80,800A3B60,sys_cfb
 92DA0,800A3C80,sys_math
-93050,800A3F30,sys_math3d
+93040,800A3F20,sys_math3d
 98E10,800A9CF0,sys_math_atan
 99040,800A9F20,sys_matrix
 9B440,800AC320,sys_ucode
