@@ -17,9 +17,9 @@ item_name_static,880000,8BD800,863770,0
 map_name_static,8BE000,8DF800,8A0F70,0
 do_action_static,8E0000,8E5700,8C2770,0
 message_static,8E6000,8EA180,8C7E70,0
-jpn_message_data_static,8EB000,8EC200,8CBFF0,0
-message_texture_static,8ED000,8F1580,8CD1F0,0
-nes_font_static,8F2000,92C350,8D1770,0
+message_texture_static,8EB000,8EC200,8CBFF0,0
+nes_font_static,8ED000,8F1580,8CD1F0,0
+jpn_message_data_static,8F2000,92C350,8D1770,0
 nes_message_data_static,92D000,9650E0,90BAC0,0
 staff_message_data_static,966000,966F60,943BA0,0
 map_grand_static,967000,975350,944B00,0
