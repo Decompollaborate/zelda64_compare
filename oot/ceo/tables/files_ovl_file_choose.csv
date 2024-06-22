@@ -14,6 +14,6 @@ F7F0,80812E20,z_file_nameset_NES
 F800,80812E30,z_file_choose
 
 offset,vram,.bss
-F820,80812E50,z_file_copy_erase
-F830,80812E60,z_file_nameset_NES
-F840,80812E70,.end
+FF60,80813590,z_file_copy_erase
+FF70,808135A0,z_file_nameset_NES
+FF80,808135B0,.end
