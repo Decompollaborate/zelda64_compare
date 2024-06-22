@@ -119,7 +119,7 @@ AB820,800BC700,audio_lib_aisetnextbuf
 AB8A0,800BC780,audio_lib_playback
 AD820,800BE700,audio_lib_effects
 AE2A0,800BF180,audio_lib_seqplayer
-B1960,800C2840,audio_general
+B18C0,800C27A0,audio_general
 B7A50,800C8930,audio_sfx
 B98B0,800CA790,audio_sequence
 BB4D0,800CC3B0,gfxprint
