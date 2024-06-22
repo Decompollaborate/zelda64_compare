@@ -1,6 +1,6 @@
 ,,,ner,,,ne0,,,ne1,,,np0,,,ne2,,,np1,,,neg,,,cjo,,,cjm,,,ceo,,,cem,,,cpo,,,cpod1,,,cpod2,,,cpm,,,cpmd,,,cjc,,,iqs,,,iqt,,
 Debug rom,,Notes,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size,Offset,VRAM,Size
 z_file_copy_erase,,,,,,-,-,-,,,,-,-,-,,,,,,,,,,-,-,-,,,,,,,,,,,,,,,,,,,,,,ED20,80812A60,30,,,,10280,80813980,30,,,
-z_file_nameset_NES,,,,,,F800,80813080,10,,,,-,-,-,,,,,,,,,,F7F0,80812E40,10,,,,,,,,,,,,,,,,,,,,,,-,-,-,,,,102B0,808139B0,10,,,
+z_file_nameset_NES,,,,,,F800,80813080,10,,,,-,-,-,,,,,,,,,,F7F0,80812E40,10,,,,F7F0,80812E20,,,,,,,,,,,,,,,,,-,-,-,,,,102B0,808139B0,10,,,
 z_file_nameset_PAL,,,,,,-,-,-,,,,10000,80813880,10,,,,,,,,,,-,-,-,,,,,,,,,,,,,,,,,,,E5F0,80811C20,10,ED50,80812A90,260,,,,-,-,-,,,
-z_file_choose,,,,,,F810,80813090,20,,,,10010,80813890,20,,,,,,,,,,F800,80812E50,20,,,,,,,,,,,,,,,,,,,E600,80811C30,20,EFB0,80812CF0,330,,,,102C0,808139C0,20,,,
+z_file_choose,,,,,,F810,80813090,20,,,,10010,80813890,20,,,,,,,,,,F800,80812E50,20,,,,F800,80812E30,,,,,,,,,,,,,,E600,80811C30,20,EFB0,80812CF0,330,,,,102C0,808139C0,20,,,
