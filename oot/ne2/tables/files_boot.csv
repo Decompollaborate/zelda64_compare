@@ -111,6 +111,29 @@ offset,vram,.data
 
 offset,vram,.rodata
 6620,80006A80,boot_main
+6630,80006A90,idle
+6640,80006AA0,z_std_dma
+66C0,80006B20,z_locale
+66D0,80006B30,CIC6105
+6730,80006B90,stackcheck
+6770,80006BD0,logutils
+67E0,80006C40,exceptasm
+6830,80006C90,devmgr
+6850,80006CB0,setintmask
+68D0,80006D30,build
 
 offset,vram,.bss
 6900,80006D60,boot_main
+72F0,80007750,idle
+7F00,80008360,z_std_dma
+8670,80008AD0,yaz0
+8A80,80008EE0,z_locale
+8AA0,80008F00,driverominit
+8B20,80008F80,piacs
+8B40,80008FA0,initialize
+8B50,80008FB0,pimgr
+9FC0,8000A420,seteventmesg
+A040,8000A4A0,timerintr
+A080,8000A4E0,cartrominit
+A100,8000A560,vimgr
+B320,8000B780,.end
