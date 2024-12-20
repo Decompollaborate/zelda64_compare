@@ -1,5 +1,5 @@
 entrypoint = 0x80000400; // type:func
-cleararena = 0x80000460; // type:func
+bootclear = 0x80000460; // type:func
 bootproc = 0x80000498; // type:func
 Main_ThreadEntry = 0x800005A0; // type:func
 Idle_ThreadEntry = 0x8000063C; // type:func
@@ -397,7 +397,7 @@ Message_CloseTextbox = 0x800D6CAC; // type:func
 Message_HandleChoiceSelection = 0x800D6D24; // type:func
 Message_DrawTextChar = 0x800D6F04; // type:func
 Message_GrowTextbox = 0x800D7234; // type:func
-Message_FindMessage = 0x800D7438; // type:func
+Message_FindMessagePAL = 0x800D7438; // type:func
 Message_FindCreditsMessage = 0x800D759C; // type:func
 Message_SetTextColor = 0x800D7610; // type:func
 Message_DrawTextboxIcon = 0x800D78C4; // type:func

@@ -127,7 +127,7 @@ offset,vram,.bss
 72F0,80007750,idle
 7F00,80008360,z_std_dma
 8670,80008AD0,yaz0
-8A80,80008EE0,z_locale
+8A80,80008EE0,cic6105
 8AA0,80008F00,driverominit
 8B20,80008F80,piacs
 8B40,80008FA0,initialize

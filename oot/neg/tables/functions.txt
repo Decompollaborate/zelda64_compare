@@ -1,5 +1,5 @@
 entrypoint = 0x80000400; // type:func
-cleararena = 0x80000460; // type:func
+bootclear = 0x80000460; // type:func
 Main_ThreadEntry = 0x800005A0; // type:func
 DmaMgr_Init = 0x80000FFC; // type:func
 bzero = 0x80003010; // type:func
@@ -27,7 +27,7 @@ Matrix_TranslateRotateZYX = 0x800AB6AC; // type:func
 Matrix_SetTranslateRotateYXZ = 0x800ABA00; // type:func
 Matrix_MtxFToMtx = 0x800ABBAC; // type:func
 Matrix_ToMtx = 0x800ABDC8; // type:func
-Matrix_NewMtx = 0x800ABDF0; // type:func
+Matrix_Finalize = 0x800ABDF0; // type:func
 Matrix_MtxFToNewMtx = 0x800ABE1C; // type:func
 Matrix_MultVec3f = 0x800ABE48; // type:func
 Matrix_MtxFCopy = 0x800ABF00; // type:func

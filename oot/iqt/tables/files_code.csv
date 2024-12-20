@@ -13,8 +13,8 @@ D8F0,80026330,z_DLF
 DB40,80026580,z_actor
 19080,80031AC0,z_actor_dlftbls
 191D0,80031C10,z_bgcheck
-22DB0,8003B7F0,code_800430A0
-230D0,8003BB10,code_80043480
+22DB0,8003B7F0,z_bg_collect
+230D0,8003BB10,z_bg_item
 23460,8003BEA0,z_camera
 37A90,800504D0,z_collision_btltbls
 37AF0,80050530,z_collision_check
@@ -22,12 +22,12 @@ DB40,80026580,z_actor
 3F820,80058260,z_debug
 3FB30,80058570,z_debug_display
 3FFF0,80058A30,z_demo
-44CD0,8005D710,code_80069420
+44CD0,8005D710,z_memory_utils
 44D60,8005D7A0,z_draw
 46C60,8005F6A0,z_sfx_source
 46E20,8005F860,z_elf_message
 47500,8005FF40,z_face_reaction
-47550,8005FF90,code_8006C3A0
+47550,8005FF90,z_env_flags
 476D0,80060110,z_fcurve_data
 47910,80060350,z_fcurve_data_skelanime
 48120,80060B60,z_horse
@@ -54,7 +54,7 @@ DB40,80026580,z_actor
 6AF30,80083970,z_rcp
 6C7F0,80085230,z_room
 6DFE0,80086A20,z_sample
-6E3E0,80086E20,code_80097A00
+6E3E0,80086E20,z_inventory
 6E5A0,80086FE0,z_scene
 6FA50,80088490,z_scene_table
 76250,8008EC90,z_skelanime
@@ -78,7 +78,7 @@ DB40,80026580,z_actor
 860C0,8009EB00,z_fbdemo_circle
 86780,8009F1C0,z_fbdemo_fade
 86AE0,8009F520,shrink_window
-86C50,8009F690,code_800BB0A0
+86C50,8009F690,z_cutscene_spline
 87120,8009FB60,z_kaleido_manager
 87350,8009FD90,z_kaleido_scope_call
 87630,800A0070,z_play
@@ -104,7 +104,7 @@ DB40,80026580,z_actor
 976E0,800B0120,sys_matrix
 99AE0,800B2520,sys_ucode
 99B30,800B2570,sys_rumble
-99E90,800B28D0,code_800D31A0
+99E90,800B28D0,sys_freeze
 99EC0,800B2900,irqmgr
 9A4E0,800B2F20,fault
 9CD30,800B5770,fault_drawer
@@ -122,7 +122,7 @@ AC920,800C5360,audio_lib_seqplayer
 AFF40,800C8980,audio_general
 B60D0,800CEB10,audio_sfx
 B7F30,800D0970,audio_sequence
-B9B50,800D2590,code_800FC620
+B9B50,800D2590,system_heap0
 B9E90,800D28D0,logutils
 B9EF0,800D2930,gfxprint
 BAC60,800D36A0,relocation

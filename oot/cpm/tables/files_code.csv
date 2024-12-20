@@ -13,8 +13,8 @@ D8F0,8001E7F0,z_DLF
 DB40,8001EA40,z_actor
 1A0C0,8002AFC0,z_actor_dlftbls
 1A210,8002B110,z_bgcheck
-23DF0,80034CF0,code_800430A0
-24110,80035010,code_80043480
+23DF0,80034CF0,z_bg_collect
+24110,80035010,z_bg_item
 244A0,800353A0,z_camera
 38AD0,800499D0,z_collision_btltbls
 38B30,80049A30,z_collision_check
@@ -22,12 +22,12 @@ DB40,8001EA40,z_actor
 40830,80051730,z_debug
 40B40,80051A40,z_debug_display
 41000,80051F00,z_demo
-45CE0,80056BE0,code_80069420
+45CE0,80056BE0,z_memory_utils
 45D70,80056C70,z_draw
 47C70,80058B70,z_sfx_source
 47E30,80058D30,z_elf_message
 48510,80059410,z_face_reaction
-48560,80059460,code_8006C3A0
+48560,80059460,z_env_flags
 486E0,800595E0,z_fcurve_data
 48920,80059820,z_fcurve_data_skelanime
 49130,8005A030,z_horse
@@ -54,7 +54,7 @@ DB40,8001EA40,z_actor
 6C8A0,8007D7A0,z_rcp
 6E160,8007F060,z_room
 6F950,80080850,z_sample
-6FD50,80080C50,code_80097A00
+6FD50,80080C50,z_inventory
 6FF10,80080E10,z_scene
 713C0,800822C0,z_scene_table
 77BA0,80088AA0,z_skelanime
@@ -78,7 +78,7 @@ DB40,8001EA40,z_actor
 87AA0,800989A0,z_fbdemo_circle
 88160,80099060,z_fbdemo_fade
 884C0,800993C0,shrink_window
-88630,80099530,code_800BB0A0
+88630,80099530,z_cutscene_spline
 88B00,80099A00,z_kaleido_manager
 88D30,80099C30,z_kaleido_scope_call
 89010,80099F10,z_play
@@ -105,7 +105,7 @@ DB40,8001EA40,z_actor
 99100,800AA000,sys_matrix
 9B500,800AC400,sys_ucode
 9B550,800AC450,sys_rumble
-9B8B0,800AC7B0,code_800D31A0
+9B8B0,800AC7B0,sys_freeze
 9B8E0,800AC7E0,irqmgr
 9BF00,800ACE00,fault
 9E750,800AF650,fault_drawer
@@ -128,7 +128,7 @@ BC2E0,800CD1E0,rcp_utils
 BC340,800CD240,loadfragment2
 BC3A0,800CD2A0,relocation
 BC5E0,800CD4E0,load
-BC6B0,800CD5B0,code_800FC620
+BC6B0,800CD5B0,system_heap0
 BC9F0,800CD8F0,padutils
 BCBE0,800CDAE0,padsetup
 BCD20,800CDC20,fp_math
@@ -250,7 +250,7 @@ E35A0,800F44A0,z_player_lib
 E3C80,800F4B80,z_quake
 E3CB0,800F4BB0,z_rcp
 E4AD0,800F59D0,z_room
-E4B50,800F5A50,code_80097A00
+E4B50,800F5A50,z_inventory
 E4ED0,800F5DD0,z_scene
 E4F50,800F5E50,object_table
 E5BF0,800F6AF0,z_scene_table
@@ -297,7 +297,7 @@ EFE30,80100D30,audio_data
 EFEA0,80100DA0,audio_session_config
 F0640,80101540,logseverity
 F0650,80101550,gfxprint
-F0F00,80101E00,code_800FC620
+F0F00,80101E00,system_heap0
 F0F20,80101E20,fp
 F0F30,80101E30,rand
 F0F40,80101E40,__osMalloc
@@ -324,7 +324,7 @@ F1BC0,80102AC0,flg_set
 F1F50,80102E50,z_actor
 F2500,80103400,z_actor_dlftbls
 F2550,80103450,z_bgcheck
-F25F0,801034F0,code_80043480
+F25F0,801034F0,z_bg_item
 F2600,80103500,z_camera
 F2D80,80103C80,z_collision_check
 F2DD0,80103CD0,z_debug
@@ -360,7 +360,7 @@ F4670,80105570,z_vr_box
 F4760,80105660,z_fbdemo_triforce
 F4770,80105670,z_fbdemo_wipe1
 F4780,80105680,z_fbdemo_circle
-F4790,80105690,code_800BB0A0
+F4790,80105690,z_cutscene_spline
 F47A0,801056A0,z_kaleido_manager
 F47C0,801056C0,z_play
 F4880,80105780,game

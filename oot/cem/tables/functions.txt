@@ -1,5 +1,5 @@
 entrypoint = 0x80000400; // type:func
-cleararena = 0x80000460; // type:func
+bootclear = 0x80000460; // type:func
 bootproc = 0x80000498; // type:func
 Main_ThreadEntry = 0x800005A0; // type:func
 Idle_ThreadEntry = 0x8000063C; // type:func
