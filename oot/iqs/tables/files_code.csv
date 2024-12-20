@@ -182,6 +182,7 @@ C1500,800DA4A0,settimer
 C16C0,800DA660,stoptimer
 C17E0,800DA780,vigetcurrframebuf
 C1820,800DA7C0,visetevent
+C1880,800DA820,mtxident
 C18E0,800DA880,mtxidentf
 C1940,800DA8E0,mtxf2l
 C19C0,800DA960,scale
