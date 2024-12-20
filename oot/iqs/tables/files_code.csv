@@ -122,7 +122,7 @@ AC760,800C5700,audio_lib_seqplayer
 AFD80,800C8D20,audio_general
 B5F10,800CEEB0,audio_sfx
 B7D70,800D0D10,audio_sequence
-B9990,800D2930,system_heap0
+B9990,800D2930,system_heap
 B9CD0,800D2C70,logutils
 B9D30,800D2CD0,gfxprint
 BAAA0,800D3A40,relocation

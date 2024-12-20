@@ -334,5 +334,5 @@ __osSpSetPc = 0x800D6740; // type:func
 sqrt = 0x800D6770; // type:func
 absf = 0x800D6780; // type:func
 fmodf = 0x800D6790; // type:func
-__osMemset = 0x800D67E0; // type:func
-__osMemmove = 0x800D6810; // type:func
+memset = 0x800D67E0; // type:func
+memmove = 0x800D6810; // type:func

@@ -127,7 +127,7 @@ BC260,800CD140,rcp_utils
 BC2C0,800CD1A0,loadfragment2
 BC320,800CD200,relocation
 BC560,800CD440,load
-BC630,800CD510,system_heap0
+BC630,800CD510,system_heap
 BC970,800CD850,padutils
 BCB60,800CDA40,padsetup
 BCCA0,800CDB80,fp_math

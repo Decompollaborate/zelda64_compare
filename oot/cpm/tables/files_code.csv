@@ -128,7 +128,7 @@ BC2E0,800CD1E0,rcp_utils
 BC340,800CD240,loadfragment2
 BC3A0,800CD2A0,relocation
 BC5E0,800CD4E0,load
-BC6B0,800CD5B0,system_heap0
+BC6B0,800CD5B0,system_heap
 BC9F0,800CD8F0,padutils
 BCBE0,800CDAE0,padsetup
 BCD20,800CDC20,fp_math
@@ -297,7 +297,7 @@ EFE30,80100D30,audio_data
 EFEA0,80100DA0,audio_session_config
 F0640,80101540,logseverity
 F0650,80101550,gfxprint
-F0F00,80101E00,system_heap0
+F0F00,80101E00,system_heap
 F0F20,80101E20,fp
 F0F30,80101E30,rand
 F0F40,80101E40,__osMalloc

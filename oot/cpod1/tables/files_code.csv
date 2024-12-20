@@ -130,7 +130,7 @@ DF1D0,800FC030,loadfragment2
 DF280,800FC0E0,mtxuty-cvt
 DF480,800FC2E0,relocation
 DF7E0,800FC640,load
-DF9C0,800FC820,system_heap0
+DF9C0,800FC820,system_heap
 DFD10,800FCB70,padutils
 DFF00,800FCD60,padsetup
 E0040,800FCEA0,fp_math

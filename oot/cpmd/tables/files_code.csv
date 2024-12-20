@@ -131,7 +131,7 @@ DF1B0,800FC010,loadfragment2
 DF260,800FC0C0,mtxuty-cvt
 DF460,800FC2C0,relocation
 DF7C0,800FC620,load
-DF9A0,800FC800,system_heap0
+DF9A0,800FC800,system_heap
 DFCF0,800FCB50,padutils
 DFEE0,800FCD40,padsetup
 E0020,800FCE80,fp_math
@@ -313,7 +313,7 @@ FD080,80119EE0,z_camera
 1165C0,80133420,audio_session_config
 116D60,80133BC0,logseverity
 116D70,80133BD0,gfxprint
-117620,80134480,system_heap0
+117620,80134480,system_heap
 117640,801344A0,fp
 117650,801344B0,system_malloc
 117660,801344C0,rand
