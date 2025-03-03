@@ -34,7 +34,7 @@ python3 -m pip install -U -r requirements.txt
 - Run `make setup GAME={game} VERSION={version}` for every version you wish to compare to extract the baseroms to separate decompressed files, e.g.
 
   ```bash
-  make setup GAME=MM VERSION=ne0
+  make setup GAME=mm VERSION=ne0
   ```
 
   will extract MM's US N64 version (see the bottom of the README.md for the abbreviations this repository uses)
@@ -86,6 +86,7 @@ The Legend of Zelda: Ocarina of Time
 | nj2          | N64 Japanese 1.2                             |
 | ne2          | N64 American 1.2                             |
 | np1          | N64 PAL 1.1                                  |
+| neg          | N64 American Gateway                         |
 | cjo          | GC Japanese original                         |
 | cjm          | GC Japanese Master Quest                     |
 | ceo          | GC American original                         |
@@ -113,6 +114,7 @@ The Legend of Zelda: Majora's Mask
 | nek          | N64 American Kiosk Demo                  |
 | ne0          | N64 American 1.0                         |
 | np0          | N64 PAL 1.0                              |
+| neg          | N64 American Gateway                     |
 | npd          | N64 PAL Debug                            |
 | np1          | N64 PAL 1.1                              |
 | cjo          | GC Japanese                              |
